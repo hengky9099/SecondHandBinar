@@ -19,6 +19,10 @@ target 'SecondHandBinar' do
     :app_path => "#{Pod::Config.instance.installation_root}/.."
   )
 
+  pod 'TouchID', :path => '../node_modules/react-native-touch-id'
+
+  pod 'react-native-splash-screen', :path => '../node_modules/react-native-splash-screen'
+
   target 'SecondHandBinarTests' do
     inherit! :complete
     # Pods for testing
