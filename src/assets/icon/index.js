@@ -1,3 +1,3 @@
-import camera from './camera.png';
+import cameraPic from './camera.png';
 
-export {camera};
+export {cameraPic};

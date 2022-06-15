@@ -1,20 +1,23 @@
 import {StyleSheet, TouchableOpacity, View, Image} from 'react-native';
 import React from 'react';
-import {camera} from '../../assets/icon';
 import {moderateScale} from 'react-native-size-matters';
 import {COLORS} from '../../helpers/colors';
+import {cameraPic} from '../../assets';
 
-const ButtonIcon = ({onPress}) => {
+const ButtonCamera = ({onPress, url}) => {
   return (
     <TouchableOpacity style={styles.toCamera} onPress={onPress}>
       <View style={styles.containerCamera}>
-        <Image source={camera} style={styles.imageCamera} />
+        <Image
+          source={url ? {uri: url} : cameraPic}
+          style={styles.imageCamera}
+        />
       </View>
     </TouchableOpacity>
   );
 };
 
-export default ButtonIcon;
+export default ButtonCamera;
 
 const styles = StyleSheet.create({
   toCamera: {
