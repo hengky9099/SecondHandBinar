@@ -136,7 +136,7 @@ export default Register;
 
 const styles = StyleSheet.create({
   contentContainer: {
-    marginHorizontal: moderateScale(10),
+    alignItems: 'center',
   },
   title: {
     marginHorizontal: moderateScale(10),
@@ -146,7 +146,7 @@ const styles = StyleSheet.create({
     color: COLORS.black,
   },
   btnDaftar: {
-    marginHorizontal: moderateScale(10),
+    alignItems: 'center',
     marginVertical: moderateScale(30),
   },
   bottom: {

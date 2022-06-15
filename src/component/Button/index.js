@@ -3,6 +3,9 @@ import React from 'react';
 import {moderateScale} from 'react-native-size-matters';
 import {COLORS} from '../../helpers/colors';
 import {Poppins} from '../FontComponents';
+import {Dimensions} from 'react-native';
+
+const {width} = Dimensions.get('window');
 
 const Button = ({
   onPressButton1,
@@ -45,7 +48,7 @@ const styles = StyleSheet.create({
     color: COLORS.white,
   },
   button1: {
-    width: moderateScale(328),
+    width: width - moderateScale(30),
     height: moderateScale(48),
     borderRadius: moderateScale(16),
     backgroundColor: COLORS.purple4,

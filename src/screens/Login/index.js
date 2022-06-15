@@ -1,5 +1,5 @@
-import {View, Text, StyleSheet, TouchableOpacity} from 'react-native';
-import React from 'react';
+import {View, Text, StyleSheet, TouchableOpacity, Alert} from 'react-native';
+import React, {useState} from 'react';
 import Header from '../../component/Header';
 import Input from '../../component/Input';
 import {moderateScale} from 'react-native-size-matters';
@@ -8,8 +8,12 @@ import {COLORS} from '../../helpers/colors';
 import Button from '../../component/Button';
 import {Formik} from 'formik';
 import * as Yup from 'yup';
+import axios from 'axios';
+import {baseUrl} from '@env';
 
 const Login = ({navigation}) => {
+  const [loading, setLoading] = useState(false);
+
   // For validation
   const validationSignIn = Yup.object().shape({
     email: Yup.string()
@@ -20,11 +24,42 @@ const Login = ({navigation}) => {
       .min(8, 'Password should be at least 8 character'),
   });
 
+  // Login Function
+  const signIn = async values => {
+    setLoading(true);
+    try {
+      const body = {
+        full_name: values.name,
+        email: values.email,
+        password: values.password,
+        phone_number: 'null',
+        address: 'null',
+        image: '',
+      };
+      const res = await axios.post(`${baseUrl}/auth/login`, body, {
+        validateStatus: status => status < 501,
+      });
+      console.log('HASIL RES: ', res);
+
+      if (res.status <= 201) {
+        navigation.navigate('MainApp');
+      } else if (res.data.name === 'wrongEmailPassword') {
+        Alert.alert('Sorry', res.data.message);
+      } else {
+        Alert.alert('Error', 'Tidak bisa Login');
+      }
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <Formik
       validationSchema={validationSignIn}
       initialValues={{email: '', password: ''}}
-      onSubmit={console.log('Login')}>
+      onSubmit={signIn}>
       {({handleChange, handleSubmit, values, handleBlur, errors, touched}) => {
         return (
           <View flex={1}>
@@ -36,6 +71,7 @@ const Login = ({navigation}) => {
                 placeholder="Contoh: johndee@gmail.com"
                 onChangeText={handleChange('email')}
                 onBlur={handleBlur('email')}
+                value={values.email}
               />
               {touched.email && errors.email && (
                 <Text style={styles.errorValidation}>{errors.email}</Text>
@@ -47,20 +83,21 @@ const Login = ({navigation}) => {
                 password={true}
                 onChangeText={handleChange('password')}
                 onBlur={handleBlur('password')}
+                value={values.password}
               />
               {touched.password && errors.password && (
                 <Text style={styles.errorValidation}>{errors.password}</Text>
               )}
             </View>
-            <View style={styles.btnDaftar}>
+            <View style={styles.btnLogin}>
               <Button textButton1={'Masuk'} onPressButton1={handleSubmit} />
             </View>
             <View style={styles.bottom}>
-              <Text style={styles.txtToLoginLeft}>Belum punya akun?</Text>
+              <Text style={styles.txtToRegisterLeft}>Belum punya akun?</Text>
               <TouchableOpacity
                 onPress={() => navigation.navigate('Register')}
-                style={styles.btnToLogin}>
-                <Text style={styles.txtToLoginRight}>Daftar di sini</Text>
+                style={styles.btnToRegister}>
+                <Text style={styles.txtToRegisterRight}>Daftar di sini</Text>
               </TouchableOpacity>
             </View>
           </View>
@@ -74,7 +111,7 @@ export default Login;
 
 const styles = StyleSheet.create({
   contentContainer: {
-    marginHorizontal: moderateScale(10),
+    alignItems: 'center',
   },
   title: {
     marginHorizontal: moderateScale(10),
@@ -83,8 +120,8 @@ const styles = StyleSheet.create({
     fontWeight: '700',
     color: COLORS.black,
   },
-  btnDaftar: {
-    marginHorizontal: moderateScale(10),
+  btnLogin: {
+    alignItems: 'center',
     marginVertical: moderateScale(30),
   },
   bottom: {
@@ -94,14 +131,14 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     marginBottom: moderateScale(40),
   },
-  btnToLogin: {
+  btnToRegister: {
     marginLeft: moderateScale(5),
   },
-  txtToLoginRight: {
+  txtToRegisterRight: {
     color: COLORS.purple4,
     fontWeight: '700',
   },
-  txtToLoginLeft: {
+  txtToRegisterLeft: {
     color: COLORS.black,
   },
   errorValidation: {
