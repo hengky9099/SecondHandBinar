@@ -1,4 +1,11 @@
-import {View, Text, StyleSheet, TouchableOpacity, Alert} from 'react-native';
+import {
+  View,
+  Text,
+  StyleSheet,
+  TouchableOpacity,
+  Alert,
+  ActivityIndicator,
+} from 'react-native';
 import React, {useState} from 'react';
 import Header from '../../component/Header';
 import Input from '../../component/Input';
@@ -12,6 +19,8 @@ import {baseUrl} from '@env';
 import axios from 'axios';
 
 const Register = ({navigation}) => {
+  const [loading, setLoading] = useState(false);
+
   // For validation
   const validationSignUp = Yup.object().shape({
     email: Yup.string()
@@ -24,6 +33,7 @@ const Register = ({navigation}) => {
 
   // Register Function
   const signUp = async values => {
+    setLoading(true);
     try {
       const body = {
         full_name: values.name,
@@ -55,7 +65,7 @@ const Register = ({navigation}) => {
     } catch (error) {
       console.log(error);
     } finally {
-      // dispatch(setLoading(false));
+      setLoading(false);
     }
   };
 
@@ -101,7 +111,11 @@ const Register = ({navigation}) => {
               )}
             </View>
             <View style={styles.btnDaftar}>
-              <Button textButton1={'Daftar'} onPressButton1={handleSubmit} />
+              {loading ? (
+                <ActivityIndicator />
+              ) : (
+                <Button textButton1={'Daftar'} onPressButton1={handleSubmit} />
+              )}
             </View>
             <View style={styles.bottom}>
               <Text style={styles.txtToLoginLeft}>Sudah punya akun?</Text>
