@@ -6,4 +6,5 @@ export const COLORS = {
   neutral3: '#8A8A8A',
   neutral5: '#151515',
   purple4: '#7126B5',
+  primaryPurple: '#E2D4F0',
 };
