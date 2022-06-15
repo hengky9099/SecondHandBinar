@@ -24,10 +24,8 @@ const Register = ({navigation}) => {
       .min(8, 'Password should be at least 8 character'),
   });
 
-  // Login Function
-  const signIn = async values => {
-    console.log('Click');
-    console.log(baseUrl);
+  // Register Function
+  const signUp = async values => {
     try {
       const body = {
         full_name: values.name,
@@ -67,7 +65,7 @@ const Register = ({navigation}) => {
     <Formik
       validationSchema={validationSignUp}
       initialValues={{name: '', email: '', password: ''}}
-      onSubmit={signIn}>
+      onSubmit={signUp}>
       {({handleChange, handleSubmit, values, handleBlur, errors, touched}) => {
         return (
           <View flex={1}>
