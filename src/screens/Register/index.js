@@ -12,8 +12,6 @@ import {baseUrl} from '@env';
 import axios from 'axios';
 
 const Register = ({navigation}) => {
-  const [loading, setLoading] = useState(false);
-
   // For validation
   const validationSignUp = Yup.object().shape({
     email: Yup.string()
