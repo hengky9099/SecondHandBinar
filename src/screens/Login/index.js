@@ -14,9 +14,9 @@ const Login = ({navigation}) => {
   const validationSignIn = Yup.object().shape({
     email: Yup.string()
       .email('Please enter a valid Email Address!')
-      .required(`Email field can't be empty`),
+      .required("Email field can't be empty"),
     password: Yup.string()
-      .required(`Password field can't be empty`)
+      .required("Password field can't be empty")
       .min(8, 'Password should be at least 8 character'),
   });
 

@@ -18,6 +18,7 @@ const Input = ({
   inputName,
   multiline,
   numberOfLines,
+  onBlur,
 }) => {
   const stylesInput = Array.isArray(styleInput)
     ? Object.assign({}, ...styleInput)
@@ -49,6 +50,7 @@ const Input = ({
           style={[styles.input, {...stylesInput}]}
           onChangeText={onChangeText}
           value={value}
+          onBlur={onBlur}
           placeholder={placeholder}
           placeholderTextColor={placeholderTextColor}
           secureTextEntry={secureTextEntry && !seenPass ? true : false}
