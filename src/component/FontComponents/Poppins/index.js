@@ -1,7 +1,7 @@
 import {StyleSheet, Text} from 'react-native';
 import React from 'react';
 
-const Poppins = ({style, children, type = 'Regular'}) => {
+const Poppins = ({style, children, type = 'Regular', numberOfLines = 0}) => {
   const passedStyles = Array.isArray(style)
     ? Object.assign({}, ...style)
     : style;
@@ -12,7 +12,14 @@ const Poppins = ({style, children, type = 'Regular'}) => {
     },
   });
 
-  return <Text style={[styles.font, {...passedStyles}]}>{children}</Text>;
+  return (
+    <Text
+      ellipsizeMode="tail"
+      numberOfLines={numberOfLines}
+      style={[styles.font, {...passedStyles}]}>
+      {children}
+    </Text>
+  );
 };
 
 export default Poppins;
