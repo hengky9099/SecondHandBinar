@@ -20,6 +20,39 @@ const Register = ({navigation}) => {
       .min(8, 'Password should be at least 8 character'),
   });
 
+  // Login Function
+  // const signInnWithEmail = async values => {
+  //   try {
+  //     setLoading(true);
+  //     const res = await auth.signInWithEmailAndPassword(
+  //       values.email,
+  //       values.password,
+  //     );
+
+  //     const token = await messaging.getToken();
+
+  //     if (token) {
+  //       let isUpdate = false;
+  //       await myDb.ref(`users/${res.user.uid}`).update({
+  //         notifToken: token,
+  //       });
+  //       isUpdate = true;
+
+  //       if (isUpdate) {
+  //         const results = await myDb.ref(`users/${res.user.uid}`).once('value');
+  //         if (results.val()) {
+  //           dispatch(setUser(results.val()));
+  //           navigation.navigate('Main');
+  //         }
+  //       }
+  //     }
+  //   } catch (error) {
+  //     console.log(error);
+  //   } finally {
+  //     // setLoading(false);
+  //   }
+  // };
+
   return (
     <Formik
       validationSchema={validationSignUp}
