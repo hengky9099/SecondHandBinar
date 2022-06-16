@@ -1,4 +1,11 @@
-import {View, Text, StyleSheet, TouchableOpacity, Alert} from 'react-native';
+import {
+  View,
+  Text,
+  StyleSheet,
+  TouchableOpacity,
+  Alert,
+  ActivityIndicator,
+} from 'react-native';
 import React, {useState} from 'react';
 import Header from '../../component/Header';
 import Input from '../../component/Input';
@@ -10,9 +17,12 @@ import {Formik} from 'formik';
 import * as Yup from 'yup';
 import axios from 'axios';
 import {baseUrl} from '@env';
+import {useSelector, useDispatch} from 'react-redux';
+import {postLogin} from './redux/action';
 
 const Login = ({navigation}) => {
-  const [loading, setLoading] = useState(false);
+  const {loading} = useSelector(state => state.global);
+  const dispatch = useDispatch();
 
   // For validation
   const validationSignIn = Yup.object().shape({
@@ -25,34 +35,8 @@ const Login = ({navigation}) => {
   });
 
   // Login Function
-  const signIn = async values => {
-    setLoading(true);
-    try {
-      const body = {
-        full_name: values.name,
-        email: values.email,
-        password: values.password,
-        phone_number: 'null',
-        address: 'null',
-        image: '',
-      };
-      const res = await axios.post(`${baseUrl}/auth/login`, body, {
-        validateStatus: status => status < 501,
-      });
-      console.log('HASIL RES: ', res);
-
-      if (res.status <= 201) {
-        navigation.navigate('MainApp');
-      } else if (res.data.name === 'wrongEmailPassword') {
-        Alert.alert('Sorry', res.data.message);
-      } else {
-        Alert.alert('Error', 'Tidak bisa Login');
-      }
-    } catch (error) {
-      console.log(error);
-    } finally {
-      setLoading(false);
-    }
+  const signIn = values => {
+    dispatch(postLogin(values));
   };
 
   return (
@@ -73,9 +57,11 @@ const Login = ({navigation}) => {
                 onBlur={handleBlur('email')}
                 value={values.email}
               />
-              {touched.email && errors.email && (
-                <Text style={styles.errorValidation}>{errors.email}</Text>
-              )}
+            </View>
+            {touched.email && errors.email && (
+              <Text style={styles.errorValidation}>{errors.email}</Text>
+            )}
+            <View style={styles.contentContainer}>
               <Input
                 inputName="Buat Password"
                 placeholder="Buat Password"
@@ -85,12 +71,17 @@ const Login = ({navigation}) => {
                 onBlur={handleBlur('password')}
                 value={values.password}
               />
-              {touched.password && errors.password && (
-                <Text style={styles.errorValidation}>{errors.password}</Text>
-              )}
             </View>
+            {touched.password && errors.password && (
+              <Text style={styles.errorValidation}>{errors.password}</Text>
+            )}
+
             <View style={styles.btnLogin}>
-              <Button textButton1={'Masuk'} onPressButton1={handleSubmit} />
+              {loading ? (
+                <ActivityIndicator />
+              ) : (
+                <Button textButton1={'Masuk'} onPressButton1={handleSubmit} />
+              )}
             </View>
             <View style={styles.bottom}>
               <Text style={styles.txtToRegisterLeft}>Belum punya akun?</Text>
@@ -142,7 +133,7 @@ const styles = StyleSheet.create({
     color: COLORS.black,
   },
   errorValidation: {
-    marginLeft: moderateScale(10),
+    marginLeft: moderateScale(15),
     color: 'red',
     marginBottom: 10,
   },

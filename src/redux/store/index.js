@@ -11,6 +11,7 @@ const allMiddlewares = applyMiddleware(logger, thunk);
 const persistConfig = {
   key: 'root',
   storage: AsyncStorage,
+  blacklist: ['global'],
 };
 
 const persistedReducer = persistReducer(persistConfig, allReducers);

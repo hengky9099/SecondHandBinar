@@ -45,7 +45,7 @@ export const postRegister = values => async dispatch => {
 
 export const setRegister = payload => {
   return {
-    type: 'SET_REGISTER',
+    type: 'SET_DATA_REGISTER',
     payload,
   };
 };
