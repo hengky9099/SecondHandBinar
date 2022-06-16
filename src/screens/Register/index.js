@@ -18,10 +18,9 @@ import * as Yup from 'yup';
 import {useDispatch, useSelector} from 'react-redux';
 import {postRegister} from './redux/action';
 
-const dispatch = useDispatch();
-
 const Register = ({navigation}) => {
   const {loading} = useSelector(state => state.global);
+  const dispatch = useDispatch();
 
   // For validation
   const validationSignUp = Yup.object().shape({
