@@ -15,11 +15,13 @@ import {COLORS} from '../../helpers/colors';
 import Button from '../../component/Button';
 import {Formik} from 'formik';
 import * as Yup from 'yup';
-import {baseUrl} from '@env';
-import axios from 'axios';
+import {useDispatch, useSelector} from 'react-redux';
+import {postRegister} from './redux/action';
+
+const dispatch = useDispatch();
 
 const Register = ({navigation}) => {
-  const [loading, setLoading] = useState(false);
+  const {loading} = useSelector(state => state.global);
 
   // For validation
   const validationSignUp = Yup.object().shape({
@@ -32,41 +34,8 @@ const Register = ({navigation}) => {
   });
 
   // Register Function
-  const signUp = async values => {
-    setLoading(true);
-    try {
-      const body = {
-        full_name: values.name,
-        email: values.email,
-        password: values.password,
-        phone_number: 'null',
-        address: 'null',
-        image: '',
-      };
-      const res = await axios.post(`${baseUrl}/auth/register`, body, {
-        validateStatus: status => status < 501,
-      });
-      console.log('HASIL RES: ', res);
-
-      if (res.status <= 201) {
-        Alert.alert('Success!', 'Register anda berhasil, silahkan login', [
-          {
-            text: 'OK',
-            onPress: () => {
-              navigation.navigate('Login');
-            },
-          },
-        ]);
-      } else if (res.data.name === 'badRequestEmail') {
-        Alert.alert('Error', 'Email sudah terdaftar');
-      } else {
-        Alert.alert('Error', 'Tidak bisa register');
-      }
-    } catch (error) {
-      console.log(error);
-    } finally {
-      setLoading(false);
-    }
+  const signUp = values => {
+    dispatch(postRegister(values));
   };
 
   return (
@@ -87,6 +56,8 @@ const Register = ({navigation}) => {
                 onBlur={handleBlur('name')}
                 value={values.name}
               />
+            </View>
+            <View style={styles.contentContainer}>
               <Input
                 inputName="Email"
                 placeholder="Contoh: johndee@gmail.com"
@@ -94,9 +65,12 @@ const Register = ({navigation}) => {
                 onBlur={handleBlur('email')}
                 value={values.email}
               />
-              {touched.email && errors.email && (
-                <Text style={styles.errorValidation}>{errors.email}</Text>
-              )}
+            </View>
+
+            {touched.email && errors.email && (
+              <Text style={styles.errorValidation}>{errors.email}</Text>
+            )}
+            <View style={styles.contentContainer}>
               <Input
                 inputName="Buat Password"
                 placeholder="Buat Password"
@@ -106,10 +80,12 @@ const Register = ({navigation}) => {
                 onBlur={handleBlur('password')}
                 value={values.password}
               />
-              {touched.password && errors.password && (
-                <Text style={styles.errorValidation}>{errors.password}</Text>
-              )}
             </View>
+
+            {touched.password && errors.password && (
+              <Text style={styles.errorValidation}>{errors.password}</Text>
+            )}
+
             <View style={styles.btnDaftar}>
               {loading ? (
                 <ActivityIndicator />
@@ -167,8 +143,8 @@ const styles = StyleSheet.create({
     color: COLORS.black,
   },
   errorValidation: {
-    marginLeft: moderateScale(10),
+    marginLeft: moderateScale(15),
     color: 'red',
-    marginBottom: 10,
+    marginBottom: moderateScale(10),
   },
 });
