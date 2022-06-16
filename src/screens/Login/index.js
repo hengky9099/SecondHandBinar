@@ -6,7 +6,7 @@ import {
   Alert,
   ActivityIndicator,
 } from 'react-native';
-import React, {useState} from 'react';
+import React from 'react';
 import Header from '../../component/Header';
 import Input from '../../component/Input';
 import {moderateScale} from 'react-native-size-matters';
@@ -15,8 +15,6 @@ import {COLORS} from '../../helpers/colors';
 import Button from '../../component/Button';
 import {Formik} from 'formik';
 import * as Yup from 'yup';
-import axios from 'axios';
-import {baseUrl} from '@env';
 import {useSelector, useDispatch} from 'react-redux';
 import {postLogin} from './redux/action';
 

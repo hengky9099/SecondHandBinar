@@ -3,10 +3,9 @@ import {
   Text,
   StyleSheet,
   TouchableOpacity,
-  Alert,
   ActivityIndicator,
 } from 'react-native';
-import React, {useState} from 'react';
+import React from 'react';
 import Header from '../../component/Header';
 import Input from '../../component/Input';
 import {moderateScale} from 'react-native-size-matters';
