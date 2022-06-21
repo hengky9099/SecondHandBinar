@@ -4,6 +4,7 @@ import {COLORS} from '../../helpers/colors';
 import {moderateScale} from 'react-native-size-matters';
 import {navigate} from '../../helpers/navigate';
 import {ButtonCamera, MenuAkun, Poppins} from '../../component';
+import StatusBarCore from '../../component/StatusBarCore';
 
 const Akun = () => {
   const logout = () => navigate('Home');
@@ -11,6 +12,7 @@ const Akun = () => {
 
   return (
     <View style={styles.container}>
+      <StatusBarCore />
       <View style={styles.headerAkun}>
         <Poppins style={styles.textHeaderAkun}>Akun Saya</Poppins>
       </View>
@@ -47,6 +49,7 @@ const styles = StyleSheet.create({
   textHeaderAkun: {
     fontSize: moderateScale(20),
     color: COLORS.black,
+    fontWeight: 'bold',
   },
   toCamera: {
     padding: moderateScale(5),
