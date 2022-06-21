@@ -47,6 +47,9 @@ const DaftarJual = () => {
         typeNotif="Penawaran Product"
         tawaran="Rp. 150000"
         seen={true}
+        button={true}
+        textButton1="Status"
+        textButton2="Hubungi"
         status="Completed"
         urlImage="https://assets.pikiran-rakyat.com/crop/12x16:705x712/x/photo/2021/08/18/2258085066.jpeg"
       />

@@ -4,6 +4,7 @@ import {COLORS} from '../../helpers/colors';
 import {moderateScale} from 'react-native-size-matters';
 import {Poppins} from '../FontComponents';
 import Dot from '../Dot';
+import Button from '../Button';
 
 const ItemNotificationCard = ({
   urlImage,
@@ -14,6 +15,11 @@ const ItemNotificationCard = ({
   date,
   seen = false,
   status,
+  button,
+  textButton1,
+  textButton2,
+  onPressButton1,
+  onPressButton2,
 }) => {
   const styles = StyleSheet.create({
     page: {
@@ -55,6 +61,9 @@ const ItemNotificationCard = ({
     dateContainer: {
       flexDirection: 'row',
     },
+    buttonContainer: {
+      marginTop: moderateScale(10),
+    },
   });
 
   const statusTawaranCheck = (statusTawaran, tawaranPembeli) => {
@@ -95,6 +104,17 @@ const ItemNotificationCard = ({
           </View>
         </View>
       </View>
+      {button ? (
+        <View style={styles.buttonContainer}>
+          <Button
+            numButton={2}
+            textButton1={textButton1}
+            textButton2={textButton2}
+            onPressButton1={onPressButton1}
+            onPressButton2={onPressButton2}
+          />
+        </View>
+      ) : null}
     </View>
   );
 };
