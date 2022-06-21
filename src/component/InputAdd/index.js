@@ -1,4 +1,4 @@
-import {StyleSheet, TouchableOpacity} from 'react-native';
+import {StyleSheet, TouchableOpacity, View} from 'react-native';
 import React from 'react';
 import {moderateScale} from 'react-native-size-matters';
 import {COLORS} from '../../helpers/colors';
@@ -14,13 +14,15 @@ const InputAdd = ({style, product = false, onPress}) => {
     <TouchableOpacity
       onPress={onPress}
       style={[styles.border, {...passedStyles}]}>
-      <Feather
-        size={24}
-        name="plus"
-        color={COLORS.neutral3}
-        style={style.plus}
-      />
-      {product ? <Poppins style={styles.text}>Tambah Produk</Poppins> : null}
+      <View style={styles.plusContainer}>
+        <Feather
+          size={24}
+          name="plus"
+          color={COLORS.neutral3}
+          style={styles.plus}
+        />
+        {product ? <Poppins style={styles.text}>Tambah Produk</Poppins> : null}
+      </View>
     </TouchableOpacity>
   );
 };
@@ -35,14 +37,17 @@ const styles = StyleSheet.create({
     borderColor: COLORS.neutral2,
     borderWidth: moderateScale(1),
     borderStyle: 'dashed',
+    margin: moderateScale(5),
   },
   plus: {
-    alignSelf: 'center',
     marginBottom: moderateScale(8),
   },
   text: {
     fontSize: moderateScale(12),
-    textAlign: 'center',
-    alignSelf: 'center',
+  },
+  plusContainer: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    flex: 1,
   },
 });

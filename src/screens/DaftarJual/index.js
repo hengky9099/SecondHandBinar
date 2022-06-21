@@ -1,11 +1,11 @@
-import {View, Text, StyleSheet} from 'react-native';
+import {Text, StyleSheet, ScrollView} from 'react-native';
 import React from 'react';
 import {IdentityCard, InputAdd, ItemNotificationCard} from '../../component';
 import {moderateScale} from 'react-native-size-matters';
 
 const DaftarJual = () => {
   return (
-    <View>
+    <ScrollView style={styles.page}>
       <Text>DaftarJual</Text>
       <IdentityCard
         urlImage={
@@ -35,6 +35,7 @@ const DaftarJual = () => {
         productName="Jaemin"
         date="20 Apr, 14:04"
         productPrice="Rp. 12728379479"
+        seen={true}
         typeNotif="Penawaran Product"
         tawaran="Rp. 150000"
         urlImage="https://assets.pikiran-rakyat.com/crop/12x16:705x712/x/photo/2021/08/18/2258085066.jpeg"
@@ -49,7 +50,7 @@ const DaftarJual = () => {
         status="Completed"
         urlImage="https://assets.pikiran-rakyat.com/crop/12x16:705x712/x/photo/2021/08/18/2258085066.jpeg"
       />
-    </View>
+    </ScrollView>
   );
 };
 
@@ -59,5 +60,8 @@ const styles = StyleSheet.create({
   input: {
     width: moderateScale(300),
     height: moderateScale(500),
+  },
+  page: {
+    flex: 1,
   },
 });

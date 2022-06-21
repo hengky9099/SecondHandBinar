@@ -3,7 +3,7 @@ import React from 'react';
 import {COLORS} from '../../helpers/colors';
 import {moderateScale} from 'react-native-size-matters';
 import {Poppins} from '../FontComponents';
-import Dot from '../dot';
+import Dot from '../Dot';
 
 const ItemNotificationCard = ({
   urlImage,
@@ -17,16 +17,11 @@ const ItemNotificationCard = ({
 }) => {
   const styles = StyleSheet.create({
     page: {
-      width: moderateScale(328),
-      height: moderateScale(86),
       borderColor: COLORS.neutral1,
-      margin: moderateScale(9),
+      margin: moderateScale(10),
       borderBottomWidth: 1,
+      padding: moderateScale(5),
     },
-    notifContainer: {
-      flexDirection: 'row',
-    },
-    imageContainer: {},
     image: {
       width: moderateScale(48),
       height: moderateScale(48),
@@ -35,13 +30,30 @@ const ItemNotificationCard = ({
     text1: {
       color: COLORS.neutral3,
       fontSize: moderateScale(10),
-      marginBottom: moderateScale(4),
+      marginEnd: moderateScale(5),
     },
     text2: {
       color: COLORS.black,
       fontSize: moderateScale(14),
-      marginBottom: moderateScale(4),
+    },
+    text3: {
+      color: COLORS.black,
+      fontSize: moderateScale(14),
       textDecorationLine: status ? 'line-through' : 'none',
+    },
+    toRow: {
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+    },
+    notifinfoContainer: {
+      marginStart: moderateScale(10),
+      flex: 1,
+    },
+    notifContainer: {
+      flexDirection: 'row',
+    },
+    dateContainer: {
+      flexDirection: 'row',
     },
   });
 
@@ -58,23 +70,29 @@ const ItemNotificationCard = ({
   return (
     <View style={styles.page}>
       <View style={styles.notifContainer}>
-        <View style={styles.imageContainer}>
-          <Image source={{uri: urlImage}} style={styles.image} />
-        </View>
-        <View>
-          <Poppins style={styles.text1}>{typeNotif}</Poppins>
-          <Poppins style={styles.text2}>{productName}</Poppins>
-          <Poppins style={styles.text2}>{productPrice}</Poppins>
-          <Poppins style={styles.text2}>
-            {statusTawaranCheck(status, tawaran)}
-          </Poppins>
-          {status ? (
-            <Poppins>Kamu akan segera dihubungi penjual via WhatsApp</Poppins>
-          ) : null}
-        </View>
-        <View>
-          <Poppins style={styles.text1}>{date}</Poppins>
-          {seen ? null : <Dot color={COLORS.purple4} />}
+        <Image source={{uri: urlImage}} style={styles.image} />
+
+        <View style={styles.notifinfoContainer}>
+          <View style={styles.toRow}>
+            <Poppins style={styles.text1}>{typeNotif}</Poppins>
+            <View style={styles.dateContainer}>
+              <Poppins style={styles.text1}>{date}</Poppins>
+              {seen ? null : <Dot color={COLORS.purple4} />}
+            </View>
+          </View>
+
+          <View>
+            <Poppins style={styles.text2}>{productName}</Poppins>
+            <Poppins style={styles.text3}>{productPrice}</Poppins>
+            <Poppins style={styles.text2}>
+              {statusTawaranCheck(status, tawaran)}
+            </Poppins>
+            {status ? (
+              <Poppins style={styles.text1}>
+                Kamu akan segera dihubungi penjual via WhatsApp
+              </Poppins>
+            ) : null}
+          </View>
         </View>
       </View>
     </View>
