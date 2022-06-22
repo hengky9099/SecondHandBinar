@@ -1,9 +1,9 @@
 on:
   push:
-    branches: [CI/CD]
+    branches: [CI/CD, main, development]
 
 jobs:
-  build-and-send-to-telegram:
+  build-and-upload-artifact:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2

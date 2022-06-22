@@ -1,7 +1,7 @@
 name: CI Progress
 
 on:
-  workflow_dispatch: #manual run
+  workflow_dispatch:
   push:
     branches:
       [
@@ -13,16 +13,13 @@ on:
         register-featured,
       ]
   pull_request:
-    branches: [master]
+    branches: [main]
 
 jobs:
   testing:
-    # runner job will run on
     runs-on: ubuntu-latest
 
-    # merepresentasikan apapun yang ada dalam step
     steps:
-      # cek repositori
       - uses: actions/checkout@v2
 
       - name: instalation modules
@@ -35,7 +32,6 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # cek repositori
       - uses: actions/checkout@v2
 
       - name: instalation modules
