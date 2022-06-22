@@ -1,0 +1,45 @@
+name: CI Progress
+
+on:
+  workflow_dispatch: #manual run
+  push:
+    branches:
+      [
+        CI/CD,
+        components,
+        AkunScreen,
+        development,
+        login-featured,
+        register-featured,
+      ]
+  pull_request:
+    branches: [master]
+
+jobs:
+  testing:
+    # runner job will run on
+    runs-on: ubuntu-latest
+
+    # merepresentasikan apapun yang ada dalam step
+    steps:
+      # cek repositori
+      - uses: actions/checkout@v2
+
+      - name: instalation modules
+        run: yarn
+
+      - name: Unit Testing
+        run: yarn test -u
+
+  check-linter:
+    runs-on: ubuntu-latest
+
+    steps:
+      # cek repositori
+      - uses: actions/checkout@v2
+
+      - name: instalation modules
+        run: yarn
+
+      - name: cleaning code
+        run: yarn lint
