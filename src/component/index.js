@@ -6,6 +6,13 @@ import ItemProductCard from './ItemProductCard';
 import ButtonCamera from './ButtonCamera';
 import StatusBarCore from './StatusBarCore';
 
-
-export {Button, Input, MenuAkun, Header, ItemProductCard, ButtonCamera, StatusBarCore};
+export {
+  Button,
+  Input,
+  MenuAkun,
+  Header,
+  ItemProductCard,
+  ButtonCamera,
+  StatusBarCore,
+};
 export * from './FontComponents';
