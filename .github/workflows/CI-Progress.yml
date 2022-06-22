@@ -26,7 +26,7 @@ jobs:
         run: yarn
 
       - name: Unit Testing
-        run: yarn test -u
+        run: yarn test -u --runInBand --forceExit
 
   check-linter:
     runs-on: ubuntu-latest
