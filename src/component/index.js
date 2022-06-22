@@ -5,7 +5,6 @@ import Header from './Header';
 import ItemProductCard from './ItemProductCard';
 import ButtonCamera from './ButtonCamera';
 import StatusBarCore from './StatusBarCore';
-
 export {
   Button,
   Input,
