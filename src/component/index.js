@@ -6,5 +6,13 @@ import ItemProductCard from './ItemProductCard';
 import SearchBar from './SearchBar';
 import Categories from './Categories';
 
-export {Button, Input, MenuAkun, Header, ItemProductCard, SearchBar, Categories};
+export {
+  Button,
+  Input,
+  MenuAkun,
+  Header,
+  ItemProductCard,
+  SearchBar,
+  Categories,
+};
 export * from './FontComponents';
