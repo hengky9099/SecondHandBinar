@@ -3,8 +3,7 @@ import React from 'react';
 import {COLORS} from '../../helpers/colors';
 import {moderateScale} from 'react-native-size-matters';
 import {navigate} from '../../helpers/navigate';
-import {ButtonCamera, MenuAkun, Poppins} from '../../component';
-import StatusBarCore from '../../component/StatusBarCore';
+import {ButtonCamera, MenuAkun, Poppins, StatusBarCore} from '../../component';
 
 const Akun = () => {
   const logout = () => navigate('Home');
