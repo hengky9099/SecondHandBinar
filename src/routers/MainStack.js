@@ -9,7 +9,7 @@ import {
   Jual,
   Login,
   Notification,
-  NotificationBuyer,
+  // NotificationBuyer,
   Register,
 } from '../screens';
 

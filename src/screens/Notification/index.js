@@ -1,10 +1,8 @@
-import {View, Text, StyleSheet} from 'react-native';
-import React from 'react';
+import {View, StyleSheet} from 'react-native';
+import React, {useEffect, useState} from 'react';
 import {ItemNotificationCard, Poppins} from '../../component';
 import {COLORS} from '../../helpers/colors';
 import {moderateScale} from 'react-native-size-matters';
-import {useState} from 'react';
-import {useEffect} from 'react';
 
 const Notification = () => {
   const [currentDate, setCurrentDate] = useState('');
