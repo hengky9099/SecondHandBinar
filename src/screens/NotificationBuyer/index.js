@@ -6,7 +6,7 @@ import {moderateScale} from 'react-native-size-matters';
 import {useState} from 'react';
 import {useEffect} from 'react';
 
-const Notification = () => {
+const NotificationBuyer = () => {
   const [currentDate, setCurrentDate] = useState('');
 
   useEffect(() => {
@@ -41,25 +41,29 @@ const Notification = () => {
     <View style={styles.container}>
       <View style={styles.header}>
         <Poppins style={styles.textHeader}>Notifikasi</Poppins>
-        <ItemNotificationCard
-          typeNotif={'Penawaran product'}
-          date={currentDate}
-          productName={'Jam Tangan Casio'}
-          productPrice={'Rp 250.000'}
-          tawaran={'Ditawar Rp 200.000'}
-        />
-        <ItemNotificationCard
-          typeNotif={'Berhasil di terbitkan'}
-          date={'19 Apr, 12:00'}
-          productName={'Jam Tangan Casio'}
-          productPrice={'Rp 250.000'}
-        />
+        <View style={styles.containerNotifBar}>
+          <ItemNotificationCard
+            typeNotif={'Penawaran product'}
+            date={currentDate}
+            productName={'Jam Tangan Casio'}
+            productPrice={'Rp 250.000'}
+            tawaran={'Berhasil Ditawar Rp 200.000'}
+            status
+          />
+          <ItemNotificationCard
+            typeNotif={'Penawaran product'}
+            date={'19 Apr, 12:00'}
+            productName={'Jam Tangan Casio'}
+            productPrice={'Rp 250.000'}
+            tawaran={'Ditawar Rp 200.000'}
+          />
+        </View>
       </View>
     </View>
   );
 };
 
-export default Notification;
+export default NotificationBuyer;
 
 const styles = StyleSheet.create({
   container: {
@@ -75,4 +79,5 @@ const styles = StyleSheet.create({
     color: COLORS.black,
     fontWeight: 'bold',
   },
+  containerNotifBar: {marginTop: moderateScale(10)},
 });
