@@ -1,7 +1,7 @@
 import React from 'react';
 import {TouchableOpacity} from 'react-native';
 import {create} from 'react-test-renderer';
-import {Button} from '../../src/component';
+import Button from '../../src/component/Button';
 
 describe('Button Component Testing', () => {
   const ButtonComponent = create(<Button textButton1="Button" />);

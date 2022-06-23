@@ -5,6 +5,10 @@ import Header from './Header';
 import ItemProductCard from './ItemProductCard';
 import ButtonCamera from './ButtonCamera';
 import StatusBarCore from './StatusBarCore';
+import ItemNotificationCard from './ItemNotificationCard';
+import IdentityCard from './IdentityCard';
+import InputAdd from './InputAdd';
+
 export {
   Button,
   Input,
@@ -13,5 +17,8 @@ export {
   ItemProductCard,
   ButtonCamera,
   StatusBarCore,
+  ItemNotificationCard,
+  IdentityCard,
+  InputAdd,
 };
 export * from './FontComponents';

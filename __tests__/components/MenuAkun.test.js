@@ -1,6 +1,7 @@
 import React from 'react';
 import {create} from 'react-test-renderer';
-import {MenuAkun} from '../../src/component';
+import MenuAkun from '../../src/component/MenuAkun';
+
 describe('MenuAkun Component Testing', () => {
   const MenuAkunComponent = create(
     <MenuAkun menuName="Logout" nameIcon="log-out" />,

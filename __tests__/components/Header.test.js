@@ -1,7 +1,7 @@
 import React from 'react';
 import {moderateScale} from 'react-native-size-matters';
 import {create} from 'react-test-renderer';
-import {Header} from '../../src/component';
+import Header from '../../src/component/Header';
 
 describe('Header Component Testing', () => {
   const HeaderComponent = create(
