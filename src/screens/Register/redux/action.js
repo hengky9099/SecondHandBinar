@@ -19,7 +19,7 @@ export const postRegister = values => async dispatch => {
     const res = await axios.post(`${baseUrl}/auth/register`, body, {
       validateStatus: status => status < 501,
     });
-
+    // Send data
     if (res.status <= 201) {
       dispatch(setRegister(res.data));
       console.log('DATA: ', res.data);
