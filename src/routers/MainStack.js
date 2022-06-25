@@ -10,6 +10,7 @@ import {
   Login,
   Notification,
   Register,
+  Profile,
 } from '../screens';
 
 const Stack = createStackNavigator();
@@ -26,6 +27,11 @@ const MainStack = () => {
       <Stack.Screen
         name="Login"
         component={Login}
+        options={{headerShown: false}}
+      />
+      <Stack.Screen
+        name="Profile"
+        component={Profile}
         options={{headerShown: false}}
       />
       <Stack.Screen

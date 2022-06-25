@@ -5,5 +5,6 @@ import Akun from './Akun';
 import DaftarJual from './DaftarJual';
 import Jual from './Jual';
 import Notification from './Notification';
+import Profile from './Profile';
 
-export {Home, Login, Register, Akun, Jual, DaftarJual, Notification};
+export {Home, Login, Register, Akun, Jual, DaftarJual, Notification, Profile};
