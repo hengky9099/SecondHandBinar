@@ -15,6 +15,7 @@ export const postRegister = values => async dispatch => {
       phone_number: 'null',
       address: 'null',
       image: '',
+      city: 'null',
     };
     const res = await axios.post(`${baseUrl}/auth/register`, body, {
       validateStatus: status => status < 501,
