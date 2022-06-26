@@ -25,9 +25,7 @@ const ItemNotificationCard = ({
   const styles = StyleSheet.create({
     page: {
       borderColor: COLORS.neutral1,
-      margin: moderateScale(10),
       borderBottomWidth: 1,
-      padding: moderateScale(5),
     },
     image: {
       width: moderateScale(48),

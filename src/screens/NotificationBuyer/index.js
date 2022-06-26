@@ -4,7 +4,6 @@ import {ItemNotificationCard, Poppins} from '../../component';
 import {COLORS} from '../../helpers/colors';
 import {moderateScale} from 'react-native-size-matters';
 
-
 const NotificationBuyer = () => {
   const [currentDate, setCurrentDate] = useState('');
 
