@@ -3,6 +3,9 @@ import React from 'react';
 import {moderateScale} from 'react-native-size-matters';
 import {COLORS} from '../../helpers/colors';
 import {Poppins} from '../FontComponents';
+import {Dimensions} from 'react-native';
+
+const {width} = Dimensions.get('window');
 
 const Button = ({
   onPressButton1,
@@ -23,7 +26,7 @@ const Button = ({
     return (
       <View style={styles.buttonContainer}>
         <TouchableOpacity style={styles.button11} onPress={onPressButton1}>
-          <Poppins type="Medium" style={styles.buttonText1}>
+          <Poppins type="Medium" style={styles.buttonText11}>
             {textButton1}
           </Poppins>
         </TouchableOpacity>
@@ -45,7 +48,7 @@ const styles = StyleSheet.create({
     color: COLORS.white,
   },
   button1: {
-    width: moderateScale(328),
+    width: width - moderateScale(30),
     height: moderateScale(48),
     borderRadius: moderateScale(16),
     backgroundColor: COLORS.purple4,
@@ -54,16 +57,19 @@ const styles = StyleSheet.create({
     margin: moderateScale(5),
   },
   button2: {
-    borderColor: COLORS.purple4,
     width: moderateScale(156),
+    backgroundColor: COLORS.purple4,
     height: moderateScale(48),
     borderRadius: moderateScale(16),
-    borderWidth: 1,
     alignItems: 'center',
     margin: moderateScale(5),
     justifyContent: 'center',
   },
   buttonText2: {
+    color: COLORS.white,
+    fontSize: moderateScale(14),
+  },
+  buttonText11: {
     color: COLORS.black,
     fontSize: moderateScale(14),
   },
@@ -71,7 +77,8 @@ const styles = StyleSheet.create({
     width: moderateScale(156),
     height: moderateScale(48),
     borderRadius: moderateScale(16),
-    backgroundColor: COLORS.purple4,
+    borderColor: COLORS.purple4,
+    borderWidth: 1,
     alignItems: 'center',
     justifyContent: 'center',
     margin: moderateScale(5),
