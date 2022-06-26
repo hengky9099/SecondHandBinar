@@ -5,6 +5,7 @@ import {moderateScale} from 'react-native-size-matters';
 import {Poppins} from '../FontComponents';
 import Dot from '../Dot';
 import Button from '../Button';
+import {Product} from '../../assets/Image';
 
 const ItemNotificationCard = ({
   urlImage,
@@ -24,9 +25,7 @@ const ItemNotificationCard = ({
   const styles = StyleSheet.create({
     page: {
       borderColor: COLORS.neutral1,
-      margin: moderateScale(10),
       borderBottomWidth: 1,
-      padding: moderateScale(5),
     },
     image: {
       width: moderateScale(48),
@@ -54,9 +53,12 @@ const ItemNotificationCard = ({
     notifinfoContainer: {
       marginStart: moderateScale(10),
       flex: 1,
+      padding: moderateScale(5),
     },
     notifContainer: {
       flexDirection: 'row',
+      marginTop: moderateScale(15),
+      marginBottom: moderateScale(10),
     },
     dateContainer: {
       flexDirection: 'row',
@@ -79,7 +81,10 @@ const ItemNotificationCard = ({
   return (
     <View style={styles.page}>
       <View style={styles.notifContainer}>
-        <Image source={{uri: urlImage}} style={styles.image} />
+        <Image
+          source={urlImage ? {uri: urlImage} : Product}
+          style={styles.image}
+        />
 
         <View style={styles.notifinfoContainer}>
           <View style={styles.toRow}>

@@ -9,6 +9,7 @@ import {
   Jual,
   Login,
   Notification,
+  // NotificationBuyer,
   Register,
 } from '../screens';
 
@@ -17,7 +18,7 @@ const Tab = createBottomTabNavigator();
 
 const MainStack = () => {
   return (
-    <Stack.Navigator initialRouteName="MainApp">
+    <Stack.Navigator initialRouteName="Login">
       <Stack.Screen
         name="Register"
         component={Register}
@@ -59,6 +60,14 @@ const MainApp = () => (
       name="Notification"
       component={Notification}
     />
+    {/* <Tab.Screen
+      options={{
+        tabBarLabel: 'Notification',
+        tabBarIcon: ({color, size}) => iconBar('bell', color, size),
+      }}
+      name="Notification"
+      component={NotificationBuyer}
+    /> */}
     <Tab.Screen
       options={{
         tabBarLabel: 'Jual',

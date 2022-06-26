@@ -4,7 +4,7 @@ import {ItemNotificationCard, Poppins} from '../../component';
 import {COLORS} from '../../helpers/colors';
 import {moderateScale} from 'react-native-size-matters';
 
-const Notification = () => {
+const NotificationBuyer = () => {
   const [currentDate, setCurrentDate] = useState('');
 
   useEffect(() => {
@@ -45,13 +45,15 @@ const Notification = () => {
             date={currentDate}
             productName={'Jam Tangan Casio'}
             productPrice={'Rp 250.000'}
-            tawaran={'Ditawar Rp 200.000'}
+            tawaran={'Berhasil Ditawar Rp 200.000'}
+            status
           />
           <ItemNotificationCard
-            typeNotif={'Berhasil di terbitkan'}
+            typeNotif={'Penawaran product'}
             date={'19 Apr, 12:00'}
             productName={'Jam Tangan Casio'}
             productPrice={'Rp 250.000'}
+            tawaran={'Ditawar Rp 200.000'}
           />
         </View>
       </View>
@@ -59,7 +61,7 @@ const Notification = () => {
   );
 };
 
-export default Notification;
+export default NotificationBuyer;
 
 const styles = StyleSheet.create({
   container: {
