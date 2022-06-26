@@ -1,7 +1,7 @@
 import React from 'react';
 import {TouchableOpacity} from 'react-native';
 import TestRenderer from 'react-test-renderer';
-import {ItemProductCard} from '../../src/component';
+import ItemProductCard from '../../src/component/ItemProductCard';
 
 describe('ItemProductCard Component Testing', () => {
   beforeAll(done => {
