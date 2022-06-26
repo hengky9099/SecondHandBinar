@@ -1,6 +1,6 @@
 import React from 'react';
 import {create} from 'react-test-renderer';
-import {IdentityCard} from '../../src/component';
+import IdentityCard from '../../src/component/IdentityCard';
 
 describe('IdentityCard Component Testing', () => {
   const IdentityCardComponent = create(

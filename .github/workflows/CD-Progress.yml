@@ -1,6 +1,6 @@
 on:
   push:
-    branches: [CI/CD, main, development]
+    branches: [main, development]
   pull_request:
     branches: [main, development]
 
