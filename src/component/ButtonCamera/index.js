@@ -31,6 +31,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     width: moderateScale(120),
     // marginHorizontal: moderateScale(100),
+
     paddingVertical: moderateScale(50),
   },
   imageCamera: {width: moderateScale(30), height: moderateScale(30)},
