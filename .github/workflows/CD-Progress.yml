@@ -1,8 +1,8 @@
 on:
   push:
-    branches: [main, development]
+    branches: [main, developments]
   pull_request:
-    branches: [main, development]
+    branches: [main, developments]
 
 jobs:
   build-and-upload-artifact:
