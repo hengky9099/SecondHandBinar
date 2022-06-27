@@ -4,7 +4,7 @@ import MenuAkun from './MenuAkun';
 import Header from './Header';
 import ItemProductCard from './ItemProductCard';
 import SearchBar from './SearchBar';
-import Categories from './Categories';
+import ButtonFitur from './ButtonFitur';
 
 export {
   Button,
@@ -13,6 +13,6 @@ export {
   Header,
   ItemProductCard,
   SearchBar,
-  Categories,
+  ButtonFitur,
 };
 export * from './FontComponents';
