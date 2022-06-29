@@ -102,7 +102,7 @@ const Profile = ({navigation}) => {
               <Text style={styles.errorValidation}>{errors.handphone}</Text>
             )}
             <View style={styles.btnSimpan}>
-              <Button textButton1={'Simpan'} />
+              <Button textButton1={'Simpan'} onPressButton1={getProfile} />
             </View>
           </View>
         );
