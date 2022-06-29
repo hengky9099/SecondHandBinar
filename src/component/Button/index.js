@@ -13,7 +13,54 @@ const Button = ({
   numButton = 1,
   textButton1,
   textButton2,
+  buttonColor = COLORS.purple4,
 }) => {
+  const styles = StyleSheet.create({
+    buttonText1: {
+      fontSize: moderateScale(14),
+      color: COLORS.white,
+    },
+    button1: {
+      width: width - moderateScale(30),
+      height: moderateScale(48),
+      borderRadius: moderateScale(16),
+      backgroundColor: buttonColor,
+      alignItems: 'center',
+      justifyContent: 'center',
+      margin: moderateScale(5),
+    },
+    button2: {
+      width: moderateScale(156),
+      backgroundColor: COLORS.purple4,
+      height: moderateScale(48),
+      borderRadius: moderateScale(16),
+      alignItems: 'center',
+      margin: moderateScale(5),
+      justifyContent: 'center',
+    },
+    buttonText2: {
+      color: COLORS.white,
+      fontSize: moderateScale(14),
+    },
+    buttonText11: {
+      color: COLORS.black,
+      fontSize: moderateScale(14),
+    },
+    button11: {
+      width: moderateScale(156),
+      height: moderateScale(48),
+      borderRadius: moderateScale(16),
+      borderColor: COLORS.purple4,
+      borderWidth: 1,
+      alignItems: 'center',
+      justifyContent: 'center',
+      margin: moderateScale(5),
+    },
+    buttonContainer: {
+      flexDirection: 'row',
+    },
+  });
+
   if (numButton === 1) {
     return (
       <TouchableOpacity style={styles.button1} onPress={onPressButton1}>
@@ -41,49 +88,3 @@ const Button = ({
 };
 
 export default Button;
-
-const styles = StyleSheet.create({
-  buttonText1: {
-    fontSize: moderateScale(14),
-    color: COLORS.white,
-  },
-  button1: {
-    width: width - moderateScale(30),
-    height: moderateScale(48),
-    borderRadius: moderateScale(16),
-    backgroundColor: COLORS.purple4,
-    alignItems: 'center',
-    justifyContent: 'center',
-    margin: moderateScale(5),
-  },
-  button2: {
-    width: moderateScale(156),
-    backgroundColor: COLORS.purple4,
-    height: moderateScale(48),
-    borderRadius: moderateScale(16),
-    alignItems: 'center',
-    margin: moderateScale(5),
-    justifyContent: 'center',
-  },
-  buttonText2: {
-    color: COLORS.white,
-    fontSize: moderateScale(14),
-  },
-  buttonText11: {
-    color: COLORS.black,
-    fontSize: moderateScale(14),
-  },
-  button11: {
-    width: moderateScale(156),
-    height: moderateScale(48),
-    borderRadius: moderateScale(16),
-    borderColor: COLORS.purple4,
-    borderWidth: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-    margin: moderateScale(5),
-  },
-  buttonContainer: {
-    flexDirection: 'row',
-  },
-});

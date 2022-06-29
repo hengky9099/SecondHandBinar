@@ -1,14 +1,13 @@
 import {Image, StyleSheet, View} from 'react-native';
-import React, {useState} from 'react';
+import React from 'react';
 import {Poppins} from '../FontComponents';
 import {moderateScale} from 'react-native-size-matters';
 import {COLORS} from '../../helpers/colors';
 import IdentityCard from '../IdentityCard';
 import Button from '../Button';
-import RadioGroup from 'react-native-radio-buttons-group';
 import Input from '../Input';
 import RBSheet from 'react-native-raw-bottom-sheet';
-import {useRef} from 'react';
+import {RadioButton} from 'react-native-paper';
 
 const BottomSheet = ({
   firstText,
@@ -22,52 +21,14 @@ const BottomSheet = ({
   productPrice,
   bargainPrice,
   onPressButton,
+  refBottomSheet,
+  onChangeText,
+  value,
+  onValueChange,
 }) => {
-  const radioButtonsData = [
-    {
-      id: '1',
-      label: 'Berhasil terjual',
-      value: 'accepted', //ganti
-      description: 'Kamu telah sepakat menjual produk ini kepada pembeli',
-      labelStyle: styles.statusTitle,
-      descriptionStyle: styles.statusText,
-      color: COLORS.purple4,
-      borderColor: COLORS.neutral2,
-    },
-    {
-      id: '2',
-      label: 'Batalkan transaksi',
-      value: 'reject', //ganti
-      description: 'Kamu membatalkan transaksi produk ini dengan pembeli',
-      labelStyle: styles.statusTitle,
-      descriptionStyle: styles.statusText,
-      color: COLORS.purple4,
-      borderColor: COLORS.neutral2,
-    },
-  ];
-
-  const [radioButtons, setRadioButtons] = useState(radioButtonsData);
-  const [price, setPrice] = useState('');
-  const refRBSheet = useRef();
-
-  const onPressRadioButton = radioButtonsArray => {
-    setRadioButtons(radioButtonsArray);
-  };
-
   const styles = StyleSheet.create({
     page: {
-      borderTopLeftRadius: moderateScale(16),
-      borderTopRightRadius: moderateScale(16),
-      height: moderateScale(354),
-    },
-    retangle: {
-      borderRadius: moderateScale(20),
-      width: moderateScale(60),
-      height: moderateScale(6),
-      backgroundColor: COLORS.gray,
-    },
-    retangleContainer: {
-      alignItems: 'center',
+      flex: 1,
     },
     firstText: {
       fontSize: moderateScale(14),
@@ -112,6 +73,23 @@ const BottomSheet = ({
       fontSize: moderateScale(12),
       color: COLORS.black,
     },
+    containerRadio: {
+      alignSelf: 'flex-start',
+    },
+    toRow: {
+      flexDirection: 'row',
+      alignItems: 'center',
+    },
+    labelStyle: {
+      fontSize: moderateScale(14),
+      color: COLORS.neutral5,
+    },
+    descriptionStyle: {
+      fontSize: moderateScale(14),
+      color: COLORS.neutral3,
+      marginStart: moderateScale(10),
+      marginBottom: moderateScale(16),
+    },
   });
 
   const componentView = typeView => {
@@ -150,11 +128,35 @@ const BottomSheet = ({
     } else if (typeView === 'perbaharuiStatus') {
       return (
         <View>
-          <RadioGroup
-            radioButtons={radioButtons}
-            onPress={onPressRadioButton}
-          />
-          <Button onPressButton1={onPressButton} textButton1="Kirim" />
+          <RadioButton.Group onValueChange={onValueChange} value={value}>
+            <View style={styles.toRow}>
+              <RadioButton
+                value="accepted"
+                color={COLORS.purple4}
+                uncheckedColor={COLORS.neutral2}
+              />
+              <Poppins style={styles.labelStyle}>Berhasil terjual</Poppins>
+            </View>
+            <Poppins style={styles.descriptionStyle}>
+              Kamu telah sepakat menjual produk ini kepada pembeli
+            </Poppins>
+            <View style={styles.toRow}>
+              <RadioButton
+                value="rejected"
+                color={COLORS.purple4}
+                uncheckedColor={COLORS.neutral2}
+              />
+              <Poppins style={styles.labelStyle}>Batalkan transaksi</Poppins>
+            </View>
+            <Poppins style={styles.descriptionStyle}>
+              Kamu membatalkan transaksi produk ini dengan pembeli
+            </Poppins>
+          </RadioButton.Group>
+          {value !== false ? (
+            <Button onPressButton1={onPressButton} textButton1="Hallo" />
+          ) : (
+            <Button buttonColor={COLORS.gray} textButton1="Kirim" />
+          )}
         </View>
       );
     } else if (typeView === 'tawaran') {
@@ -174,8 +176,8 @@ const BottomSheet = ({
           </View>
           <Poppins style={styles.text}>Harga Tawar</Poppins>
           <Input
-            onChangeText={value => setPrice(value)}
-            value={price}
+            onChangeText={onChangeText}
+            value={value}
             placeholder="Rp 0,00"
             placeholderTextColor={COLORS.neutral3}
           />
@@ -188,20 +190,26 @@ const BottomSheet = ({
   return (
     <View style={styles.page}>
       <RBSheet
-        ref={refRBSheet}
+        ref={refBottomSheet}
         closeOnDragDown={true}
         closeOnPressMask={false}
         customStyles={{
           wrapper: {
-            backgroundColor: 'transparent',
+            backgroundColor: '#00000080',
           },
           draggableIcon: {
-            backgroundColor: '#000',
+            backgroundColor: COLORS.gray,
+            borderRadius: moderateScale(20),
+            width: moderateScale(60),
+            height: moderateScale(6),
+          },
+          container: {
+            height: moderateScale(354),
+            borderTopLeftRadius: moderateScale(16),
+            borderTopRightRadius: moderateScale(16),
+            padding: moderateScale(15),
           },
         }}>
-        <View style={styles.retangleContainer}>
-          <View style={styles.retangle} />
-        </View>
         <Poppins type="Medium" style={styles.firstText}>
           {firstText}
         </Poppins>
