@@ -7,6 +7,8 @@ import IdentityCard from '../IdentityCard';
 import Button from '../Button';
 import RadioGroup from 'react-native-radio-buttons-group';
 import Input from '../Input';
+import RBSheet from 'react-native-raw-bottom-sheet';
+import {useRef} from 'react';
 
 const BottomSheet = ({
   firstText,
@@ -46,6 +48,7 @@ const BottomSheet = ({
 
   const [radioButtons, setRadioButtons] = useState(radioButtonsData);
   const [price, setPrice] = useState('');
+  const refRBSheet = useRef();
 
   const onPressRadioButton = radioButtonsArray => {
     setRadioButtons(radioButtonsArray);
@@ -184,14 +187,27 @@ const BottomSheet = ({
 
   return (
     <View style={styles.page}>
-      <View style={styles.retangleContainer}>
-        <View style={styles.retangle} />
-      </View>
-      <Poppins type="Medium" style={styles.firstText}>
-        {firstText}
-      </Poppins>
-      {secondText ? <Poppins>{secondText}</Poppins> : null}
-      {componentView(type)}
+      <RBSheet
+        ref={refRBSheet}
+        closeOnDragDown={true}
+        closeOnPressMask={false}
+        customStyles={{
+          wrapper: {
+            backgroundColor: 'transparent',
+          },
+          draggableIcon: {
+            backgroundColor: '#000',
+          },
+        }}>
+        <View style={styles.retangleContainer}>
+          <View style={styles.retangle} />
+        </View>
+        <Poppins type="Medium" style={styles.firstText}>
+          {firstText}
+        </Poppins>
+        {secondText ? <Poppins>{secondText}</Poppins> : null}
+        {componentView(type)}
+      </RBSheet>
     </View>
   );
 };
