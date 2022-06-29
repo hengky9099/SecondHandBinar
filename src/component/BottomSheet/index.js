@@ -3,7 +3,6 @@ import React from 'react';
 import {Poppins} from '../FontComponents';
 import {moderateScale} from 'react-native-size-matters';
 import {COLORS} from '../../helpers/colors';
-import IdentityCard from '../IdentityCard';
 import Button from '../Button';
 import Input from '../Input';
 import RBSheet from 'react-native-raw-bottom-sheet';
@@ -68,6 +67,7 @@ const BottomSheet = ({
       borderColor: COLORS.neutral1,
       borderRadius: moderateScale(16),
       borderWidth: 1,
+      marginTop: moderateScale(16),
     },
     text: {
       fontSize: moderateScale(12),
@@ -90,33 +90,78 @@ const BottomSheet = ({
       marginStart: moderateScale(10),
       marginBottom: moderateScale(16),
     },
+    pageProductMatch: {
+      marginHorizontal: moderateScale(10),
+      marginTop: moderateScale(16),
+      borderWidth: moderateScale(1),
+      borderColor: COLORS.neutral1,
+      borderRadius: moderateScale(16),
+      padding: moderateScale(16),
+      marginBottom: moderateScale(15),
+    },
+    subBab: {
+      alignItems: 'center',
+      marginBottom: moderateScale(10),
+    },
+    text1: {
+      fontSize: moderateScale(14),
+      color: COLORS.black,
+    },
+    text2: {
+      fontSize: moderateScale(10),
+      color: COLORS.neutral3,
+    },
+    image: {
+      width: moderateScale(48),
+      height: moderateScale(48),
+      borderRadius: moderateScale(12),
+    },
+    textContainer: {
+      alignItems: 'flex-start',
+      marginStart: moderateScale(10),
+    },
+    pageBuyerIdentity: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      marginBottom: moderateScale(16),
+    },
   });
 
   const componentView = typeView => {
     if (typeView === 'productMatch') {
       return (
         <View>
-          <Poppins type="Medium" style={styles.firstText}>
-            Product Match
-          </Poppins>
-          <IdentityCard
-            urlImage={urlImageBuyer}
-            nama={buyerName}
-            kota={buyerCity}
-          />
-          <View style={styles.productContainer}>
-            <Image
-              source={{uri: urlImageProduct}}
-              style={styles.productImage}
-            />
-            <View>
-              <Poppins style={styles.firstText}>{productName}</Poppins>
-              <Poppins style={styles.productPrice}>{productPrice}</Poppins>
-              {bargainPrice ? (
-                <Poppins style={styles.firstText}>
-                  `Ditawar ${bargainPrice}`
+          <View style={styles.pageProductMatch}>
+            <View style={styles.subBab}>
+              <Poppins type="Medium" style={styles.firstText}>
+                Product Match
+              </Poppins>
+            </View>
+            <View style={styles.pageBuyerIdentity}>
+              <View>
+                <Image style={styles.image} source={{uri: urlImageBuyer}} />
+              </View>
+              <View style={styles.textContainer}>
+                <Poppins type="Medium" style={styles.text1}>
+                  {buyerName}
                 </Poppins>
-              ) : null}
+                <Poppins style={styles.text2}>{buyerCity}</Poppins>
+              </View>
+            </View>
+            <View style={styles.productContainer}>
+              <Image
+                source={{uri: urlImageProduct}}
+                style={styles.productImage}
+              />
+              <View>
+                <Poppins style={styles.firstText}>{productName}</Poppins>
+                <Poppins style={styles.productPrice}>{productPrice}</Poppins>
+                {bargainPrice ? (
+                  <Poppins style={styles.firstText}>
+                    Ditawar {bargainPrice}
+                  </Poppins>
+                ) : null}
+              </View>
             </View>
           </View>
           <Button
@@ -174,12 +219,13 @@ const BottomSheet = ({
               <Poppins style={styles.statusTitle}>{productPrice}</Poppins>
             </View>
           </View>
-          <Poppins style={styles.text}>Harga Tawar</Poppins>
           <Input
             onChangeText={onChangeText}
             value={value}
             placeholder="Rp 0,00"
             placeholderTextColor={COLORS.neutral3}
+            inputName="Harga Tawar"
+            styleInputName={styles.text}
           />
           <Button onPressButton1={onPressButton} textButton1="Kirim" />
         </View>
@@ -204,7 +250,7 @@ const BottomSheet = ({
             height: moderateScale(6),
           },
           container: {
-            height: moderateScale(354),
+            height: moderateScale(438),
             borderTopLeftRadius: moderateScale(16),
             borderTopRightRadius: moderateScale(16),
             padding: moderateScale(15),

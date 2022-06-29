@@ -7,7 +7,6 @@ import ItemNotificationCard from './ItemNotificationCard';
 import IdentityCard from './IdentityCard';
 import InputAdd from './InputAdd';
 import BottomSheet from './BottomSheet';
-import Toast from './Toast';
 
 export {
   Button,
@@ -19,6 +18,5 @@ export {
   IdentityCard,
   InputAdd,
   BottomSheet,
-  Toast,
 };
 export * from './FontComponents';
