@@ -1,14 +1,21 @@
 import React from 'react';
 import {moderateScale} from 'react-native-size-matters';
-import {create} from 'react-test-renderer';
-import {Header} from '../../src/component';
+import TestRenderer from 'react-test-renderer';
+import Header from '../../src/component/Header';
 
 describe('Header Component Testing', () => {
-  const HeaderComponent = create(
+  beforeAll(done => {
+    jest.useFakeTimers();
+    done();
+  });
+
+  const HeaderComponent = TestRenderer.create(
     <Header headerName="Hallo" backArrowBackground={true} />,
   );
-  jest.useFakeTimers();
+
   test('should render correctly', () => {
+    jest.useFakeTimers();
+
     const element = HeaderComponent.root.findByType('View');
     expect(element).toBeTruthy();
     expect(element.props.children[0].props.style.backgroundColor).toEqual(
@@ -20,5 +27,10 @@ describe('Header Component Testing', () => {
     expect(element.props.children[1].props.children.props.children).toEqual(
       'Hallo',
     );
+  });
+
+  afterAll(done => {
+    jest.useFakeTimers();
+    done();
   });
 });

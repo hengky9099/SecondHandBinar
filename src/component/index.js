@@ -5,6 +5,11 @@ import Header from './Header';
 import ItemProductCard from './ItemProductCard';
 import SearchBar from './SearchBar';
 import ButtonFitur from './ButtonFitur';
+import ButtonCamera from './ButtonCamera';
+import StatusBarCore from './StatusBarCore';
+import ItemNotificationCard from './ItemNotificationCard';
+import IdentityCard from './IdentityCard';
+import InputAdd from './InputAdd';
 
 export {
   Button,
@@ -14,5 +19,10 @@ export {
   ItemProductCard,
   SearchBar,
   ButtonFitur,
+  ButtonCamera,
+  StatusBarCore,
+  ItemNotificationCard,
+  IdentityCard,
+  InputAdd,
 };
 export * from './FontComponents';
