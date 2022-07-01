@@ -4,18 +4,16 @@ import {
   StyleSheet,
   TouchableOpacity,
   ActivityIndicator,
+  ScrollView,
 } from 'react-native';
 import React from 'react';
-import Header from '../../component/Header';
-import Input from '../../component/Input';
 import {moderateScale} from 'react-native-size-matters';
-import {Poppins} from '../../component/FontComponents';
 import {COLORS} from '../../helpers/colors';
-import Button from '../../component/Button';
 import {Formik} from 'formik';
 import * as Yup from 'yup';
 import {useSelector, useDispatch} from 'react-redux';
 import {postLogin} from './redux/action';
+import {Button, Header, Input, Poppins} from '../../component';
 
 const Login = ({navigation}) => {
   const {loading} = useSelector(state => state.global);
@@ -43,7 +41,7 @@ const Login = ({navigation}) => {
       onSubmit={signIn}>
       {({handleChange, handleSubmit, values, handleBlur, errors, touched}) => {
         return (
-          <View flex={1}>
+          <ScrollView flex={1}>
             <Header onPressBack={() => navigation.goBack()} />
             <Poppins style={styles.title}>Masuk</Poppins>
             <View style={styles.contentContainer}>
@@ -67,6 +65,7 @@ const Login = ({navigation}) => {
                 onChangeText={handleChange('password')}
                 onBlur={handleBlur('password')}
                 value={values.password}
+                styleInput={styles.inputPassword}
               />
             </View>
             {touched.password && errors.password && (
@@ -77,7 +76,7 @@ const Login = ({navigation}) => {
               {loading ? (
                 <ActivityIndicator />
               ) : (
-                <Button textButton1={'Masuk'} onPressButton1={handleSubmit} />
+                <Button textButton1="Masuk" onPressButton1={handleSubmit} />
               )}
             </View>
             <View style={styles.bottom}>
@@ -88,7 +87,7 @@ const Login = ({navigation}) => {
                 <Text style={styles.txtToRegisterRight}>Daftar di sini</Text>
               </TouchableOpacity>
             </View>
-          </View>
+          </ScrollView>
         );
       }}
     </Formik>
@@ -99,7 +98,7 @@ export default Login;
 
 const styles = StyleSheet.create({
   contentContainer: {
-    alignItems: 'center',
+    marginHorizontal: moderateScale(10),
   },
   title: {
     marginHorizontal: moderateScale(10),
@@ -109,7 +108,6 @@ const styles = StyleSheet.create({
     color: COLORS.black,
   },
   btnLogin: {
-    alignItems: 'center',
     marginVertical: moderateScale(30),
   },
   bottom: {
@@ -133,5 +131,8 @@ const styles = StyleSheet.create({
     marginLeft: moderateScale(15),
     color: 'red',
     marginBottom: 10,
+  },
+  inputPassword: {
+    width: moderateScale(310),
   },
 });

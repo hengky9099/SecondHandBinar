@@ -17,7 +17,7 @@ const Tab = createBottomTabNavigator();
 
 const MainStack = () => {
   return (
-    <Stack.Navigator initialRouteName="MainApp">
+    <Stack.Navigator initialRouteName="Login">
       <Stack.Screen
         name="Register"
         component={Register}

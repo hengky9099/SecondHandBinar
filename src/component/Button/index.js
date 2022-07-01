@@ -3,9 +3,6 @@ import React from 'react';
 import {moderateScale} from 'react-native-size-matters';
 import {COLORS} from '../../helpers/colors';
 import {Poppins} from '../FontComponents';
-import {Dimensions} from 'react-native';
-
-const {width} = Dimensions.get('window');
 
 const Button = ({
   onPressButton1,
@@ -21,13 +18,12 @@ const Button = ({
       color: COLORS.white,
     },
     button1: {
-      width: width - moderateScale(30),
       height: moderateScale(48),
       borderRadius: moderateScale(16),
       backgroundColor: buttonColor,
       alignItems: 'center',
       justifyContent: 'center',
-      margin: moderateScale(5),
+      marginHorizontal: moderateScale(15),
     },
     button2: {
       width: moderateScale(156),
