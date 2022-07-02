@@ -12,6 +12,12 @@ import {
   // NotificationBuyer,
   Register,
 } from '../screens';
+import {
+  Product,
+  Products,
+  Diminati,
+  Diminatis,
+} from '../screens/DaftarJual/widget';
 
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -32,6 +38,26 @@ const MainStack = () => {
       <Stack.Screen
         name="MainApp"
         component={MainApp}
+        options={{headerShown: false}}
+      />
+      <Stack.Screen
+        name="Diminati"
+        component={Diminati}
+        options={{headerShown: false}}
+      />
+      <Stack.Screen
+        name="Diminatis"
+        component={Diminatis}
+        options={{headerShown: false}}
+      />
+      <Stack.Screen
+        name="Product"
+        component={Products}
+        options={{headerShown: false}}
+      />
+      <Stack.Screen
+        name="Products"
+        component={Product}
         options={{headerShown: false}}
       />
     </Stack.Navigator>
