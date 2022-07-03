@@ -1,21 +1,14 @@
-import {
-  StyleSheet,
-  View,
-  ScrollView,
-  TouchableOpacity,
-  Dimensions,
-  FlatList,
-  SafeAreaView,
-} from 'react-native';
+import {View, ScrollView, FlatList, SafeAreaView} from 'react-native';
 import React from 'react';
 import {COLORS} from '../../helpers/colors';
-import {moderateScale} from 'react-native-size-matters';
-import {IdentityCard, Poppins, StatusBarCore} from '../../component';
-
-import Feather from 'react-native-vector-icons/Feather';
+import {
+  ButtonFitur,
+  IdentityCard,
+  Poppins,
+  StatusBarCore,
+} from '../../component';
 import {useNavigation} from '@react-navigation/native';
-
-const {width} = Dimensions.get('window');
+import {styles} from './styles';
 
 const DaftarJual = () => {
   const navigation = useNavigation();
@@ -33,135 +26,45 @@ const DaftarJual = () => {
           urlImage={'https://avatars.githubusercontent.com/u/62233239?v=4'}
           typeIdentity={'Penjual'}
         />
-        <ScrollView horizontal={true}>
-          <View
-            style={{
-              marginHorizontal: moderateScale(10),
-              width: width - moderateScale(230),
-              height: moderateScale(44),
-              borderRadius: moderateScale(16),
-              backgroundColor: COLORS.purple4,
-            }}>
-            <TouchableOpacity
-              onPress={() => navigation.navigate('Product')}
-              style={{
-                paddingVertical: moderateScale(10),
-                paddingHorizontal: moderateScale(20),
-              }}>
-              <Poppins
-                type="Medium"
-                style={{
-                  fontSize: moderateScale(17),
-                  color: COLORS.white,
-                }}>
-                <Feather name={'box'} size={18} />
-                {' Product'}
-              </Poppins>
-            </TouchableOpacity>
+        <ScrollView horizontal={true} style={styles.btnFiturContainer}>
+          <View style={styles.btnContainer}>
+            <ButtonFitur
+              onPressButton={() => navigation.navigate('Product')}
+              nameFitur={'Product'}
+              nameIcon={'box'}
+            />
           </View>
 
-          <View
-            style={{
-              marginHorizontal: moderateScale(10),
-              width: width - moderateScale(230),
-              height: moderateScale(44),
-              borderRadius: moderateScale(16),
-              backgroundColor: COLORS.purple4,
-            }}>
-            <TouchableOpacity
-              onPress={() => navigation.navigate('Diminati')}
-              style={{
-                paddingVertical: moderateScale(10),
-                paddingHorizontal: moderateScale(20),
-              }}>
-              <Poppins
-                type="Medium"
-                style={{
-                  fontSize: moderateScale(17),
-                  color: COLORS.white,
-                }}>
-                <Feather name={'heart'} size={18} />
-                {' Diminati'}
-              </Poppins>
-            </TouchableOpacity>
+          <View style={styles.btnContainer}>
+            <ButtonFitur
+              onPressButton={() => navigation.navigate('Diminati')}
+              nameFitur={'Diminati'}
+              nameIcon={'heart'}
+            />
           </View>
 
-          <View
-            style={{
-              marginHorizontal: moderateScale(10),
-              width: width - moderateScale(230),
-              height: moderateScale(44),
-              borderRadius: moderateScale(16),
-              backgroundColor: COLORS.purple4,
-            }}>
-            <TouchableOpacity
-              onPress={() => navigation.navigate('DaftarJual')}
-              style={{
-                paddingVertical: moderateScale(10),
-                paddingHorizontal: moderateScale(20),
-              }}>
-              <Poppins
-                type="Medium"
-                style={{
-                  fontSize: moderateScale(17),
-                  color: COLORS.white,
-                }}>
-                <Feather name={'dollar-sign'} size={18} />
-                {' Terjual'}
-              </Poppins>
-            </TouchableOpacity>
+          <View style={styles.btnContainer}>
+            <ButtonFitur
+              onPressButton={() => navigation.navigate('DaftarJual')}
+              nameFitur={'Terjual'}
+              nameIcon={'dollar-sign'}
+            />
           </View>
 
-          <View
-            style={{
-              marginHorizontal: moderateScale(10),
-              width: width - moderateScale(230),
-              height: moderateScale(44),
-              borderRadius: moderateScale(16),
-              backgroundColor: COLORS.purple4,
-            }}>
-            <TouchableOpacity
-              onPress={() => navigation.navigate('Products')}
-              style={{
-                paddingVertical: moderateScale(10),
-                paddingHorizontal: moderateScale(20),
-              }}>
-              <Poppins
-                type="Medium"
-                style={{
-                  fontSize: moderateScale(17),
-                  color: COLORS.white,
-                }}>
-                <Feather name={'box'} size={18} />
-                {' Products'}
-              </Poppins>
-            </TouchableOpacity>
+          <View style={styles.btnContainer}>
+            <ButtonFitur
+              onPressButton={() => navigation.navigate('Products')}
+              nameFitur={'Products'}
+              nameIcon={'box'}
+            />
           </View>
 
-          <View
-            style={{
-              marginHorizontal: moderateScale(10),
-              width: width - moderateScale(230),
-              height: moderateScale(44),
-              borderRadius: moderateScale(16),
-              backgroundColor: COLORS.purple4,
-            }}>
-            <TouchableOpacity
-              onPress={() => navigation.navigate('Diminatis')}
-              style={{
-                paddingVertical: moderateScale(10),
-                paddingHorizontal: moderateScale(20),
-              }}>
-              <Poppins
-                type="Medium"
-                style={{
-                  fontSize: moderateScale(16),
-                  color: COLORS.white,
-                }}>
-                <Feather name={'heart'} size={17} />
-                {' Diminatis'}
-              </Poppins>
-            </TouchableOpacity>
+          <View style={styles.btnContainer}>
+            <ButtonFitur
+              onPressButton={() => navigation.navigate('Diminatis')}
+              nameFitur={'Diminatis'}
+              nameIcon={'heart'}
+            />
           </View>
         </ScrollView>
       </SafeAreaView>
@@ -179,19 +82,3 @@ const DaftarJual = () => {
 };
 
 export default DaftarJual;
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: COLORS.white,
-  },
-  headerDJ: {
-    paddingHorizontal: moderateScale(15),
-    paddingVertical: moderateScale(10),
-  },
-  textHeaderDJ: {
-    fontSize: moderateScale(20),
-    color: COLORS.black,
-    fontWeight: 'bold',
-  },
-});
