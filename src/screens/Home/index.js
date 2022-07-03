@@ -21,7 +21,13 @@ const Home = () => {
         colors={['#ffe9c9', '#ffe9c9', '#ffffff']}
         style={styles.topNav}>
         <View style={styles.topNavContainer}>
-          <SearchBar />
+          <SearchBar
+            style={styles.searchBar}
+            placeholder="Cari di Second chance"
+            inputStyle={{
+              size: 12,
+            }}
+          />
           <View style={styles.topNavLeft}>
             <Text
               style={{
@@ -92,11 +98,16 @@ const Home = () => {
         horizontal={true}
         showsHorizontalScrollIndicator={false}
         style={styles.scroll}>
-        <ItemProductCard />
-        <ItemProductCard />
-        <ItemProductCard />
-        <ItemProductCard />
-        <ItemProductCard />
+        <ItemProductCard
+          productName={'Jam Tangan Casio'}
+          productType={'Aksesoris'}
+          productPrice={'Rp 250.000'}
+        />
+        <ItemProductCard
+          productName={'Jam Tangan Casio'}
+          productType={'Aksesoris'}
+          productPrice={'Rp 250.000'}
+        />
       </ScrollView>
     </View>
   );
@@ -154,7 +165,7 @@ const styles = StyleSheet.create({
   scroll: {
     marginHorizontal: 20,
     marginVertical: 20,
-    marginBottom: 55,
-    // backgroundColor: 'black',
+    marginBottom: 30,
+    // backgroundColor: 'green',
   },
 });

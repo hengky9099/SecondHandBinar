@@ -1,7 +1,14 @@
+/* eslint-disable react-native/no-inline-styles */
 import React, {Component} from 'react';
-import {ScrollView, Text, TouchableOpacity, View} from 'react-native';
-
-const categories = ['Semua', 'Hobi', 'Kendaraan', 'Fashion', 'Kithcen'];
+import {
+  ScrollView,
+  Text,
+  TouchableOpacity,
+  View,
+  StyleSheet,
+} from 'react-native';
+import Icon from 'react-native-vector-icons/Feather';
+const categories = ['Semua', 'Hobi', 'Kendaraan'];
 
 class Categories extends Component {
   state = {};
@@ -16,19 +23,9 @@ class Categories extends Component {
                 category,
               })
             }>
-            <View>
-              <Text
-                // eslint-disable-next-line react-native/no-inline-styles
-                style={{
-                  padding: 10,
-                  backgroundColor: '#E2D4F0',
-                  fontSize: 14,
-                  margin: 5,
-                  height: 44,
-                  borderRadius: 10,
-                }}>
-                {category}
-              </Text>
+            <View style={styles.barcategories}>
+              <Icon name="search" size={15} style={{marginTop: 4}} />
+              <Text>{category}</Text>
             </View>
           </TouchableOpacity>
         ))}
@@ -38,3 +35,17 @@ class Categories extends Component {
 }
 
 export default Categories;
+
+const styles = StyleSheet.create({
+  barcategories: {
+    // backgroundColor: 'black',
+    padding: 10,
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    backgroundColor: '#E2D4F0',
+    fontSize: 14,
+    margin: 5,
+    height: 44,
+    borderRadius: 10,
+  },
+});
