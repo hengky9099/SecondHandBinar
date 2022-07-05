@@ -1,3 +1,4 @@
+// eslint-disable-line react-native/no-inline-styles
 import {SafeAreaView, ScrollView, View} from 'react-native';
 import React from 'react';
 import {moderateScale} from 'react-native-size-matters';

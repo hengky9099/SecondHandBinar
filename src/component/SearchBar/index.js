@@ -1,8 +1,8 @@
-import {View, TextInput, Dimensions, StyleSheet, Keyboard} from 'react-native';
+import {View, TextInput, Dimensions, StyleSheet} from 'react-native';
 import React from 'react';
 import Feather from 'react-native-vector-icons/Feather';
 import {moderateScale} from 'react-native-size-matters';
-import Entypo from 'react-native-vector-icons/Entypo';
+
 import {COLORS} from '../../helpers/colors';
 
 const {width} = Dimensions.get('window');
@@ -40,7 +40,6 @@ export default SearchBar;
 
 const styles = StyleSheet.create({
   container: {
-    justifyContent: 'center',
     height: moderateScale(48),
     width: width - moderateScale(30),
     borderRadius: moderateScale(20),
