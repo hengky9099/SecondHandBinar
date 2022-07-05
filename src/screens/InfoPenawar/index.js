@@ -21,10 +21,6 @@ const InfoPenawar = () => {
 
   const [datas, setDatas] = useState(data);
 
-  useEffect(() => {
-    setDatas(data);
-  }, [data]);
-
   const data = useMemo(() => {
     return [
       {
@@ -64,6 +60,10 @@ const InfoPenawar = () => {
       },
     ];
   }, []);
+
+  useEffect(() => {
+    setDatas(data);
+  }, [data]);
 
   const onPressButtonCard = (item, index) => {
     const newData = data.map(newItem => {
