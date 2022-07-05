@@ -1,10 +1,4 @@
-import {
-  FlatList,
-  StyleSheet,
-  TouchableOpacity,
-  View,
-  Alert,
-} from 'react-native';
+import {FlatList, StyleSheet, TouchableOpacity, View} from 'react-native';
 import React, {useEffect, useMemo, useState} from 'react';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {
@@ -17,8 +11,6 @@ import {moderateScale} from 'react-native-size-matters';
 import {COLORS} from '../../helpers/colors';
 
 const InfoPenawar = () => {
-  const [status, setStatus] = useState('waiting');
-
   const [datas, setDatas] = useState(data);
 
   const data = useMemo(() => {
@@ -65,7 +57,7 @@ const InfoPenawar = () => {
     setDatas(data);
   }, [data]);
 
-  const onPressButtonCard = (item, index) => {
+  const onPressButtonCard = item => {
     const newData = data.map(newItem => {
       if (newItem.id === item.id) {
         return {
@@ -81,9 +73,41 @@ const InfoPenawar = () => {
     setDatas(newData);
   };
 
+  const onPressAccepted = item => {
+    const newData = data.map(newItem => {
+      if (newItem.id === item.id) {
+        return {
+          ...newItem,
+          tempStatus: 'accepted',
+        };
+      }
+      return {
+        ...newItem,
+        tempStatus: 'pending',
+      };
+    });
+    setDatas(newData);
+  };
+
+  const onPressDecline = item => {
+    const newData = data.map(newItem => {
+      if (newItem.id === item.id) {
+        return {
+          ...newItem,
+          tempStatus: 'decline',
+        };
+      }
+      return {
+        ...newItem,
+        tempStatus: 'pending',
+      };
+    });
+    setDatas(newData);
+  };
+
   const RenderItem = ({item, index}) => {
     return (
-      <TouchableOpacity onPress={() => onPressButtonCard(item, index)}>
+      <TouchableOpacity onPress={() => onPressButtonCard(item)}>
         <ItemNotificationCard
           button={item.selected}
           seen={true}
@@ -94,13 +118,12 @@ const InfoPenawar = () => {
           productPrice={item.price}
           date={item.date}
           tawaran={item.tawaran}
-          status={status}
+          status={item.tempStatus}
           onPressButton1={() => {
-            setStatus('decline');
+            onPressDecline(item);
           }}
           onPressButton2={() => {
-            Alert.alert('ID', 'item.id');
-            setStatus('accepted');
+            onPressAccepted(item);
           }}
         />
       </TouchableOpacity>

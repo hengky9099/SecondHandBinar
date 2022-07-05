@@ -15,7 +15,7 @@ const ItemNotificationCard = ({
   tawaran,
   date,
   seen = false,
-  status = 'waiting',
+  status = 'pending',
   button,
   textButton1,
   textButton2,
@@ -79,7 +79,7 @@ const ItemNotificationCard = ({
       return `Ditawar ${tawaranPembeli}`;
     } else if (tawaranPembeli && statusTawaran === 'accepted') {
       return `Berhasil Ditawar ${tawaranPembeli}`;
-    } else if (statusTawaran === 'waiting') {
+    } else if (statusTawaran === 'pending') {
       return `Ditawar ${tawaranPembeli}`;
     } else {
       return null;
@@ -109,7 +109,7 @@ const ItemNotificationCard = ({
             <Poppins style={styles.text2}>
               {statusTawaranCheck(status, tawaran)}
             </Poppins>
-            {status === 'accepted' ? (
+            {status === 'accepted' && status === 'buyer' ? (
               <Poppins style={styles.text1}>
                 Kamu akan segera dihubungi penjual via WhatsApp
               </Poppins>
