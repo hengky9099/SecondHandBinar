@@ -1,4 +1,4 @@
-import {Dimensions, StyleSheet, Text, View} from 'react-native';
+import {StyleSheet, Text, View} from 'react-native';
 import React, {useState} from 'react';
 import {Formik} from 'formik';
 import * as Yup from 'yup';
@@ -7,17 +7,43 @@ import DropDownPicker from 'react-native-dropdown-picker';
 import {COLORS} from '../../helpers/colors';
 import {moderateScale} from 'react-native-size-matters';
 import {launchImageLibrary} from 'react-native-image-picker';
+import {useSelector} from 'react-redux';
+import axios from 'axios';
+import {baseUrl} from '@env';
 
 const Index = ({navigation}) => {
   const [open, setOpen] = useState(false);
-  const [value, setValue] = useState(null);
+  const [value, setValue] = useState([]);
   const [items, setItems] = useState([
-    {label: 'Ambon', value: 'ambon'},
-    {label: 'Ambon', value: 'ambon'},
-    {label: 'Ambon', value: 'ambon'},
-    {label: 'Ambon', value: 'ambon'},
+    {label: 'Tas', value: '1'},
+    {label: 'Sepatu', value: '2'},
+    {label: 'Sandal', value: '3'},
+    {label: 'Baju', value: '4'},
   ]);
   const [image, setImage] = useState('');
+  const {dataLogin} = useSelector(state => state.login);
+
+  const postDataProduk = async () => {
+    const body = {
+      name: 'asdf',
+      category_ids: ['1'],
+      description: 'sdfasfd',
+      base_price: 500,
+      image: 'sadf',
+      location: 'adsf',
+    };
+    try {
+      console.log(body);
+      const res = await axios.post(`${baseUrl}/seller/product`, body, {
+        headers: {access_token: `${dataLogin.access_token}`},
+        validateStatus: status => status < 501,
+      });
+
+      console.log(res);
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   const addProductImage = async () => {
     await launchImageLibrary({mediaType: 'photo'}).then(image =>
@@ -82,6 +108,9 @@ const Index = ({navigation}) => {
               <DropDownPicker
                 style={styles.dropdownPicker}
                 placeholder="Pilih Kategori"
+                multiple={true}
+                min={0}
+                max={5}
                 dropDownDirection="BOTTOM"
                 open={open}
                 value={value}
@@ -115,6 +144,8 @@ const Index = ({navigation}) => {
 
             <View style={styles.button}>
               <Button
+                onPressButton1={postDataProduk}
+                onPressButton2={postDataProduk}
                 numButton={2}
                 textButton1={'Preview'}
                 textButton2={'Terbitkan'}
