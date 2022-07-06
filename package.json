@@ -11,7 +11,8 @@
     "prepare": "husky install",
     "postVersion": "react-native-version",
     "published": "np && react-native-version",
-    "codepush": "appcenter codepush release-react -a rn03.binaracademy-gmail.com/SecondHandBinar -d Staging"
+    "codepushStaging": "appcenter codepush release-react -a rn03.binaracademy-gmail.com/SecondHandBinar -d Staging",
+    "codepushRelease": "appcenter codepush release-react -a rn03.binaracademy-gmail.com/SecondHandBinar"
   },
   "repository": {
     "type": "git",
