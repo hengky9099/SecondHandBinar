@@ -10,7 +10,8 @@
     "lint": "eslint .",
     "prepare": "husky install",
     "postVersion": "react-native-version",
-    "published": "np && react-native-version"
+    "published": "np && react-native-version",
+    "codepush": "appcenter codepush release-react -a rn03.binaracademy-gmail.com/SecondHandBinar -d Staging"
   },
   "repository": {
     "type": "git",
@@ -31,6 +32,7 @@
     "np": "^7.6.2",
     "react": "17.0.2",
     "react-native": "0.68.2",
+    "react-native-code-push": "^7.0.4",
     "react-native-dotenv": "^3.3.1",
     "react-native-gesture-handler": "^2.4.2",
     "react-native-linear-gradient": "^2.5.6",
