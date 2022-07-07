@@ -10,6 +10,7 @@ import {launchImageLibrary} from 'react-native-image-picker';
 import {useSelector} from 'react-redux';
 import axios from 'axios';
 import {baseUrl} from '@env';
+import {textToBinary} from '../../helpers/functions';
 
 const Index = ({navigation}) => {
   const [open, setOpen] = useState(false);
@@ -26,12 +27,15 @@ const Index = ({navigation}) => {
   const postDataProduk = async () => {
     const body = {
       name: 'asdf',
-      category_ids: ['1'],
+      category_ids: [1],
       description: 'sdfasfd',
       base_price: 500,
-      image: 'sadf',
+      image: textToBinary(
+        'https://firebasestorage.googleapis.com/v0/b/market-final-project.appspot.com/o/products%2FPR-1654962957757-sepatu.jpg?alt=media',
+      ),
       location: 'adsf',
     };
+    console.log(image);
     try {
       console.log(body);
       const res = await axios.post(`${baseUrl}/seller/product`, body, {
@@ -77,7 +81,7 @@ const Index = ({navigation}) => {
             />
             <View style={styles.contentContainer}>
               <Input
-                inputName="Nama Produk"
+                inputName="Nama Produk*"
                 placeholder="Nama Produk"
                 onChangeText={handleChange('namaproduk')}
                 onBlur={handleBlur('namaproduk')}
