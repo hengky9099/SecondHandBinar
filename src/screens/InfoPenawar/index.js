@@ -146,6 +146,7 @@ const InfoPenawar = () => {
       <View flex={1}>
         <View style={styles.card}>
           <FlatList
+            showsVerticalScrollIndicator={false}
             data={datas}
             renderItem={RenderItem}
             keyExtractor={(item, index) => index}
@@ -172,6 +173,5 @@ const styles = StyleSheet.create({
   },
   card: {
     marginHorizontal: moderateScale(10),
-    backgroundColor: '#FFF',
   },
 });
