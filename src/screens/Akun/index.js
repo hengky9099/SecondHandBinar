@@ -1,12 +1,57 @@
-import {View, StyleSheet} from 'react-native';
-import React from 'react';
+import {View, StyleSheet, Alert, BackHandler} from 'react-native';
+import React, {useEffect} from 'react';
 import {COLORS} from '../../helpers/colors';
 import {moderateScale} from 'react-native-size-matters';
 import {navigate} from '../../helpers/navigate';
 import {ButtonCamera, MenuAkun, Poppins, StatusBarCore} from '../../component';
+import {useDispatch} from 'react-redux';
+import {setLogin} from '../Login/redux/action';
 
 const Akun = () => {
-  const logout = () => navigate('Home');
+  const dispatch = useDispatch();
+
+  //exit
+  const exit = () => {
+    const backAction = () => {
+      Alert.alert('Hold on!', 'Do you want to exit the application?', [
+        {
+          text: 'Cancel',
+          onPress: () => null,
+          style: 'cancel',
+        },
+        {text: 'YES', onPress: () => BackHandler.exitApp()},
+      ]);
+      return true;
+    };
+
+    const backHandler = BackHandler.addEventListener(
+      'hardwareBackPress',
+      backAction,
+    );
+
+    return () => backHandler.remove();
+  };
+
+  useEffect(() => {
+    exit();
+  }, []);
+
+  const logout = () => {
+    Alert.alert('Hold on!', 'Do you want to logout?', [
+      {
+        text: 'Cancel',
+        onPress: () => null,
+      },
+      {
+        text: 'YES',
+        onPress: () => {
+          dispatch(setLogin({}));
+          navigate('Home');
+        },
+      },
+    ]);
+  };
+
   const pengaturanAkun = () => null;
   const ubahAkun = () => navigate('Profile');
 

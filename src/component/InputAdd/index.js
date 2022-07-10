@@ -31,8 +31,8 @@ export default InputAdd;
 
 const styles = StyleSheet.create({
   border: {
-    width: moderateScale(96),
-    height: moderateScale(96),
+    width: moderateScale(156),
+    height: moderateScale(206),
     borderRadius: moderateScale(!2),
     borderColor: COLORS.neutral2,
     borderWidth: moderateScale(1),
