@@ -16,13 +16,10 @@ export const getNotifikation = id => async dispatch => {
   try {
     dispatch(setLoading(true));
     const res = await axios.get(`${baseUrl}/notification/${id}`);
-    const data = res.data;
-    const formatResponse = formatData(data);
     if (res.status === 200) {
       dispatch(setDetailNotification(res.data));
       navigate('Notification');
     }
-    return formatResponse;
   } catch (error) {
     console.log(error);
   } finally {

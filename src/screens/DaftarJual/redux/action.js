@@ -31,13 +31,10 @@ export const getDetailOrderProduct = id => async dispatch => {
     dispatch(setLoading(true));
 
     const res = await axios.get(`${baseUrl}/seller/order/${id}`);
-    const data = res.data;
-    const formatResponse = formatData(data);
     if (res.status === 200) {
       dispatch(setDetailOrderProduct(res.data));
       navigate('DaftarJual');
     }
-    return formatResponse;
   } catch (error) {
     console.log(error);
   } finally {

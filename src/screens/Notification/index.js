@@ -19,51 +19,50 @@ const Notification = () => {
   const [notifikasi, setnotifikasi] = useState([]);
 
   useEffect(() => {
-    getDataNotification(dataLogin.access_token);
-  }, [getDataNotification]);
-
-  const getDataNotification = async () => {
-    //OrderSeller
-    try {
-      dispatch(setLoading(true));
-      const res = await axios.get(`${baseUrl}/notification`, {
-        headers: {access_token: `${dataLogin.access_token}`},
-      });
-      setnotifikasi([...res.data]);
-      console.log('Data Notification: ', res.data);
-      dispatch(setNotification(res.data));
-      if (res.status === 200) {
-        dispatch(setLoading(false));
+    const getDataNotification = async () => {
+      //OrderSeller
+      try {
+        dispatch(setLoading(true));
+        const res = await axios.get(`${baseUrl}/notification`, {
+          headers: {access_token: `${dataLogin.access_token}`},
+        });
+        setnotifikasi([...res.data]);
+        console.log('Data Notification: ', res.data);
         dispatch(setNotification(res.data));
-      }
-      if (res.status === 403) {
-        setLogin();
-        navigate('Login');
-      }
-    } catch (error) {
-      console.log(error);
-      dispatch(setLoading(false));
+        if (res.status === 200) {
+          dispatch(setLoading(false));
+          dispatch(setNotification(res.data));
+        }
+        if (res.status === 403) {
+          setLogin();
+          navigate('Login');
+        }
+      } catch (error) {
+        console.log(error);
+        dispatch(setLoading(false));
 
-      if ((error.message = 'Request failed with status code 401')) {
-        await AsyncStorage.setItem('@access_token', '');
-        Alert.alert(
-          'Pemberitahuan',
-          'Token Sudah Expired, silahkan Login kembali!',
-          [
-            {
-              text: 'OK',
-              onPress: () => {
-                navigate('Login');
-                dispatch(setLogin(''));
+        if ((error.message = 'Request failed with status code 401')) {
+          await AsyncStorage.setItem('@access_token', '');
+          Alert.alert(
+            'Pemberitahuan',
+            'Token Sudah Expired, silahkan Login kembali!',
+            [
+              {
+                text: 'OK',
+                onPress: () => {
+                  navigate('Login');
+                  dispatch(setLogin(''));
+                },
               },
-            },
-          ],
-        );
+            ],
+          );
+        }
+      } finally {
+        dispatch(setLoading(false));
       }
-    } finally {
-      dispatch(setLoading(false));
-    }
-  };
+    };
+    getDataNotification();
+  }, [dataLogin.access_token, dispatch]);
 
   const renderDataNotification = ({item}) => (
     <ItemNotificationCard

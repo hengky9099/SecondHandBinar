@@ -40,95 +40,94 @@ const DaftarJual = () => {
   const [product, setProduct] = useState([]);
 
   useEffect(() => {
-    getDataOrderSeller(dataLogin.access_token);
-    getDataProductSeller(dataLogin.access_token);
-  }, [getDataOrderSeller, getDataProductSeller]);
-
-  const getDataOrderSeller = async () => {
-    //OrderSeller
-    try {
-      dispatch(setLoading(true));
-      const res = await axios.get(`${baseUrl}/seller/order`, {
-        headers: {access_token: `${dataLogin.access_token}`},
-      });
-      setOrderan([...res.data]);
-      console.log('Data Order Seller: ', res.data);
-      dispatch(setOrderSeller(res.data));
-      if (res.status === 200) {
-        dispatch(setLoading(false));
+    const getDataOrderSeller = async () => {
+      //OrderSeller
+      try {
+        dispatch(setLoading(true));
+        const res = await axios.get(`${baseUrl}/seller/order`, {
+          headers: {access_token: `${dataLogin.access_token}`},
+        });
+        setOrderan([...res.data]);
+        console.log('Data Order Seller: ', res.data);
         dispatch(setOrderSeller(res.data));
-      }
-      if (res.status === 403) {
-        setLogin();
-        navigate('Login');
-      }
-    } catch (error) {
-      console.log(error);
-      dispatch(setLoading(false));
-
-      if ((error.message = 'Request failed with status code 401')) {
-        await AsyncStorage.setItem('@access_token', '');
-        Alert.alert(
-          'Pemberitahuan',
-          'Token Sudah Expired, silahkan Login kembali!',
-          [
-            {
-              text: 'OK',
-              onPress: () => {
-                navigate('Login');
-                dispatch(setLogin(''));
-              },
-            },
-          ],
-        );
-      }
-    } finally {
-      dispatch(setLoading(false));
-    }
-  };
-
-  const getDataProductSeller = async () => {
-    //  ProductSeller
-    try {
-      dispatch(setLoading(true));
-      const res = await axios.get(`${baseUrl}/seller/product`, {
-        headers: {access_token: `${dataLogin.access_token}`},
-      });
-      setProduct([...res.data]);
-      console.log('Data Product Seller: ', res.data);
-      dispatch(setProductSeller(res.data));
-      if (res.status === 200) {
+        if (res.status === 200) {
+          dispatch(setLoading(false));
+          dispatch(setOrderSeller(res.data));
+        }
+        if (res.status === 403) {
+          setLogin();
+          navigate('Login');
+        }
+      } catch (error) {
+        console.log(error);
         dispatch(setLoading(false));
-        dispatch(setProductSeller(res.data));
-      }
-      if (res.status === 403) {
-        setLogin();
-        navigate('Login');
-      }
-    } catch (error) {
-      console.log(error);
-      dispatch(setLoading(false));
 
-      if ((error.message = 'Request failed with status code 401')) {
-        await AsyncStorage.setItem('@access_token', '');
-        Alert.alert(
-          'Pemberitahuan',
-          'Token Sudah Expired, silahkan Login kembali!',
-          [
-            {
-              text: 'OK',
-              onPress: () => {
-                navigate('Login');
-                dispatch(setLogin(''));
+        if ((error.message = 'Request failed with status code 401')) {
+          await AsyncStorage.setItem('@access_token', '');
+          Alert.alert(
+            'Pemberitahuan',
+            'Token Sudah Expired, silahkan Login kembali!',
+            [
+              {
+                text: 'OK',
+                onPress: () => {
+                  navigate('Login');
+                  dispatch(setLogin(''));
+                },
               },
-            },
-          ],
-        );
+            ],
+          );
+        }
+      } finally {
+        dispatch(setLoading(false));
       }
-    } finally {
-      dispatch(setLoading(false));
-    }
-  };
+    };
+    getDataOrderSeller();
+
+    const getDataProductSeller = async () => {
+      //  ProductSeller
+      try {
+        dispatch(setLoading(true));
+        const res = await axios.get(`${baseUrl}/seller/product`, {
+          headers: {access_token: `${dataLogin.access_token}`},
+        });
+        setProduct([...res.data]);
+        console.log('Data Product Seller: ', res.data);
+        dispatch(setProductSeller(res.data));
+        if (res.status === 200) {
+          dispatch(setLoading(false));
+          dispatch(setProductSeller(res.data));
+        }
+        if (res.status === 403) {
+          setLogin();
+          navigate('Login');
+        }
+      } catch (error) {
+        console.log(error);
+        dispatch(setLoading(false));
+
+        if ((error.message = 'Request failed with status code 401')) {
+          await AsyncStorage.setItem('@access_token', '');
+          Alert.alert(
+            'Pemberitahuan',
+            'Token Sudah Expired, silahkan Login kembali!',
+            [
+              {
+                text: 'OK',
+                onPress: () => {
+                  navigate('Login');
+                  dispatch(setLogin(''));
+                },
+              },
+            ],
+          );
+        }
+      } finally {
+        dispatch(setLoading(false));
+      }
+    };
+    getDataProductSeller();
+  }, [dataLogin.access_token, dispatch]);
 
   const renderDataOrderSeller = ({item}) => (
     <ItemNotificationCard
@@ -283,6 +282,7 @@ const DaftarJual = () => {
           keyExtractor={(_item, index) => index}
           renderItem={renderDataOrderSeller}
           data={orderan}
+          numColumns={1}
         />
       </View>
     );
