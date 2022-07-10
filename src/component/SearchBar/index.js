@@ -46,7 +46,7 @@ const styles = StyleSheet.create({
     backgroundColor: COLORS.white,
     marginTop: moderateScale(20),
     flexDirection: 'column',
-    justifyContent: 'space-evenly',
+    // justifyContent: 'space-evenly',
   },
   input: {
     fontSize: moderateScale(15),
