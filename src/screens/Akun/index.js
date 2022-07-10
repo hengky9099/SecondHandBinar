@@ -53,6 +53,7 @@ const Akun = () => {
   };
 
   const pengaturanAkun = () => null;
+  const ubahAkun = () => navigate('Profile');
 
   return (
     <View style={styles.container}>
@@ -62,7 +63,7 @@ const Akun = () => {
       </View>
       <ButtonCamera />
       <View style={styles.listFiturAkun}>
-        <MenuAkun nameIcon="edit-3" menuName="Ubah Akun" onPress={Akun} />
+        <MenuAkun nameIcon="edit-3" menuName="Ubah Akun" onPress={ubahAkun} />
         <MenuAkun
           nameIcon="settings"
           menuName="Pengaturan Akun"

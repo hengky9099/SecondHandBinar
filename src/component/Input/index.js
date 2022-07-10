@@ -27,6 +27,7 @@ const Input = ({
   multiline,
   numberOfLines,
   onBlur,
+  keyboardType,
 }) => {
   const stylesInput = Array.isArray(styleInput)
     ? Object.assign({}, ...styleInput)
@@ -65,6 +66,7 @@ const Input = ({
           onSubmitEditing={onSubmitEditing}
           multiline={multiline}
           numberOfLines={numberOfLines}
+          keyboardType={keyboardType}
         />
         {password ? (
           <TouchableOpacity style={styles.seenButton} onPress={seenPassword}>
