@@ -1,20 +1,23 @@
 /* eslint-disable react-native/no-inline-styles */
-import {
-  StyleSheet,
-  Text,
-  View,
-  StatusBar,
-  Image,
-  ScrollView,
-} from 'react-native';
-import React from 'react';
+import {StyleSheet, Text, View, StatusBar, Image, FlatList} from 'react-native';
+
+import React, {useEffect} from 'react';
 import LinearGradient from 'react-native-linear-gradient';
 import Images from '../../assets/Images/gift.png';
 import ItemProductCard from '../../component/ItemProductCard/index';
 import {SearchBar, Categories} from '../../component';
+import {useDispatch, useSelector} from 'react-redux';
+import {getProduct} from '../Home/redux/action';
 
-const Home = () => {
-  return (
+export default function Home({navigation}) {
+  // const dispatch = useDispatch();
+  // const {products, loading} = useSelector(state => state.HomeReducer);
+
+  // useEffect(() => {
+  // dispatch(getProduct(''));
+  // });
+
+  const renderHeader = () => (
     <View style={styles.container}>
       <StatusBar backgroundColor={'#D3D9FD'} barStyle={'dark-content'} />
       <LinearGradient
@@ -94,26 +97,30 @@ const Home = () => {
       <View style={styles.middleCardNav}>
         <Categories />
       </View>
-      <ScrollView
-        horizontal={true}
-        showsHorizontalScrollIndicator={false}
-        style={styles.scroll}>
-        <ItemProductCard
-          productName={'Jam Tangan Casio'}
-          productType={'Aksesoris'}
-          productPrice={'Rp 250.000'}
-        />
-        <ItemProductCard
-          productName={'Jam Tangan Casio'}
-          productType={'Aksesoris'}
-          productPrice={'Rp 250.000'}
-        />
-      </ScrollView>
     </View>
   );
-};
-
-export default Home;
+  return (
+    <FlatList
+      ListHeaderComponent={renderHeader}
+      numColumns={2}
+      showsVerticalScrollIndicator={false}
+      columnWrapperStyle={styles.cardWrapper}
+      // data={products}
+      keyExtractor={item => item.id}
+      renderItem={({item}) => (
+        <ItemProductCard
+          name={item.name}
+          category={item.Categories}
+          price={item.base_price}
+          image={item.image_url}
+          onPress={() =>
+            navigation.navigate('DetailProductScreen', {id_product: item.id})
+          }
+        />
+      )}
+    />
+  );
+}
 
 const styles = StyleSheet.create({
   container: {
@@ -162,10 +169,11 @@ const styles = StyleSheet.create({
     marginVertical: 20,
     marginHorizontal: 20,
   },
-  scroll: {
-    marginHorizontal: 20,
-    marginVertical: 20,
-    marginBottom: 30,
-    // backgroundColor: 'green',
+  cardWrapper: {
+    marginTop: 10,
+    flex: 1,
+    flexWrap: 'wrap',
+    justifyContent: 'space-between',
+    marginHorizontal: 16,
   },
 });

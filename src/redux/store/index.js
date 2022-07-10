@@ -18,3 +18,11 @@ const persistedReducer = persistReducer(persistConfig, allReducers);
 
 export const store = createStore(persistedReducer, {}, allMiddlewares);
 export const persistor = persistStore(store);
+
+// Home
+export const GET_PRODUCT_SUCCESS = 'GET_PRODUCT_SUCCESS';
+export const GET_PRODUCT_FAIL = 'GET_PRODUCT_FAIL';
+export const GET_PRODUCT_LOADING = 'GET_PRODUCT_LOADING';
+export const GET_DETAIL_PRODUCT_SUCCESS = 'GET_DETAIL_PRODUCT_SUCCESS';
+export const GET_DETAIL_PRODUCT_FAIL = 'GET_DETAIL_PRODUCT_FAIL';
+export const GET_DETAIL_PRODUCT_LOADING = 'GET_DETAIL_PRODUCT_LOADING';
