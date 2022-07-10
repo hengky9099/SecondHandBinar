@@ -2,11 +2,13 @@ import {Dimensions, StyleSheet} from 'react-native';
 import {moderateScale} from 'react-native-size-matters';
 import {COLORS} from '../../helpers/colors';
 
-const {width} = Dimensions.get('window');
+const width = Dimensions.get('window').width;
+const height = Dimensions.get('window').height;
 
 const styles = StyleSheet.create({
   container: {
     backgroundColor: COLORS.white,
+    height: height,
   },
   headerDJ: {
     paddingHorizontal: moderateScale(15),

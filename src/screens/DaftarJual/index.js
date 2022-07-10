@@ -1,5 +1,12 @@
-import {View, ScrollView, FlatList, SafeAreaView, Image} from 'react-native';
-import React, {useState} from 'react';
+import {
+  View,
+  ScrollView,
+  FlatList,
+  SafeAreaView,
+  Image,
+  Alert,
+} from 'react-native';
+import React, {useEffect, useState} from 'react';
 import {COLORS} from '../../helpers/colors';
 import {
   ButtonFitur,
@@ -14,47 +21,137 @@ import {useNavigation} from '@react-navigation/native';
 import {styles} from './styles';
 import {moderateScale} from 'react-native-size-matters';
 import {seller} from '../../assets/Images';
+import {useDispatch, useSelector} from 'react-redux';
+import {setLoading} from '../../redux/globalAction';
+import axios from 'axios';
+import {setOrderSeller, setProductSeller} from './redux/action';
+import {baseUrl} from '@env';
+import {setLogin} from '../Login/redux/action';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import {navigate} from '../../helpers/navigate';
+import {currencyToIDR, thisDate} from '../../helpers/change';
 
 const DaftarJual = () => {
   const navigation = useNavigation();
   const [buttonFiturName, setButtonFiturName] = useState('Product');
+  const dispatch = useDispatch();
+  const {dataLogin} = useSelector(state => state.login);
+  const [orderan, setOrderan] = useState([]);
+  const [product, setProduct] = useState([]);
 
-  const dataProduct = [
-    {
-      id: 1,
-      urlImage:
-        'https://p-id.ipricegroup.com/uploaded_337182c1d9e1b9ec0eb4f7823e087a9d.jpg?position=11',
-      productName: 'Jam Tangan Casio',
-      productPrice: 'Rp 250.000',
-      typeNotif: 'Penawaran product',
-      date: '20 Apr, 14:04',
-      tawaran: 'Ditawar Rp 200.000',
-    },
-    {
-      id: 2,
-      urlImage:
-        'https://p-id.ipricegroup.com/uploaded_337182c1d9e1b9ec0eb4f7823e087a9d.jpg?position=11',
-      productName: 'Jam Tangan Casio',
-      productPrice: 'Rp 250.000',
-      typeNotif: 'Berhasil di terbitkan',
-      date: '19 Apr, 12:00',
-    },
-  ];
+  useEffect(() => {
+    getDataOrderSeller(dataLogin.access_token);
+    getDataProductSeller(dataLogin.access_token);
+  }, [getDataOrderSeller, getDataProductSeller]);
 
-  const renderData = ({item}) => (
+  const getDataOrderSeller = async () => {
+    //OrderSeller
+    try {
+      dispatch(setLoading(true));
+      const res = await axios.get(`${baseUrl}/seller/order`, {
+        headers: {access_token: `${dataLogin.access_token}`},
+      });
+      setOrderan([...res.data]);
+      console.log('Data Order Seller: ', res.data);
+      dispatch(setOrderSeller(res.data));
+      if (res.status === 200) {
+        dispatch(setLoading(false));
+        dispatch(setOrderSeller(res.data));
+      }
+      if (res.status === 403) {
+        setLogin();
+        navigate('Login');
+      }
+    } catch (error) {
+      console.log(error);
+      dispatch(setLoading(false));
+
+      if ((error.message = 'Request failed with status code 401')) {
+        await AsyncStorage.setItem('@access_token', '');
+        Alert.alert(
+          'Pemberitahuan',
+          'Token Sudah Expired, silahkan Login kembali!',
+          [
+            {
+              text: 'OK',
+              onPress: () => {
+                navigate('Login');
+                dispatch(setLogin(''));
+              },
+            },
+          ],
+        );
+      }
+    } finally {
+      dispatch(setLoading(false));
+    }
+  };
+
+  const getDataProductSeller = async () => {
+    //  ProductSeller
+    try {
+      dispatch(setLoading(true));
+      const res = await axios.get(`${baseUrl}/seller/product`, {
+        headers: {access_token: `${dataLogin.access_token}`},
+      });
+      setProduct([...res.data]);
+      console.log('Data Product Seller: ', res.data);
+      dispatch(setProductSeller(res.data));
+      if (res.status === 200) {
+        dispatch(setLoading(false));
+        dispatch(setProductSeller(res.data));
+      }
+      if (res.status === 403) {
+        setLogin();
+        navigate('Login');
+      }
+    } catch (error) {
+      console.log(error);
+      dispatch(setLoading(false));
+
+      if ((error.message = 'Request failed with status code 401')) {
+        await AsyncStorage.setItem('@access_token', '');
+        Alert.alert(
+          'Pemberitahuan',
+          'Token Sudah Expired, silahkan Login kembali!',
+          [
+            {
+              text: 'OK',
+              onPress: () => {
+                navigate('Login');
+                dispatch(setLogin(''));
+              },
+            },
+          ],
+        );
+      }
+    } finally {
+      dispatch(setLoading(false));
+    }
+  };
+
+  const renderDataOrderSeller = ({item}) => (
     <ItemNotificationCard
-      urlImage={item.urlImage}
-      typeNotif={item.typeNotif}
-      date={item.date}
-      productName={item.productName}
-      productPrice={item.productPrice}
-      tawaran={item.tawaran}
+      urlImage={item.image_url}
+      typeNotif={item.status}
+      date={thisDate(item.updatedAt)}
+      productName={item.product_name}
+      productPrice={currencyToIDR(item.base_price)}
+      tawaran={currencyToIDR(item.price)}
     />
   );
 
+  const renderDataProduct = ({item}) => (
+    <ItemProductCard
+      productPrice={currencyToIDR(item.base_price)}
+      urlImageProduct={item.image_url}
+      productName={item.name}
+      productType={'Aksesoris'}
+    />
+  );
   const renderHeader = () => {
     return (
-      <SafeAreaView style={styles.container}>
+      <View>
         <StatusBarCore backgroundColor={COLORS.white} barStyle="dark-content" />
         <View style={styles.headerDJ}>
           <Poppins style={styles.textHeaderDJ}>Daftar Jual Saya</Poppins>
@@ -106,7 +203,7 @@ const DaftarJual = () => {
             />
           </View>
         </ScrollView>
-      </SafeAreaView>
+      </View>
     );
   };
 
@@ -118,23 +215,14 @@ const DaftarJual = () => {
           borderRadius: moderateScale(4),
           flexDirection: 'row',
           flexWrap: 'wrap',
+          marginBottom: moderateScale(60),
         }}>
-        <InputAdd onPress={() => navigation.navigate('Jual')} />
-        <ItemProductCard
-          productName={'Smartwatch Sams...'}
-          productType={'Aksesoris'}
-          productPrice={'Rp 3.550.000'}
-          urlImageProduct={
-            'https://s3.bukalapak.com/img/37852069262/s-463-463/data.jpeg.webp'
-          }
-        />
-        <ItemProductCard
-          productName={'Jam Tangan Casio'}
-          productType={'Aksesoris'}
-          productPrice={'Rp 250.000'}
-          urlImageProduct={
-            'https://p-id.ipricegroup.com/uploaded_337182c1d9e1b9ec0eb4f7823e087a9d.jpg?position=11'
-          }
+        {/* <InputAdd onPress={() => navigation.navigate('Jual')} /> */}
+        <FlatList
+          keyExtractor={(_item, index) => index}
+          renderItem={renderDataProduct}
+          data={product}
+          numColumns={2}
         />
       </View>
     );
@@ -149,6 +237,7 @@ const DaftarJual = () => {
           borderRadius: moderateScale(4),
           flexDirection: 'row',
           flexWrap: 'wrap',
+          marginBottom: moderateScale(300),
         }}>
         <InputAdd onPress={() => navigation.navigate('Jual')} />
       </View>
@@ -159,8 +248,8 @@ const DaftarJual = () => {
     return (
       <View
         style={{
-          flex: 1,
           alignItems: 'center',
+          marginBottom: moderateScale(200),
         }}>
         <Image
           source={seller}
@@ -187,10 +276,14 @@ const DaftarJual = () => {
     return (
       <View
         style={{
-          marginTop: moderateScale(10),
           marginHorizontal: moderateScale(20),
+          marginBottom: moderateScale(150),
         }}>
-        <FlatList renderItem={renderData} data={dataProduct} />
+        <FlatList
+          keyExtractor={(_item, index) => index}
+          renderItem={renderDataOrderSeller}
+          data={orderan}
+        />
       </View>
     );
   };
@@ -208,13 +301,13 @@ const DaftarJual = () => {
   };
 
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={[styles.container]}>
       <FlatList
         showsHorizontalScrollIndicator={false}
         ListHeaderComponent={renderHeader}
       />
       {tampilkan(buttonFiturName)}
-    </View>
+    </SafeAreaView>
   );
 };
 

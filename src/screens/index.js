@@ -5,8 +5,7 @@ import Akun from './Akun';
 import DaftarJual from './DaftarJual';
 import Jual from './Jual';
 import Notification from './Notification';
-import NotificationBuyer from './NotificationBuyer';
-
+import NotificationBuyer from './Notification/NotificationBuyer';
 export {
   Home,
   Login,
