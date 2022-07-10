@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "251313567065",
+    "project_id": "secondhandbinar-b8952",
+    "storage_bucket": "secondhandbinar-b8952.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:251313567065:android:51cdf2554ff541173b8848",
+        "android_client_info": {
+          "package_name": "com.secondhandbinar"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "251313567065-i5d02h0f0c5rl1asm2ejlc9a1mrt99l9.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC0tzY8o3ZYLrY8ixtm_dqfrQgNyev-_ow"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "251313567065-i5d02h0f0c5rl1asm2ejlc9a1mrt99l9.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

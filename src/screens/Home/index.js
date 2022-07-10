@@ -1,4 +1,3 @@
-/* eslint-disable react-native/no-inline-styles */
 import {StyleSheet, View, Image, ScrollView} from 'react-native';
 import React from 'react';
 import LinearGradient from 'react-native-linear-gradient';
