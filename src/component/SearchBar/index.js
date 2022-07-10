@@ -1,5 +1,8 @@
+<<<<<<< HEAD
 /* eslint-disable no-unused-vars */
 /* eslint-disable no-dupe-keys */
+=======
+>>>>>>> 76fbe30ec8b1784ee575120a0a184ee961028b51
 import {View, TextInput, Dimensions, StyleSheet, Keyboard} from 'react-native';
 import React from 'react';
 import Feather from 'react-native-vector-icons/Feather';
