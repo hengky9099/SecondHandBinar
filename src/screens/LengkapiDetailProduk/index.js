@@ -21,33 +21,64 @@ const Index = ({navigation}) => {
     {label: 'Sandal', value: '3'},
     {label: 'Baju', value: '4'},
   ]);
+  const [data, setData] = useState({
+    namaproduk: '',
+    kategori: [],
+    deskripsi: '',
+    hargaproduk: '',
+  });
   const [image, setImage] = useState('');
   const {dataLogin} = useSelector(state => state.login);
 
   const postDataProduk = async () => {
-    const body = {
-      name: 'asdf',
-      category_ids: [1],
-      description: 'sdfasfd',
-      base_price: 500,
-      image: textToBinary(
-        'https://firebasestorage.googleapis.com/v0/b/market-final-project.appspot.com/o/products%2FPR-1654962957757-sepatu.jpg?alt=media',
-      ),
-      location: 'adsf',
-    };
-    console.log(image);
     try {
-      console.log(body);
-      const res = await axios.post(`${baseUrl}/seller/product`, body, {
-        headers: {access_token: `${dataLogin.access_token}`},
-        validateStatus: status => status < 501,
+      const formData = new FormData();
+      formData.append('name', data.namaproduk);
+      formData.append('description', data.deskripsi);
+      formData.append('base_price', data.hargaproduk);
+      formData.append('category_ids', data.kategori);
+      formData.append('location', dataLogin.address);
+      formData.append('image', {
+        uri: image,
+        name: image,
+        type: 'image/jpeg',
       });
-
+      const res = await axios.post(`${baseUrl}/seller/product`, formData, {
+        headers: {
+          access_token: `${dataLogin.access_token}`,
+          'Content-Type': 'multipart/form-data',
+        },
+      });
       console.log(res);
     } catch (error) {
       console.log(error);
     }
   };
+
+  // const postDataProduk = async () => {
+  //   const body = {
+  //     name: 'asdf',
+  //     category_ids: [1],
+  //     description: 'sdfasfd',
+  //     base_price: 500,
+  //     image: textToBinary(
+  //       'https://firebasestorage.googleapis.com/v0/b/market-final-project.appspot.com/o/products%2FPR-1654962957757-sepatu.jpg?alt=media',
+  //     ),
+  //     location: 'adsf',
+  //   };
+  //   console.log(image);
+  //   try {
+  //     console.log(body);
+  //     const res = await axios.post(`${baseUrl}/seller/product`, body, {
+  //       headers: {access_token: `${dataLogin.access_token}`},
+  //       validateStatus: status => status < 501,
+  //     });
+
+  //     console.log(res);
+  //   } catch (error) {
+  //     console.log(error);
+  //   }
+  // };
 
   const addProductImage = async () => {
     await launchImageLibrary({mediaType: 'photo'}).then(image =>
@@ -62,14 +93,7 @@ const Index = ({navigation}) => {
     hargaproduk: Yup.string().required('No. Handphone tidak boleh kosong'),
   });
   return (
-    <Formik
-      validationSchema={validationProfile}
-      initialValues={{
-        namaproduk: '',
-        kategori: '',
-        deskripsi: '',
-        hargaproduk: '',
-      }}>
+    <Formik validationSchema={validationProfile} initialValues={data}>
       {({handleChange, handleBlur, values, errors, touched}) => {
         return (
           <View flex={1} style={styles.container}>
