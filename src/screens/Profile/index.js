@@ -1,5 +1,5 @@
 import {StyleSheet, Text, View, Scrollview} from 'react-native';
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {Button, Header, Input} from '../../component';
 import {Formik} from 'formik';
 import * as Yup from 'yup';
@@ -10,13 +10,80 @@ import {useDispatch, useSelector} from 'react-redux';
 import ButtonCamera from '../../component/ButtonCamera';
 import {kota} from '../../helpers/kota';
 import {launchImageLibrary} from 'react-native-image-picker';
+import axios from 'axios';
+import {baseUrl} from '@env';
 
 const Profile = ({navigation}) => {
-  const dispatch = useDispatch();
   const [open, setOpen] = useState(false);
   const [value, setValue] = useState(null);
   const [items, setItems] = useState(kota);
   const [image, setImage] = useState('');
+  const [user, setUser] = useState({
+    name: '',
+    kota: '',
+    alamat: '',
+    handphone: '',
+  });
+
+  const {dataLogin} = useSelector(state => state.login);
+
+  useEffect(() => {
+    getProfile();
+  });
+
+  const getProfile = async () => {
+    try {
+      const res = await axios.get(`${baseUrl}/auth/user`, {
+        headers: {access_token: `${dataLogin.access_token}`},
+      });
+      console.log(res.data);
+      setUser({
+        name: res.data.full_name,
+        kota: res.data.city,
+        alamat: (res.data.address = 'null' ? '' : res.data.address),
+        handphone: (res.data.phone_number = 'null'
+          ? ''
+          : res.data.phone_number),
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const postProfile = async () => {
+    try {
+      const formData = new FormData();
+      formData.append('full_name', user.name);
+      formData.append('email', dataLogin.email);
+      formData.append('phone_number', user.handphone);
+      formData.append('address', user.alamat);
+      formData.append('city', user.kota);
+      formData.append('image_url', {
+        uri: image,
+        name: image,
+        type: 'image/jpeg',
+      });
+      const res = await axios.put(`${baseUrl}/auth/user`, formData, {
+        validateStatus: status => status < 501,
+        headers: {
+          access_token: `${dataLogin.access_token}`,
+          'Content-Type': 'multipart/form-data',
+        },
+      });
+      console.log(res);
+      // axios({
+      //   url: `${baseUrl}/auth/user`,
+      //   method: 'PUT',
+      //   data: formData,
+      //   headers: {
+      //     Accept: 'application/json',
+      //     'Content-Type': 'multipart/form-data',
+      //   },
+      // });
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   const changeProfilePhoto = async () => {
     await launchImageLibrary({mediaType: 'photo'}).then(image =>
@@ -35,6 +102,10 @@ const Profile = ({navigation}) => {
     <Formik
       validationSchema={validationProfile}
       initialValues={{name: '', kota: '', alamat: '', handphone: ''}}>
+      enableReinitialize={true}
+      validationSchema={validationProfile}
+      initialValues={user}>
+
       {({handleChange, handleBlur, values, errors, touched}) => {
         return (
           <View flex={1} style={styles.container}>
@@ -102,7 +173,7 @@ const Profile = ({navigation}) => {
               <Text style={styles.errorValidation}>{errors.handphone}</Text>
             )}
             <View style={styles.btnSimpan}>
-              <Button textButton1={'Simpan'} />
+              <Button textButton1={'Simpan'} onPressButton1={postProfile} />
             </View>
           </View>
         );

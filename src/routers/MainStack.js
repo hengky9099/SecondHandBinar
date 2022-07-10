@@ -11,6 +11,7 @@ import {
   Notification,
   // NotificationBuyer,
   Register,
+  Profile,
 } from '../screens';
 
 const Stack = createStackNavigator();
@@ -34,6 +35,11 @@ const MainStack = () => {
         component={LengkapiDetailProduk}
         options={{headerShown: false}}
       />
+      <Stack.Screen
+        name="Profile"
+        component={Profile}
+        options={{headerShown: false}}
+       />
       <Stack.Screen
         name="MainApp"
         component={MainApp}
