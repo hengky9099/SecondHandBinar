@@ -6,7 +6,7 @@ import * as Yup from 'yup';
 import {moderateScale} from 'react-native-size-matters';
 import DropDownPicker from 'react-native-dropdown-picker';
 import {COLORS} from '../../helpers/colors';
-import {useSelector} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 import ButtonCamera from '../../component/ButtonCamera';
 import {kota} from '../../helpers/kota';
 import {launchImageLibrary} from 'react-native-image-picker';
@@ -100,9 +100,12 @@ const Profile = ({navigation}) => {
   });
   return (
     <Formik
+      validationSchema={validationProfile}
+      initialValues={{name: '', kota: '', alamat: '', handphone: ''}}>
       enableReinitialize={true}
       validationSchema={validationProfile}
       initialValues={user}>
+
       {({handleChange, handleBlur, values, errors, touched}) => {
         return (
           <View flex={1} style={styles.container}>
