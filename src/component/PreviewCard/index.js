@@ -17,13 +17,19 @@ import Header from '../Header';
 
 const {width, height} = Dimensions.get('window');
 
-const PreviewCard = () => {
+const PreviewCard = ({
+  imgData,
+  productName,
+  category,
+  price,
+  sellerName,
+  sellerAvatar,
+  city,
+  deskripsi,
+  btnText,
+  btnOnPress,
+}) => {
   const [imgActive, setImgActive] = useState(0);
-  const imgData = [
-    'https://cdn.pixabay.com/photo/2022/06/18/21/40/strasbourg-7270721_960_720.jpg',
-    'https://media.istockphoto.com/photos/weve-made-it-all-this-way-i-am-proud-picture-id904172104?b=1&k=20&m=904172104&s=170667a&w=0&h=cpH1h5ENopSwP2hB-zlAxeg3Gry9KkcBReSsBV1zyzQ=',
-    'https://media.istockphoto.com/photos/lady-with-kayak-picture-id516449022?b=1&k=20&m=516449022&s=170667a&w=0&h=kgLt9ELGehVZDxXhDUJB6OyNHuiPb_9k81VlyzzjcLo=',
-  ];
 
   const onChange = nativeEvent => {
     if (nativeEvent) {
@@ -71,40 +77,19 @@ const PreviewCard = () => {
         </View>
         <View style={styles.topWrap}>
           <Poppins type="Medium" style={styles.text1}>
-            Jam Tangan Casio
+            {productName}
           </Poppins>
-          <Poppins style={styles.text2}>Aksesoris</Poppins>
-          <Poppins style={styles.text1}>Rp 250.000</Poppins>
+          <Poppins style={styles.text2}>{category}</Poppins>
+          <Poppins style={styles.text1}>{price}</Poppins>
         </View>
-        <IdentityCard
-          nama="Iqbal"
-          kota={'Klaten'}
-          urlImage={'https://avatars.githubusercontent.com/u/62233239?v=4'}
-        />
+        <IdentityCard nama={sellerName} kota={city} urlImage={sellerAvatar} />
         <View style={styles.topWrap}>
           <Poppins style={styles.text1}>Deskripsi</Poppins>
-          <Poppins style={styles.text2}>
-            Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do
-            eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim
-            ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut
-            aliquip ex ea commodo consequat. Duis aute irure dolor in
-            reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla
-            pariatur. Excepteur sint occaecat cupidatat non proident, sunt in
-            culpa qui officia deserunt mollit anim id est laborum. Lorem ipsum
-            dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor
-            incididunt ut labore et dolore magna aliqua. Ut enim ad minim
-            veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex
-            ea commodo consequat. Duis aute irure dolor in reprehenderit in
-            voluptate velit esse cillum dolore eu fugiat nulla pariatur.
-            Excepteur sint occaecat cupidatat non proident, sunt in culpa qui
-            officia deserunt mollit anim id est laborum. Lorem ipsum dolor sit
-            amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt
-            ut labore et dolore
-          </Poppins>
+          <Poppins style={styles.text2}>{deskripsi}</Poppins>
         </View>
       </ScrollView>
       <View style={styles.btnBottom}>
-        <Button textButton1={'Terbitkan'} />
+        <Button textButton1={btnText} onPressButton1={btnOnPress} />
       </View>
     </SafeAreaView>
   );
