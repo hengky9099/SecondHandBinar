@@ -26,6 +26,12 @@ export const postLogin = values => async dispatch => {
     } else {
       Alert.alert('Error', 'Tidak bisa Login');
     }
+
+    const resUserData = await axios.get(`${baseUrl}/auth/user`, {
+      headers: {access_token: `${res.data.access_token}`},
+    });
+    console.log(resUserData.data, 'data User');
+    dispatch(setDataUser(resUserData.data));
   } catch (error) {
     console.log(error);
   } finally {
@@ -36,6 +42,13 @@ export const postLogin = values => async dispatch => {
 export const setLogin = payload => {
   return {
     type: 'SET_DATA_LOGIN',
+    payload,
+  };
+};
+
+export const setDataUser = payload => {
+  return {
+    type: 'SET_DATA_USER',
     payload,
   };
 };

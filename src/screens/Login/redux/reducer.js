@@ -1,5 +1,6 @@
 const initialState = {
   dataLogin: {},
+  dataUser: {},
 };
 
 const LoginReducer = (state = initialState, action) => {
@@ -8,6 +9,12 @@ const LoginReducer = (state = initialState, action) => {
       return {
         ...state,
         dataLogin: action.payload,
+      };
+
+    case 'SET_DATA_USER':
+      return {
+        ...state,
+        dataUser: action.payload,
       };
 
     default:

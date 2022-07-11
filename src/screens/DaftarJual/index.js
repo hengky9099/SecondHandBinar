@@ -35,7 +35,7 @@ const DaftarJual = () => {
   const navigation = useNavigation();
   const [buttonFiturName, setButtonFiturName] = useState('Product');
   const dispatch = useDispatch();
-  const {dataLogin} = useSelector(state => state.login);
+  const {dataLogin, dataUser} = useSelector(state => state.login);
   const [orderan, setOrderan] = useState([]);
   const [product, setProduct] = useState([]);
 
@@ -106,7 +106,7 @@ const DaftarJual = () => {
         console.log(error);
         dispatch(setLoading(false));
 
-        if ((error.message = 'Request failed with status code 401')) {
+        if (error.message === 'Request failed with status code 401') {
           await AsyncStorage.setItem('@access_token', '');
           Alert.alert(
             'Pemberitahuan',
@@ -131,12 +131,12 @@ const DaftarJual = () => {
 
   const renderDataOrderSeller = ({item}) => (
     <ItemNotificationCard
-      urlImage={item.image_url}
-      typeNotif={item.status}
-      date={thisDate(item.updatedAt)}
-      productName={item.product_name}
-      productPrice={currencyToIDR(item.base_price)}
-      tawaran={currencyToIDR(item.price)}
+      urlImage={item?.image_url}
+      typeNotif={item?.status}
+      date={thisDate(item?.updatedAt)}
+      productName={item?.product_name}
+      productPrice={currencyToIDR(item?.base_price)}
+      tawaran={currencyToIDR(item?.price)}
     />
   );
 
@@ -156,10 +156,15 @@ const DaftarJual = () => {
           <Poppins style={styles.textHeaderDJ}>Daftar Jual Saya</Poppins>
         </View>
         <IdentityCard
-          nama="Iqbal"
-          kota={'Klaten'}
-          urlImage={'https://avatars.githubusercontent.com/u/62233239?v=4'}
+          nama={dataUser?.full_name}
+          kota={dataUser?.city ? dataUser?.city : 'City'}
+          urlImage={
+            dataUser?.image_url
+              ? dataUser?.image_url
+              : 'https://avatars.githubusercontent.com/u/62233239?v=4'
+          }
           typeIdentity={'Penjual'}
+          onPressButton={() => navigate('Profile')}
         />
         <ScrollView horizontal={true} style={styles.btnFiturContainer}>
           <View style={styles.btnContainer}>
@@ -279,10 +284,10 @@ const DaftarJual = () => {
           marginBottom: moderateScale(150),
         }}>
         <FlatList
+          key={'_'}
           keyExtractor={(_item, index) => index}
           renderItem={renderDataOrderSeller}
           data={orderan}
-          numColumns={1}
         />
       </View>
     );
