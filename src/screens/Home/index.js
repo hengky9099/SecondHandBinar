@@ -1,23 +1,42 @@
-/* eslint-disable react-native/no-inline-styles */
-import {StyleSheet, View, Image, FlatList} from 'react-native';
-import React from 'react';
+import {
+  StyleSheet,
+  View,
+  Image,
+  FlatList,
+  ScrollView,
+  TouchableOpacity,
+} from 'react-native';
+import React, {useEffect, useState} from 'react';
 import LinearGradient from 'react-native-linear-gradient';
 import ItemProductCard from '../../component/ItemProductCard/index';
-import {SearchBar, Poppins} from '../../component';
+import {SearchBar, Poppins, ButtonFitur} from '../../component';
 import {moderateScale} from 'react-native-size-matters';
 import {Box} from '../../assets/Images';
 import {COLORS} from '../../helpers/colors';
+import {getProduct} from './redux/action';
+import {useSelector, useDispatch} from 'react-redux';
 
 export default function Home({navigation}) {
-  // const dispatch = useDispatch();
-  // const {products, loading} = useSelector(state => state.HomeReducer);
+  const dispatch = useDispatch();
+  const {products, lengthProducts} = useSelector(state => state.home);
+  const [end, setEnd] = useState(16);
+  const [dataProducts, setDataProducts] = useState('dataAllProduct');
 
-  // useEffect(() => {
-  // dispatch(getProduct(''));
-  // });
+  const produkHobi = products.filter(function (item) {
+    return item?.Categories[0]?.name === 'Hobi dan Koleksi';
+  });
+
+  const produkKendaraan = products.filter(function (item) {
+    return item?.Categories[0]?.name === 'Otomotif';
+  });
+
+  useEffect(() => {
+    const getAllProduct = () => dispatch(getProduct());
+    getAllProduct();
+  }, [dispatch]);
 
   const renderHeader = () => (
-    <View style={styles.container}>
+    <View>
       <LinearGradient
         colors={['#ffe9c9', '#ffe9c9', '#ffffff']}
         style={styles.topNav}>
@@ -25,9 +44,7 @@ export default function Home({navigation}) {
           <SearchBar
             style={styles.searchBar}
             placeholder="Cari di Second chance"
-            inputStyle={{
-              size: 12,
-            }}
+            inputStyle={styles.inputStyle}
           />
           <View style={styles.topNavLeft}>
             <Poppins style={styles.textBR}>Bulan Ramadhan</Poppins>
@@ -46,29 +63,142 @@ export default function Home({navigation}) {
       </LinearGradient>
       <View style={styles.categories}>
         <Poppins style={styles.textTK}>Telusuri Kategori</Poppins>
+        <ScrollView
+          horizontal={true}
+          showsHorizontalScrollIndicator={false}
+          style={styles.fitur}>
+          <ButtonFitur
+            nameIcon={'search'}
+            nameFitur={'Semua'}
+            onPressButton={() => setDataProducts('dataAllProduct')}
+          />
+          <ButtonFitur
+            nameIcon={'search'}
+            nameFitur={'Hobi'}
+            onPressButton={() => setDataProducts('dataProductHobi')}
+          />
+          <ButtonFitur
+            nameIcon={'search'}
+            nameFitur={'Kendaraan'}
+            onPressButton={() => setDataProducts('dataProductKendaraan')}
+          />
+          <ButtonFitur nameIcon={'box'} nameFitur={'Product'} />
+          <ButtonFitur nameIcon={'heart'} nameFitur={'Diminati'} />
+          <ButtonFitur nameIcon={'dollar-sign'} nameFitur={'Terjual'} />
+        </ScrollView>
       </View>
     </View>
   );
-  return (
-    <FlatList
-      ListHeaderComponent={renderHeader}
-      numColumns={2}
-      showsVerticalScrollIndicator={false}
-      columnWrapperStyle={styles.cardWrapper}
-      // data={products}
-      keyExtractor={item => item.id}
-      renderItem={({item}) => (
+
+  const renderItem = ({item}) => {
+    return (
+      <View style={styles.itemProduct}>
         <ItemProductCard
-          name={item.name}
-          category={item.Categories}
-          price={item.base_price}
-          image={item.image_url}
-          onPress={() =>
+          productName={item?.name ? item.name : 'Nama Produk'}
+          productType={
+            item?.Categories[0]?.name ? item?.Categories[0]?.name : 'Kategori'
+          }
+          productPrice={item?.base_price ? item?.base_price : 'Rp. 0'}
+          url={item?.image_url}
+          onPressCard={() =>
             navigation.navigate('DetailProductScreen', {id_product: item.id})
           }
         />
-      )}
-    />
+      </View>
+    );
+  };
+
+  const renderFooter = data => {
+    const tmp = end;
+    if (data === 'dataAllProduct') {
+      if (end < lengthProducts) {
+        return (
+          <View style={styles.footer}>
+            <TouchableOpacity
+              onPress={() => {
+                setEnd(tmp + 10);
+              }}
+              style={styles.loadMoreBtn}>
+              <Poppins style={styles.btnText}>Load More</Poppins>
+            </TouchableOpacity>
+          </View>
+        );
+      } else if (end > lengthProducts || end === lengthProducts) {
+        return (
+          <View style={styles.footer}>
+            <Poppins style={styles.text}>No More Data</Poppins>
+          </View>
+        );
+      }
+    } else if (data === 'dataProductHobi') {
+      if (end < produkHobi.length) {
+        return (
+          <View style={styles.footer}>
+            <TouchableOpacity
+              onPress={() => {
+                setEnd(tmp + 10);
+              }}
+              style={styles.loadMoreBtn}>
+              <Poppins style={styles.btnText}>Load More</Poppins>
+            </TouchableOpacity>
+          </View>
+        );
+      } else if (end > produkHobi.length || end === produkHobi.length) {
+        return (
+          <View style={styles.footer}>
+            <Poppins style={styles.text}>No More Data</Poppins>
+          </View>
+        );
+      }
+    } else if (data === 'dataProductKendaraan') {
+      if (end < produkKendaraan.length) {
+        return (
+          <View style={styles.footer}>
+            <TouchableOpacity
+              onPress={() => {
+                setEnd(tmp + 10);
+              }}
+              style={styles.loadMoreBtn}>
+              <Poppins style={styles.btnText}>Load More</Poppins>
+            </TouchableOpacity>
+          </View>
+        );
+      } else if (
+        end > produkKendaraan.length ||
+        end === produkKendaraan.length
+      ) {
+        return (
+          <View style={styles.footer}>
+            <Poppins style={styles.text}>No More Data</Poppins>
+          </View>
+        );
+      }
+    }
+  };
+
+  const list = data => {
+    if (data === 'dataAllProduct') {
+      return products.slice(0, end);
+    } else if (data === 'dataProductHobi') {
+      return produkHobi.slice(0, end);
+    } else if (data === 'dataProductKendaraan') {
+      return produkKendaraan.slice(0, end);
+    }
+  };
+
+  return (
+    <View style={styles.container}>
+      <FlatList
+        ListHeaderComponent={renderHeader}
+        numColumns={2}
+        showsVerticalScrollIndicator={false}
+        data={list(dataProducts)}
+        horizontal={false}
+        keyExtractor={(_item, index) => index}
+        renderItem={renderItem}
+        ListFooterComponent={renderFooter(dataProducts)}
+      />
+    </View>
   );
 }
 
@@ -98,6 +228,28 @@ const styles = StyleSheet.create({
     borderRadius: moderateScale(20),
     marginTop: moderateScale(-50),
     marginLeft: moderateScale(100),
+  },
+  ter: {
+    margin: moderateScale(15),
+    alignSelf: 'center',
+  },
+  loadMoreBtn: {
+    padding: moderateScale(13),
+    backgroundColor: COLORS.purple5,
+    borderRadius: moderateScale(5),
+    marginHorizontal: moderateScale(50),
+    alignItems: 'center',
+    marginVertical: moderateScale(20),
+  },
+  btnText: {
+    color: COLORS.white,
+    fontSize: moderateScale(15),
+  },
+  text: {
+    color: COLORS.black,
+    alignSelf: 'center',
+    margin: moderateScale(10),
+    fontSize: moderateScale(18),
   },
   categories: {
     borderRadius: 20,
@@ -158,5 +310,16 @@ const styles = StyleSheet.create({
   fitur: {
     marginTop: moderateScale(19),
     marginHorizontal: moderateScale(5),
+  },
+  inputStyle: {
+    size: 12,
+  },
+  itemProduct: {
+    margin: moderateScale(15),
+    marginTop: moderateScale(15),
+  },
+  list: {
+    marginTop: moderateScale(15),
+    alignSelf: 'center',
   },
 });

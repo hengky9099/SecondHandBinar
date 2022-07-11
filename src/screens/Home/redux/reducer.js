@@ -1,31 +1,22 @@
-import {
-  GET_PRODUCT_FAIL,
-  GET_PRODUCT_LOADING,
-  GET_PRODUCT_SUCCESS,
-} from '../../../redux/store/index';
+import {GET_PRODUCT_SUCCESS, SET_LENGTH_PRODUCTS} from './type';
 
 const initialState = {
-  loading: false,
   products: [],
+  lengthProducts: 0,
 };
 
 export const HomeReducer = (state = initialState, action) => {
   switch (action.type) {
-    case GET_PRODUCT_LOADING:
-      return {
-        ...state,
-        loading: action.payload,
-      };
     case GET_PRODUCT_SUCCESS:
       return {
         ...state,
-        loading: false,
         products: action.payload,
       };
-    case GET_PRODUCT_FAIL:
+
+    case SET_LENGTH_PRODUCTS:
       return {
         ...state,
-        loading: false,
+        lengthProducts: action.payload,
       };
     default:
       return state;

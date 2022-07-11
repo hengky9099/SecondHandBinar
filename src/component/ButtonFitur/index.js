@@ -1,11 +1,9 @@
-import {StyleSheet, TouchableOpacity, View, Dimensions} from 'react-native';
+import {StyleSheet, TouchableOpacity, View} from 'react-native';
 import React from 'react';
 import {moderateScale} from 'react-native-size-matters';
 import {COLORS} from '../../helpers/colors';
 import Feather from 'react-native-vector-icons/Feather';
 import {Poppins} from '../FontComponents';
-
-const {width} = Dimensions.get('window');
 
 const ButtonFitur = ({nameFitur, nameIcon, onPressButton, disabled}) => {
   return (
@@ -14,7 +12,7 @@ const ButtonFitur = ({nameFitur, nameIcon, onPressButton, disabled}) => {
       onPress={!disabled && onPressButton}>
       <View style={styles.toButton}>
         <Poppins type="Medium" style={styles.nameFitur}>
-          <Feather name={nameIcon} size={20} /> {nameFitur}
+          <Feather name={nameIcon} size={18} /> {nameFitur}
         </Poppins>
       </View>
     </TouchableOpacity>
@@ -25,17 +23,16 @@ export default ButtonFitur;
 
 const styles = StyleSheet.create({
   toButton: {
-    width: width - moderateScale(240),
     height: moderateScale(44),
     borderRadius: moderateScale(16),
     backgroundColor: TouchableOpacity ? COLORS.purple4 : COLORS.primaryPurple,
     alignItems: 'center',
     justifyContent: 'center',
     marginHorizontal: moderateScale(8),
-    flexGrow: 0,
+    padding: moderateScale(10),
   },
   nameFitur: {
-    fontSize: moderateScale(16),
+    fontSize: moderateScale(14),
     color: COLORS.white,
   },
 });

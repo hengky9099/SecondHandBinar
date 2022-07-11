@@ -1,39 +1,33 @@
-/* eslint-disable no-undef */
 import axios from 'axios';
 import {baseUrl} from '@env';
 import {Alert} from 'react-native';
-import {
-  GET_PRODUCT_FAIL,
-  GET_PRODUCT_LOADING,
-  GET_PRODUCT_SUCCESS,
-} from '../../../redux/store/index.js';
+import {GET_PRODUCT_SUCCESS, SET_LENGTH_PRODUCTS} from './type';
+import {setLoading} from '../../../redux/globalAction';
+
+export const getProduct = () => async dispatch => {
+  dispatch(setLoading(true));
+  try {
+    const res = await axios.get(`${baseUrl}/buyer/product`, {
+      validateStatus: status => status < 501,
+    });
+    dispatch(setProductSuccess(res.data));
+    dispatch(setLengthProducts(res.data.length));
+    dispatch(setLoading(false));
+
+    console.log(res.data);
+  } catch (error) {
+    console.log(error, 'error');
+    dispatch(setLoading(false));
+    Alert.alert('Error');
+  }
+};
 
 export const setProductSuccess = data => ({
   type: GET_PRODUCT_SUCCESS,
   payload: data,
 });
 
-export const setProductLoading = loading => ({
-  type: GET_PRODUCT_LOADING,
-  payload: loading,
+export const setLengthProducts = data => ({
+  type: SET_LENGTH_PRODUCTS,
+  payload: data,
 });
-
-export const setProductFailed = error => ({
-  type: GET_PRODUCT_FAIL,
-  payload: error,
-});
-
-export const getProduct = async dispatch => {
-  dispatch(setProductLoading(true));
-  try {
-    const res = await axios.get(`${baseUrl}/buyer/product`, body, {
-      validateStatus: status => status < 501,
-    });
-    setProductSuccess(res.data);
-    dispatch(setProductLoading(false));
-  } catch (error) {
-    dispatch(setProductFailed(error));
-    dispatch(setProductLoading(false));
-    Alert.alert('Error');
-  }
-};
