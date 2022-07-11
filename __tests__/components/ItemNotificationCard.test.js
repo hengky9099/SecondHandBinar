@@ -1,6 +1,6 @@
 import React from 'react';
 import {create} from 'react-test-renderer';
-import {ItemNotificationCard} from '../../src/component';
+import ItemNotificationCard from '../../src/component/ItemNotificationCard';
 
 describe('ItemNotificationCard Component Testing', () => {
   const ItemNotificationCardComponent = create(

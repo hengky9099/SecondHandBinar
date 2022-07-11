@@ -5,7 +5,7 @@ import {moderateScale} from 'react-native-size-matters';
 import {Poppins} from '../FontComponents';
 import Dot from '../Dot';
 import Button from '../Button';
-import {Product} from '../../assets/Image';
+import {Jam} from '../../assets/Images';
 
 const ItemNotificationCard = ({
   urlImage,
@@ -89,10 +89,7 @@ const ItemNotificationCard = ({
   return (
     <View style={styles.page}>
       <View style={styles.notifContainer}>
-        <Image
-          source={urlImage ? {uri: urlImage} : Product}
-          style={styles.image}
-        />
+        <Image source={urlImage ? {uri: urlImage} : Jam} style={styles.image} />
 
         <View style={styles.notifinfoContainer}>
           <View style={styles.toRow}>

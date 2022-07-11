@@ -2,7 +2,7 @@ import React from 'react';
 import {StyleSheet, TouchableOpacity} from 'react-native';
 import {moderateScale} from 'react-native-size-matters';
 import {create} from 'react-test-renderer';
-import {InputAdd} from '../../src/component';
+import InputAdd from '../../src/component/InputAdd';
 
 describe('InputAdd Component Testing', () => {
   const styles = StyleSheet.create({
