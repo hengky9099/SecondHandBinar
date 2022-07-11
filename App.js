@@ -11,8 +11,16 @@ const codePushOptions = {
 };
 
 const App = () => {
+  const syncWithCodePush = status => {
+    console.log('Codepush sync status', status);
+  };
+
   useEffect(() => {
     SplashScreen.hide();
+    codePush.sync(
+      {installMode: codePush.InstallMode.IMMEDIATE},
+      syncWithCodePush,
+    );
   }, []);
 
   return (
