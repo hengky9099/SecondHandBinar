@@ -121,7 +121,10 @@ const Profile = ({navigation}) => {
               }}
             />
             <View style={styles.contentContainer}>
-              <ButtonCamera onPress={changeProfilePhoto} />
+              <ButtonCamera
+                url={dataUser.image_url}
+                onPress={changeProfilePhoto}
+              />
 
               <Input
                 inputName="Nama*"
