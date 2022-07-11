@@ -41,7 +41,7 @@ const Notification = () => {
         console.log(error);
         dispatch(setLoading(false));
 
-        if ((error.message = 'Request failed with status code 401')) {
+        if (error.message === 'Request failed with status code 401') {
           await AsyncStorage.setItem('@access_token', '');
           Alert.alert(
             'Pemberitahuan',

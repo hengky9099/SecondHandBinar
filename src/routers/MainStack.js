@@ -39,7 +39,7 @@ const MainStack = () => {
         name="Profile"
         component={Profile}
         options={{headerShown: false}}
-       />
+      />
       <Stack.Screen
         name="MainApp"
         component={MainApp}

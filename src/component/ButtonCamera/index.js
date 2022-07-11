@@ -4,17 +4,30 @@ import {moderateScale} from 'react-native-size-matters';
 import {COLORS} from '../../helpers/colors';
 import {cameraPic} from '../../assets';
 
-const ButtonCamera = ({onPress, url}) => {
-  return (
-    <TouchableOpacity style={styles.toCamera} onPress={onPress}>
-      <View style={styles.containerCamera}>
-        <Image
-          source={url ? {uri: url} : cameraPic}
-          style={styles.imageCamera}
-        />
+const ButtonCamera = ({onPress, url, type = 'change'}) => {
+  if (type === 'change') {
+    return (
+      <TouchableOpacity style={styles.toCamera} onPress={onPress}>
+        <View style={styles.containerCamera}>
+          <Image
+            source={url ? {uri: url} : cameraPic}
+            style={styles.imageCamera}
+          />
+        </View>
+      </TouchableOpacity>
+    );
+  } else if (type === 'notChange') {
+    return (
+      <View style={styles.toCamera}>
+        <View style={styles.containerCamera}>
+          <Image
+            source={url ? {uri: url} : cameraPic}
+            style={styles.imageCamera}
+          />
+        </View>
       </View>
-    </TouchableOpacity>
-  );
+    );
+  }
 };
 
 export default ButtonCamera;

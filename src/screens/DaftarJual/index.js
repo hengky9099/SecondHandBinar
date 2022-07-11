@@ -106,7 +106,7 @@ const DaftarJual = () => {
         console.log(error);
         dispatch(setLoading(false));
 
-        if ((error.message = 'Request failed with status code 401')) {
+        if (error.message === 'Request failed with status code 401') {
           await AsyncStorage.setItem('@access_token', '');
           Alert.alert(
             'Pemberitahuan',
@@ -282,7 +282,6 @@ const DaftarJual = () => {
           keyExtractor={(_item, index) => index}
           renderItem={renderDataOrderSeller}
           data={orderan}
-          numColumns={1}
         />
       </View>
     );

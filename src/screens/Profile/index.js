@@ -12,46 +12,50 @@ import {kota} from '../../helpers/kota';
 import {launchImageLibrary} from 'react-native-image-picker';
 import axios from 'axios';
 import {baseUrl} from '@env';
+import {setLoading} from '../../redux/globalAction';
 
 const Profile = ({navigation}) => {
+  const {dataLogin, dataUser} = useSelector(state => state.login);
+  const dispatch = useDispatch();
+
   const [open, setOpen] = useState(false);
   const [value, setValue] = useState(null);
   const [items, setItems] = useState(kota);
   const [image, setImage] = useState('');
-  const [user, setUser] = useState({
-    name: '',
-    kota: '',
-    alamat: '',
-    handphone: '',
+  const [user] = useState({
+    name: dataUser?.full_name,
+    kota: dataUser?.city,
+    alamat: dataUser.address === 'null' ? '' : dataUser.address,
+    handphone: dataUser.phone_number === 'null' ? '' : dataUser.phone_number,
   });
 
-  const {dataLogin} = useSelector(state => state.login);
+  // useEffect(() => {
+  //   getProfile();
+  // });
 
-  useEffect(() => {
-    getProfile();
-  });
-
-  const getProfile = async () => {
-    try {
-      const res = await axios.get(`${baseUrl}/auth/user`, {
-        headers: {access_token: `${dataLogin.access_token}`},
-      });
-      console.log(res.data);
-      setUser({
-        name: res.data.full_name,
-        kota: res.data.city,
-        alamat: (res.data.address = 'null' ? '' : res.data.address),
-        handphone: (res.data.phone_number = 'null'
-          ? ''
-          : res.data.phone_number),
-      });
-    } catch (error) {
-      console.log(error);
-    }
-  };
+  // const getProfile = async () => {
+  //   try {
+  //     const res = await axios.get(`${baseUrl}/auth/user`, {
+  //       headers: {access_token: `${dataLogin.access_token}`},
+  //     });
+  //     console.log(res.data);
+  //     setUser({
+  //       name: res.data.full_name,
+  //       kota: res.data.city,
+  //       alamat: (res.data.address = 'null' ? '' : res.data.address),
+  //       handphone: (res.data.phone_number = 'null'
+  //         ? ''
+  //         : res.data.phone_number),
+  //     });
+  //   } catch (error) {
+  //     console.log(error);
+  //   }
+  // };
 
   const postProfile = async () => {
     try {
+      dispatch(setLoading(true));
+
       const formData = new FormData();
       formData.append('full_name', user.name);
       formData.append('email', dataLogin.email);
@@ -64,13 +68,13 @@ const Profile = ({navigation}) => {
         type: 'image/jpeg',
       });
       const res = await axios.put(`${baseUrl}/auth/user`, formData, {
-        validateStatus: status => status < 501,
         headers: {
           access_token: `${dataLogin.access_token}`,
           'Content-Type': 'multipart/form-data',
         },
       });
       console.log(res);
+      dispatch(setLoading(false));
       // axios({
       //   url: `${baseUrl}/auth/user`,
       //   method: 'PUT',
@@ -82,12 +86,13 @@ const Profile = ({navigation}) => {
       // });
     } catch (error) {
       console.log(error);
+      dispatch(setLoading(false));
     }
   };
 
   const changeProfilePhoto = async () => {
-    await launchImageLibrary({mediaType: 'photo'}).then(image =>
-      setImage(image.assets[0].uri),
+    await launchImageLibrary({mediaType: 'photo'}).then(imageUrl =>
+      setImage(imageUrl.assets[0].uri),
     );
   };
 
@@ -101,12 +106,12 @@ const Profile = ({navigation}) => {
   return (
     <Formik
       validationSchema={validationProfile}
-      initialValues={{name: '', kota: '', alamat: '', handphone: ''}}>
+      initialValues={user}
       enableReinitialize={true}
-      validationSchema={validationProfile}
-      initialValues={user}>
-
-      {({handleChange, handleBlur, values, errors, touched}) => {
+      // validationSchema={validationProfile}
+      // initialValues={{name: '', kota: '', alamat: '', handphone: ''}}
+      onSubmit={postProfile}>
+      {({handleChange, handleBlur, values, errors, touched, handleSubmit}) => {
         return (
           <View flex={1} style={styles.container}>
             <Header
@@ -173,7 +178,7 @@ const Profile = ({navigation}) => {
               <Text style={styles.errorValidation}>{errors.handphone}</Text>
             )}
             <View style={styles.btnSimpan}>
-              <Button textButton1={'Simpan'} onPressButton1={postProfile} />
+              <Button textButton1={'Simpan'} onPressButton1={handleSubmit} />
             </View>
           </View>
         );
