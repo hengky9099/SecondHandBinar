@@ -1,4 +1,3 @@
-/* eslint-disable react-native/no-inline-styles */
 import React, {Component} from 'react';
 import {
   ScrollView,
@@ -24,7 +23,7 @@ class Categories extends Component {
               })
             }>
             <View style={styles.barcategories}>
-              <Icon name="search" size={15} style={{marginTop: 4}} />
+              <Icon name="search" size={15} style={styles.icon} />
               <Text>{category}</Text>
             </View>
           </TouchableOpacity>
@@ -47,5 +46,8 @@ const styles = StyleSheet.create({
     margin: 5,
     height: 44,
     borderRadius: 10,
+  },
+  icon: {
+    marginTop: 4,
   },
 });

@@ -1,24 +1,12 @@
 /* eslint-disable react-native/no-inline-styles */
-<<<<<<< HEAD
-import {StyleSheet, Text, View, StatusBar, Image, FlatList} from 'react-native';
-
-import React, {useEffect} from 'react';
-=======
-import {StyleSheet, View, Image, ScrollView} from 'react-native';
+import {StyleSheet, View, Image, FlatList} from 'react-native';
 import React from 'react';
->>>>>>> 76fbe30ec8b1784ee575120a0a184ee961028b51
 import LinearGradient from 'react-native-linear-gradient';
 import ItemProductCard from '../../component/ItemProductCard/index';
-<<<<<<< HEAD
-import {SearchBar, Categories} from '../../component';
-import {useDispatch, useSelector} from 'react-redux';
-import {getProduct} from '../Home/redux/action';
-=======
-import {SearchBar, Poppins, ButtonFitur} from '../../component';
+import {SearchBar, Poppins} from '../../component';
 import {moderateScale} from 'react-native-size-matters';
 import {Box} from '../../assets/Images';
 import {COLORS} from '../../helpers/colors';
->>>>>>> 76fbe30ec8b1784ee575120a0a184ee961028b51
 
 export default function Home({navigation}) {
   // const dispatch = useDispatch();
@@ -59,32 +47,6 @@ export default function Home({navigation}) {
       <View style={styles.categories}>
         <Poppins style={styles.textTK}>Telusuri Kategori</Poppins>
       </View>
-<<<<<<< HEAD
-=======
-      <ScrollView
-        horizontal={true}
-        showsHorizontalScrollIndicator={false}
-        style={styles.fitur}>
-        <ButtonFitur nameIcon={'search'} nameFitur={'semua'} />
-        <ButtonFitur nameIcon={'search'} nameFitur={'Hobi'} />
-        <ButtonFitur nameIcon={'search'} nameFitur={'Kendaraan'} />
-        <ButtonFitur nameIcon={'box'} nameFitur={'Product'} />
-        <ButtonFitur nameIcon={'heart'} nameFitur={'Diminati'} />
-        <ButtonFitur nameIcon={'dollar-sign'} nameFitur={'Terjual'} />
-      </ScrollView>
-      <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
-        <ItemProductCard
-          productName={'Jam Tangan Casio'}
-          productType={'Aksesoris'}
-          productPrice={'Rp 250.000'}
-        />
-        <ItemProductCard
-          productName={'Smartwatch Sams...'}
-          productType={'Aksesoris'}
-          productPrice={'Rp 3.550.000'}
-        />
-      </ScrollView>
->>>>>>> 76fbe30ec8b1784ee575120a0a184ee961028b51
     </View>
   );
   return (
@@ -155,14 +117,13 @@ const styles = StyleSheet.create({
     marginVertical: 20,
     marginHorizontal: 20,
   },
-<<<<<<< HEAD
   cardWrapper: {
     marginTop: 10,
     flex: 1,
     flexWrap: 'wrap',
     justifyContent: 'space-between',
     marginHorizontal: 16,
-=======
+  },
   textBR: {
     fontFamily: 'Poppins-Bold',
     fontSize: moderateScale(22),
@@ -197,6 +158,5 @@ const styles = StyleSheet.create({
   fitur: {
     marginTop: moderateScale(19),
     marginHorizontal: moderateScale(5),
->>>>>>> 76fbe30ec8b1784ee575120a0a184ee961028b51
   },
 });

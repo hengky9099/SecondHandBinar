@@ -10,6 +10,7 @@ import StatusBarCore from './StatusBarCore';
 import ItemNotificationCard from './ItemNotificationCard';
 import IdentityCard from './IdentityCard';
 import InputAdd from './InputAdd';
+import Categories from './Categories';
 
 export {
   Button,
@@ -18,15 +19,12 @@ export {
   Header,
   ItemProductCard,
   SearchBar,
-<<<<<<< HEAD
   Categories,
-=======
   ButtonFitur,
   ButtonCamera,
   StatusBarCore,
   ItemNotificationCard,
   IdentityCard,
   InputAdd,
->>>>>>> 76fbe30ec8b1784ee575120a0a184ee961028b51
 };
 export * from './FontComponents';
