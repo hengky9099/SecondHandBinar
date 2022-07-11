@@ -105,7 +105,7 @@ const InfoPenawar = () => {
     setDatas(newData);
   };
 
-  const RenderItem = ({item, index}) => {
+  const renderItem = ({item}) => {
     return (
       <TouchableOpacity onPress={() => onPressButtonCard(item)}>
         <ItemNotificationCard
@@ -148,7 +148,7 @@ const InfoPenawar = () => {
           <FlatList
             showsVerticalScrollIndicator={false}
             data={datas}
-            renderItem={RenderItem}
+            renderItem={renderItem}
             keyExtractor={(item, index) => index}
           />
         </View>

@@ -1,5 +1,5 @@
-import {StyleSheet, Text, View, Scrollview} from 'react-native';
-import React, {useEffect, useState} from 'react';
+import {StyleSheet, Text, View} from 'react-native';
+import React, {useState} from 'react';
 import {Button, Header, Input} from '../../component';
 import {Formik} from 'formik';
 import * as Yup from 'yup';
