@@ -1,18 +1,18 @@
-import {StyleSheet, Text, View} from 'react-native';
+import {StyleSheet, View} from 'react-native';
 import React, {useState} from 'react';
 import {Formik} from 'formik';
 import * as Yup from 'yup';
-import {Button, Header, Input, InputAdd} from '../../component';
+import {Button, Header, Input, InputAdd, Poppins} from '../../component';
 import DropDownPicker from 'react-native-dropdown-picker';
 import {COLORS} from '../../helpers/colors';
 import {moderateScale} from 'react-native-size-matters';
 import {launchImageLibrary} from 'react-native-image-picker';
-import {useSelector} from 'react-redux';
-import axios from 'axios';
-import {baseUrl} from '@env';
-import {textToBinary} from '../../helpers/functions';
+import {useDispatch, useSelector} from 'react-redux';
+import {navigate} from '../../helpers/navigate';
+import {postDataProduk, setDataProduct} from './redux/action';
 
 const Index = ({navigation}) => {
+  const dispacth = useDispatch();
   const [open, setOpen] = useState(false);
   const [value, setValue] = useState([]);
   const [items, setItems] = useState([
@@ -21,68 +21,37 @@ const Index = ({navigation}) => {
     {label: 'Sandal', value: '3'},
     {label: 'Baju', value: '4'},
   ]);
-  const [data, setData] = useState({
+
+  const [data] = useState({
     namaproduk: '',
     kategori: [],
     deskripsi: '',
     hargaproduk: '',
   });
+
   const [image, setImage] = useState('');
   const {dataLogin} = useSelector(state => state.login);
-
-  const postDataProduk = async () => {
-    try {
-      const formData = new FormData();
-      formData.append('name', data.namaproduk);
-      formData.append('description', data.deskripsi);
-      formData.append('base_price', data.hargaproduk);
-      formData.append('category_ids', data.kategori);
-      formData.append('location', dataLogin.address);
-      formData.append('image', {
-        uri: image,
-        name: image,
-        type: 'image/jpeg',
-      });
-      const res = await axios.post(`${baseUrl}/seller/product`, formData, {
-        headers: {
-          access_token: `${dataLogin.access_token}`,
-          'Content-Type': 'multipart/form-data',
-        },
-      });
-      console.log(res);
-    } catch (error) {
-      console.log(error);
-    }
+  const dataProduct = {
+    name: data.namaproduk,
+    category_ids: data.kategori,
+    description: data.deskripsi,
+    base_price: data.hargaproduk,
+    location: dataLogin.location,
+    image: image,
   };
 
-  // const postDataProduk = async () => {
-  //   const body = {
-  //     name: 'asdf',
-  //     category_ids: [1],
-  //     description: 'sdfasfd',
-  //     base_price: 500,
-  //     image: textToBinary(
-  //       'https://firebasestorage.googleapis.com/v0/b/market-final-project.appspot.com/o/products%2FPR-1654962957757-sepatu.jpg?alt=media',
-  //     ),
-  //     location: 'adsf',
-  //   };
-  //   console.log(image);
-  //   try {
-  //     console.log(body);
-  //     const res = await axios.post(`${baseUrl}/seller/product`, body, {
-  //       headers: {access_token: `${dataLogin.access_token}`},
-  //       validateStatus: status => status < 501,
-  //     });
+  const postDataProduct = () => {
+    dispacth(postDataProduk(data, dataLogin, image));
+  };
 
-  //     console.log(res);
-  //   } catch (error) {
-  //     console.log(error);
-  //   }
-  // };
+  const sendDataProduct = () => {
+    dispacth(setDataProduct(dataProduct));
+    navigate('Preview');
+  };
 
   const addProductImage = async () => {
-    await launchImageLibrary({mediaType: 'photo'}).then(image =>
-      setImage(image.assets[0].uri),
+    await launchImageLibrary({mediaType: 'photo'}).then(dataImage =>
+      setImage(dataImage.assets[0]),
     );
   };
 
@@ -92,6 +61,7 @@ const Index = ({navigation}) => {
     deskripsi: Yup.string().required('Alamat tidak boleh kosong'),
     hargaproduk: Yup.string().required('No. Handphone tidak boleh kosong'),
   });
+
   return (
     <Formik validationSchema={validationProfile} initialValues={data}>
       {({handleChange, handleBlur, values, errors, touched}) => {
@@ -113,7 +83,9 @@ const Index = ({navigation}) => {
               />
             </View>
             {touched.namaproduk && errors.namaproduk && (
-              <Text style={styles.errorValidation}>{errors.namaproduk}</Text>
+              <Poppins style={styles.errorValidation}>
+                {errors.namaproduk}
+              </Poppins>
             )}
 
             <View style={styles.contentContainer}>
@@ -128,11 +100,13 @@ const Index = ({navigation}) => {
             </View>
 
             {touched.hargaproduk && errors.hargaproduk && (
-              <Text style={styles.errorValidation}>{errors.hargaproduk}</Text>
+              <Poppins style={styles.errorValidation}>
+                {errors.hargaproduk}
+              </Poppins>
             )}
 
             <View style={styles.contentContainer}>
-              <Text style={styles.kategori}>Kategori*</Text>
+              <Poppins style={styles.kategori}>Kategori*</Poppins>
               <DropDownPicker
                 style={styles.dropdownPicker}
                 placeholder="Pilih Kategori"
@@ -162,18 +136,20 @@ const Index = ({navigation}) => {
             </View>
 
             {touched.deskripsi && errors.deskripsi && (
-              <Text style={styles.errorValidation}>{errors.deskripsi}</Text>
+              <Poppins style={styles.errorValidation}>
+                {errors.deskripsi}
+              </Poppins>
             )}
 
             <View>
-              <Text style={styles.addInputText}>Foto Produk</Text>
+              <Poppins style={styles.addInputText}>Foto Produk</Poppins>
               <InputAdd style={styles.addInput} onPress={addProductImage} />
             </View>
 
             <View style={styles.button}>
               <Button
-                onPressButton1={postDataProduk}
-                onPressButton2={postDataProduk}
+                onPressButton1={sendDataProduct}
+                onPressButton2={postDataProduct}
                 numButton={2}
                 textButton1={'Preview'}
                 textButton2={'Terbitkan'}
@@ -198,9 +174,7 @@ const styles = StyleSheet.create({
     color: 'red',
     marginBottom: moderateScale(10),
   },
-  contentContainer: {
-    alignItems: 'center',
-  },
+  contentContainer: {},
   dropdownPicker: {
     width: moderateScale(325),
     marginLeft: moderateScale(15),
@@ -210,19 +184,16 @@ const styles = StyleSheet.create({
   },
   kategori: {
     color: COLORS.black,
-    left: moderateScale(-135),
+    marginStart: moderateScale(5),
   },
   button: {
-    marginLeft: moderateScale(10),
-    top: moderateScale(630),
-    position: 'absolute',
+    marginTop: moderateScale(10),
   },
   addInput: {
     marginLeft: moderateScale(16),
   },
   addInputText: {
-    marginLeft: moderateScale(18),
-    marginBottom: moderateScale(5),
+    marginLeft: moderateScale(5),
     color: COLORS.black,
   },
 });

@@ -101,11 +101,10 @@ const Profile = ({navigation}) => {
   return (
     <Formik
       validationSchema={validationProfile}
-      initialValues={{name: '', kota: '', alamat: '', handphone: ''}}>
+      initialValues={user}
       enableReinitialize={true}
-      validationSchema={validationProfile}
-      initialValues={user}>
-
+      // initialValues={{name: '', kota: '', alamat: '', handphone: ''}}
+    >
       {({handleChange, handleBlur, values, errors, touched}) => {
         return (
           <View flex={1} style={styles.container}>
