@@ -25,5 +25,38 @@ const styles = StyleSheet.create({
     height: moderateScale(44),
     borderRadius: moderateScale(16),
   },
+  headerComponent: {
+    marginBottom: moderateScale(80),
+  },
+  footerComponent: {height: moderateScale(100)},
+  contentDiminati: {
+    paddingHorizontal: moderateScale(10),
+  },
+  contentProduct: {
+    justifyContent: 'flex-start',
+  },
+  productView: {
+    marginTop: moderateScale(10),
+    marginLeft: moderateScale(16),
+    borderRadius: moderateScale(4),
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    marginBottom: moderateScale(300),
+  },
+  wrapDiminati: {
+    alignItems: 'center',
+    marginBottom: moderateScale(200),
+  },
+  imageDiminati: {
+    width: moderateScale(150),
+    height: moderateScale(120),
+    marginTop: moderateScale(100),
+  },
+  textDiminati: {
+    textAlign: 'center',
+    marginHorizontal: moderateScale(30),
+    fontSize: moderateScale(14),
+    marginTop: moderateScale(10),
+  },
 });
 export {styles};
