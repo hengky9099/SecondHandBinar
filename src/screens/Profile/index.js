@@ -1,4 +1,4 @@
-import {StyleSheet, Text, View} from 'react-native';
+import {ScrollView, StyleSheet, Text, View} from 'react-native';
 import React, {useState} from 'react';
 import {Button, Header, Input} from '../../component';
 import {Formik} from 'formik';
@@ -113,27 +113,27 @@ const Profile = ({navigation}) => {
       onSubmit={postProfile}>
       {({handleChange, handleBlur, values, errors, touched, handleSubmit}) => {
         return (
-          <View flex={1} style={styles.container}>
+          <ScrollView flex={1} style={styles.container}>
             <Header
               headerName={'Lengkapi Info Akun'}
               onPressBack={() => {
                 navigation.goBack();
               }}
             />
-            <View style={styles.contentContainer}>
+            <View style={styles.imageContainer}>
               <ButtonCamera
                 url={dataUser.image_url}
                 onPress={changeProfilePhoto}
               />
-
-              <Input
-                inputName="Nama*"
-                placeholder="Nama Lengkap"
-                onChangeText={handleChange('name')}
-                onBlur={handleBlur('name')}
-                value={values.name}
-              />
             </View>
+            <Input
+              inputName="Nama*"
+              placeholder="Nama Lengkap"
+              onChangeText={handleChange('name')}
+              onBlur={handleBlur('name')}
+              value={values.name}
+            />
+
             {touched.name && errors.name && (
               <Text style={styles.errorValidation}>{errors.name}</Text>
             )}
@@ -180,10 +180,11 @@ const Profile = ({navigation}) => {
             {touched.handphone && errors.handphone && (
               <Text style={styles.errorValidation}>{errors.handphone}</Text>
             )}
+
             <View style={styles.btnSimpan}>
               <Button textButton1={'Simpan'} onPressButton1={handleSubmit} />
             </View>
-          </View>
+          </ScrollView>
         );
       }}
     </Formik>
@@ -202,14 +203,9 @@ const styles = StyleSheet.create({
     color: 'red',
     marginBottom: moderateScale(10),
   },
-  contentContainer: {
-    alignItems: 'center',
-  },
+  contentContainer: {},
   btnSimpan: {
-    alignItems: 'center',
-    marginTop: moderateScale(640),
-    position: 'absolute',
-    left: moderateScale(10),
+    marginTop: moderateScale(15),
   },
   dropdownPicker: {
     width: moderateScale(325),
@@ -220,6 +216,9 @@ const styles = StyleSheet.create({
   },
   kota: {
     color: COLORS.black,
-    left: moderateScale(-145),
+    marginStart: moderateScale(5),
+  },
+  imageContainer: {
+    alignItems: 'center',
   },
 });
