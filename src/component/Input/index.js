@@ -1,17 +1,9 @@
-import {
-  StyleSheet,
-  TextInput,
-  TouchableOpacity,
-  View,
-  Dimensions,
-} from 'react-native';
+import {StyleSheet, TextInput, TouchableOpacity, View} from 'react-native';
 import React, {useState} from 'react';
 import {COLORS} from '../../helpers/colors';
 import Feather from 'react-native-vector-icons/Feather';
 import {moderateScale} from 'react-native-size-matters';
 import {Poppins} from '../FontComponents';
-
-const {width} = Dimensions.get('window');
 
 const Input = ({
   onChangeText,

@@ -95,7 +95,7 @@ const App = () => {
       </PersistGate>
     </Provider>
   );
-}
+};
 
 const styles = StyleSheet.create({
   success: {
@@ -131,6 +131,5 @@ const styles = StyleSheet.create({
     paddingVertical: moderateScale(16),
   },
 });
-};
 
 export default codePush(codePushOptions)(App);
