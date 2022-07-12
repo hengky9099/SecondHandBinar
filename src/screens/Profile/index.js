@@ -10,8 +10,8 @@ import {useSelector} from 'react-redux';
 import ButtonCamera from '../../component/ButtonCamera';
 import {kota} from '../../helpers/kota';
 import {launchImageLibrary} from 'react-native-image-picker';
-import axios from 'axios';
 import {baseUrl} from '@env';
+import axios from 'axios';
 
 const Profile = ({navigation}) => {
   const [open, setOpen] = useState(false);
@@ -19,10 +19,11 @@ const Profile = ({navigation}) => {
   const [items, setItems] = useState(kota);
   const [image, setImage] = useState('');
   const [user, setUser] = useState({
-    name: '',
-    kota: '',
-    alamat: '',
-    handphone: '',
+    full_name: '',
+    city: '',
+    address: '',
+    phone_number: '',
+    image: '',
   });
 
   const {dataLogin} = useSelector(state => state.login);
@@ -36,50 +37,42 @@ const Profile = ({navigation}) => {
       const res = await axios.get(`${baseUrl}/auth/user`, {
         headers: {access_token: `${dataLogin.access_token}`},
       });
-      console.log(res.data);
       setUser({
-        name: res.data.full_name,
-        kota: res.data.city,
-        alamat: (res.data.address = 'null' ? '' : res.data.address),
-        handphone: (res.data.phone_number = 'null'
-          ? ''
-          : res.data.phone_number),
+        full_name: res.data.full_name,
+        city: res.data.city,
+        address: res.data.address,
+        phone_number: res.data.phone_number,
+        image: res.data.image_url,
       });
+      console.log(user);
     } catch (error) {
       console.log(error);
     }
   };
 
-  const postProfile = async () => {
+  const putProfile = async values => {
     try {
-      const formData = new FormData();
-      formData.append('full_name', user.name);
-      formData.append('email', dataLogin.email);
-      formData.append('phone_number', user.handphone);
-      formData.append('address', user.alamat);
-      formData.append('city', user.kota);
-      formData.append('image_url', {
+      const body = new FormData();
+      body.append('full_name', values.full_name);
+      body.append('phone_number', values.phone_number);
+      body.append('address', values.address);
+      body.append('city', value);
+      body.append('image', {
         uri: image,
-        name: image,
         type: 'image/jpeg',
       });
-      const res = await axios.put(`${baseUrl}/auth/user`, formData, {
-        validateStatus: status => status < 501,
+      console.log(values.full_name);
+
+      const res = await fetch(`${baseUrl}/auth/user`, {
+        method: 'PUT',
         headers: {
-          access_token: `${dataLogin.access_token}`,
           'Content-Type': 'multipart/form-data',
+          access_token: `${dataLogin.access_token}`,
         },
+        body: body,
       });
-      console.log(res);
-      // axios({
-      //   url: `${baseUrl}/auth/user`,
-      //   method: 'PUT',
-      //   data: formData,
-      //   headers: {
-      //     Accept: 'application/json',
-      //     'Content-Type': 'multipart/form-data',
-      //   },
-      // });
+
+      console.log(await res.json());
     } catch (error) {
       console.log(error);
     }
@@ -93,17 +86,17 @@ const Profile = ({navigation}) => {
 
   // For validation
   const validationProfile = Yup.object().shape({
-    name: Yup.string().required('Nama tidak boleh kosong'),
-    kota: Yup.string().required('Kota tidak boleh kosong'),
-    alamat: Yup.string().required('Alamat tidak boleh kosong'),
-    handphone: Yup.string().required('No. Handphone tidak boleh kosong'),
+    full_name: Yup.string().required('Nama tidak boleh kosong'),
+    address: Yup.string().required('Alamat tidak boleh kosong'),
+    phone_number: Yup.string().required('No. Handphone tidak boleh kosong'),
   });
   return (
     <Formik
       enableReinitialize={true}
       validationSchema={validationProfile}
-      initialValues={user}>
-      {({handleChange, handleBlur, values, errors, touched}) => {
+      initialValues={user}
+      onSubmit={putProfile}>
+      {({handleChange, handleSubmit, handleBlur, values, errors, touched}) => {
         return (
           <View flex={1} style={styles.container}>
             <Header
@@ -113,18 +106,18 @@ const Profile = ({navigation}) => {
               }}
             />
             <View style={styles.contentContainer}>
-              <ButtonCamera onPress={changeProfilePhoto} />
+              <ButtonCamera onPress={changeProfilePhoto} url={user.image} />
 
               <Input
                 inputName="Nama*"
                 placeholder="Nama Lengkap"
-                onChangeText={handleChange('name')}
-                onBlur={handleBlur('name')}
-                value={values.name}
+                onChangeText={handleChange('full_name')}
+                onBlur={handleBlur('full_name')}
+                value={values.full_name}
               />
             </View>
-            {touched.name && errors.name && (
-              <Text style={styles.errorValidation}>{errors.name}</Text>
+            {touched.full_name && errors.full_name && (
+              <Text style={styles.errorValidation}>{errors.full_name}</Text>
             )}
 
             <View style={styles.contentContainer}>
@@ -146,31 +139,31 @@ const Profile = ({navigation}) => {
                 multiline={true}
                 numberOfLines={4}
                 styleInput={styles.alamatContainer}
-                onChangeText={handleChange('alamat')}
-                onBlur={handleBlur('alamat')}
-                value={values.alamat}
+                onChangeText={handleChange('address')}
+                onBlur={handleBlur('address')}
+                value={values.address}
               />
             </View>
 
-            {touched.alamat && errors.alamat && (
-              <Text style={styles.errorValidation}>{errors.alamat}</Text>
+            {touched.address && errors.address && (
+              <Text style={styles.errorValidation}>{errors.address}</Text>
             )}
             <View style={styles.contentContainer}>
               <Input
                 keyboardType={'numeric'}
                 inputName="No Handphone*"
                 placeholder="Contoh: 08123456789"
-                onChangeText={handleChange('handphone')}
-                onBlur={handleBlur('handphone')}
-                value={values.handphone}
+                onChangeText={handleChange('phone_number')}
+                onBlur={handleBlur('phone_number')}
+                value={values.phone_number}
               />
             </View>
 
-            {touched.handphone && errors.handphone && (
-              <Text style={styles.errorValidation}>{errors.handphone}</Text>
+            {touched.phone_number && errors.phone_number && (
+              <Text style={styles.errorValidation}>{errors.phone_number}</Text>
             )}
             <View style={styles.btnSimpan}>
-              <Button textButton1={'Simpan'} onPressButton1={postProfile} />
+              <Button textButton1={'Simpan'} onPressButton1={handleSubmit} />
             </View>
           </View>
         );
