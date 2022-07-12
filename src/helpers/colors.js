@@ -19,6 +19,7 @@ export const COLORS = {
   cream3: '#FFE9CA',
   cream4: '#D4C2A8',
   cream5: '#AA9B87',
+  pink: '#FA2C5A',
   red: '#FA2C5A',
   yellow: '#F9CC00',
   green: '#73CA5C',

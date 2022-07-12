@@ -26,10 +26,12 @@ const styles = StyleSheet.create({
   },
   containerCamera: {
     backgroundColor: COLORS.primaryPurple,
-    borderRadius: moderateScale(15),
+    borderRadius: moderateScale(20),
     justifyContent: 'center',
     alignItems: 'center',
-    marginHorizontal: moderateScale(100),
+    width: moderateScale(120),
+    // marginHorizontal: moderateScale(100),
+
     paddingVertical: moderateScale(50),
   },
   imageCamera: {width: moderateScale(30), height: moderateScale(30)},

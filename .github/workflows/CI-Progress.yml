@@ -8,12 +8,12 @@ on:
         CI/CD,
         components,
         AkunScreen,
-        development,
+        developments,
         login-featured,
         register-featured,
       ]
   pull_request:
-    branches: [main, development]
+    branches: [main, developments]
 
 jobs:
   testing:
