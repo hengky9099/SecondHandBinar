@@ -33,7 +33,9 @@ const styles = StyleSheet.create({
     paddingHorizontal: moderateScale(10),
   },
   contentProduct: {
-    justifyContent: 'flex-start',
+    justifyContent: 'space-evenly',
+    alignSelf: 'flex-start',
+    marginHorizontal: moderateScale(10),
   },
   productView: {
     marginTop: moderateScale(10),
