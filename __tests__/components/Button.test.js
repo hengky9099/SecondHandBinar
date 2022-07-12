@@ -1,7 +1,7 @@
 import React from 'react';
 import {TouchableOpacity} from 'react-native';
 import TestRenderer from 'react-test-renderer';
-import {Button} from '../../src/component';
+import Button from '../../src/component/Button';
 
 describe('Button Component Testing', () => {
   beforeAll(done => {

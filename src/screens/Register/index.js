@@ -21,6 +21,7 @@ const Register = ({navigation}) => {
 
   // For validation
   const validationSignUp = Yup.object().shape({
+    name: Yup.string().required("Name field can't be empty"),
     email: Yup.string()
       .email('Please enter a valid Email Address!')
       .required("Email field can't be empty"),
@@ -53,6 +54,9 @@ const Register = ({navigation}) => {
                 value={values.name}
               />
             </View>
+            {touched.name && errors.name && (
+              <Text style={styles.errorValidation}>{errors.name}</Text>
+            )}
             <View style={styles.contentContainer}>
               <Input
                 inputName="Email"

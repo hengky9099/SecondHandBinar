@@ -6,10 +6,12 @@ import {
   Akun,
   DaftarJual,
   Home,
-  Jual,
+  LengkapiDetailProduk,
   Login,
   Notification,
+  // NotificationBuyer,
   Register,
+  Profile,
 } from '../screens';
 
 const Stack = createStackNavigator();
@@ -26,6 +28,16 @@ const MainStack = () => {
       <Stack.Screen
         name="Login"
         component={Login}
+        options={{headerShown: false}}
+      />
+      <Stack.Screen
+        name="LengkapiDetailProduk"
+        component={LengkapiDetailProduk}
+        options={{headerShown: false}}
+      />
+      <Stack.Screen
+        name="Profile"
+        component={Profile}
         options={{headerShown: false}}
       />
       <Stack.Screen
@@ -59,13 +71,21 @@ const MainApp = () => (
       name="Notification"
       component={Notification}
     />
+    {/* <Tab.Screen
+      options={{
+        tabBarLabel: 'Notification',
+        tabBarIcon: ({color, size}) => iconBar('bell', color, size),
+      }}
+      name="Notification"
+      component={NotificationBuyer}
+    /> */}
     <Tab.Screen
       options={{
         tabBarLabel: 'Jual',
         tabBarIcon: ({color, size}) => iconBar('plus-circle', color, size),
       }}
       name="Jual"
-      component={Jual}
+      component={LengkapiDetailProduk}
     />
     <Tab.Screen
       options={{

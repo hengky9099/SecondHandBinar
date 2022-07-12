@@ -11,10 +11,23 @@ import {COLORS} from './src/helpers/colors';
 import {moderateScale} from 'react-native-size-matters';
 import {Poppins} from './src/component';
 import Feather from 'react-native-vector-icons/Feather';
+import codePush from 'react-native-code-push';
 
-export default function App() {
+const codePushOptions = {
+  checkFrequency: codePush.CheckFrequency.ON_APP_START,
+};
+
+const App = () => {
+  const syncWithCodePush = status => {
+    console.log('Codepush sync status', status);
+  };
+
   useEffect(() => {
     SplashScreen.hide();
+    codePush.sync(
+      {installMode: codePush.InstallMode.IMMEDIATE},
+      syncWithCodePush,
+    );
   }, []);
 
   const onPressClose = () => {
@@ -118,3 +131,6 @@ const styles = StyleSheet.create({
     paddingVertical: moderateScale(16),
   },
 });
+};
+
+export default codePush(codePushOptions)(App);

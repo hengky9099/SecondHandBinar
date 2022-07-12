@@ -1,9 +1,17 @@
-import {StyleSheet, TextInput, TouchableOpacity, View} from 'react-native';
+import {
+  StyleSheet,
+  TextInput,
+  TouchableOpacity,
+  View,
+  Dimensions,
+} from 'react-native';
 import React, {useState} from 'react';
 import {COLORS} from '../../helpers/colors';
 import Feather from 'react-native-vector-icons/Feather';
 import {moderateScale} from 'react-native-size-matters';
 import {Poppins} from '../FontComponents';
+
+const {width} = Dimensions.get('window');
 
 const Input = ({
   onChangeText,
@@ -19,6 +27,7 @@ const Input = ({
   multiline,
   numberOfLines,
   onBlur,
+  keyboardType,
 }) => {
   const stylesInput = Array.isArray(styleInput)
     ? Object.assign({}, ...styleInput)
@@ -57,6 +66,7 @@ const Input = ({
           onSubmitEditing={onSubmitEditing}
           multiline={multiline}
           numberOfLines={numberOfLines}
+          keyboardType={keyboardType}
         />
         {password ? (
           <TouchableOpacity style={styles.seenButton} onPress={seenPassword}>
