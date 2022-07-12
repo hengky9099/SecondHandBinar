@@ -73,7 +73,6 @@ const Input = ({
             <Feather
               name={seenPass ? 'eye' : 'eye-off'}
               color={COLORS.neutral3}
-              style={styles.icon}
               size={17}
             />
           </TouchableOpacity>
@@ -87,28 +86,24 @@ export default Input;
 
 const styles = StyleSheet.create({
   input: {
-    width: width - moderateScale(30),
     height: moderateScale(48),
     borderRadius: moderateScale(16),
     borderColor: COLORS.neutral2,
     borderWidth: 1,
     padding: moderateScale(15),
     color: COLORS.neutral3,
+    marginHorizontal: moderateScale(15),
   },
   inputName: {
     fontSize: moderateScale(12),
     color: COLORS.black,
-  },
-  icon: {
-    width: moderateScale(22),
-    height: moderateScale(16),
   },
   password: {
     flexDirection: 'row',
     alignItems: 'center',
   },
   seenButton: {
-    marginStart: moderateScale(-30),
+    marginStart: moderateScale(-50),
   },
   page: {
     margin: moderateScale(5),
