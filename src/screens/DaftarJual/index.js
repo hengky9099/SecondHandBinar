@@ -36,8 +36,8 @@ const DaftarJual = () => {
   const navigation = useNavigation();
   const [buttonFiturName, setButtonFiturName] = useState('Product');
   const dispatch = useDispatch();
-  const {dataLogin} = useSelector(state => state.login);
   const {refreshing} = useSelector(state => state.daftarjual);
+  const {dataLogin, dataUser} = useSelector(state => state.login);
   const [orderan, setOrderan] = useState([]);
   const [product, setProduct] = useState([]);
 
@@ -146,10 +146,15 @@ const DaftarJual = () => {
           <Poppins style={styles.textHeaderDJ}>Daftar Jual Saya</Poppins>
         </View>
         <IdentityCard
-          nama="Iqbal"
-          kota={'Klaten'}
-          urlImage={'https://avatars.githubusercontent.com/u/62233239?v=4'}
+          nama={dataUser?.full_name}
+          kota={dataUser?.city ? dataUser?.city : 'City'}
+          urlImage={
+            dataUser?.image_url
+              ? dataUser?.image_url
+              : 'https://avatars.githubusercontent.com/u/62233239?v=4'
+          }
           typeIdentity={'Penjual'}
+          onPressButton={() => navigate('Profile')}
         />
         <ScrollView horizontal={true} style={styles.btnFiturContainer}>
           <View style={styles.btnContainer}>
