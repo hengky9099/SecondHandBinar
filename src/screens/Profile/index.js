@@ -58,10 +58,11 @@ const Profile = ({navigation}) => {
       body.append('address', values.address);
       body.append('city', value);
       body.append('image', {
-        uri: image,
-        type: 'image/jpeg',
+        uri: image.uri,
+        name: image.fileName,
+        type: image.type,
       });
-      console.log(values.full_name);
+      console.log(body);
 
       const res = await fetch(`${baseUrl}/auth/user`, {
         method: 'PUT',
@@ -80,7 +81,7 @@ const Profile = ({navigation}) => {
 
   const changeProfilePhoto = async () => {
     await launchImageLibrary({mediaType: 'photo'}).then(image =>
-      setImage(image.assets[0].uri),
+      setImage(image.assets[0]),
     );
   };
 
