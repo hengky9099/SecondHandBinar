@@ -13,6 +13,7 @@ import {
   Register,
   Profile,
 } from '../screens';
+import {COLORS} from '../helpers/colors';
 
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -67,6 +68,8 @@ const MainApp = () => (
       options={{
         tabBarLabel: 'Notification',
         tabBarIcon: ({color, size}) => iconBar('bell', color, size),
+        tabBarBadge: '',
+        tabBarBadgeStyle: COLORS.red,
       }}
       name="Notification"
       component={Notification}
