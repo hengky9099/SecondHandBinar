@@ -1,4 +1,4 @@
-import {StyleSheet, Text, View} from 'react-native';
+import {ScrollView, StyleSheet, Text, View} from 'react-native';
 import React, {useState} from 'react';
 import {Formik} from 'formik';
 import * as Yup from 'yup';
@@ -10,7 +10,6 @@ import {launchImageLibrary} from 'react-native-image-picker';
 import {useSelector} from 'react-redux';
 import axios from 'axios';
 import {baseUrl} from '@env';
-import {textToBinary} from '../../helpers/functions';
 
 const Index = ({navigation}) => {
   const [open, setOpen] = useState(false);
@@ -21,7 +20,7 @@ const Index = ({navigation}) => {
     {label: 'Sandal', value: '3'},
     {label: 'Baju', value: '4'},
   ]);
-  const [data, setData] = useState({
+  const [data] = useState({
     namaproduk: '',
     kategori: [],
     deskripsi: '',
@@ -81,8 +80,8 @@ const Index = ({navigation}) => {
   // };
 
   const addProductImage = async () => {
-    await launchImageLibrary({mediaType: 'photo'}).then(image =>
-      setImage(image.assets[0].uri),
+    await launchImageLibrary({mediaType: 'photo'}).then(imageUrl =>
+      setImage(imageUrl.assets[0].uri),
     );
   };
 
@@ -96,7 +95,7 @@ const Index = ({navigation}) => {
     <Formik validationSchema={validationProfile} initialValues={data}>
       {({handleChange, handleBlur, values, errors, touched}) => {
         return (
-          <View flex={1} style={styles.container}>
+          <ScrollView flex={1} style={styles.container}>
             <Header
               headerName={'Lengkapi Detail Produk'}
               onPressBack={() => {
@@ -179,7 +178,7 @@ const Index = ({navigation}) => {
                 textButton2={'Terbitkan'}
               />
             </View>
-          </View>
+          </ScrollView>
         );
       }}
     </Formik>
@@ -198,9 +197,7 @@ const styles = StyleSheet.create({
     color: 'red',
     marginBottom: moderateScale(10),
   },
-  contentContainer: {
-    alignItems: 'center',
-  },
+  contentContainer: {},
   dropdownPicker: {
     width: moderateScale(325),
     marginLeft: moderateScale(15),
@@ -210,12 +207,11 @@ const styles = StyleSheet.create({
   },
   kategori: {
     color: COLORS.black,
-    left: moderateScale(-135),
+    marginStart: moderateScale(5),
   },
   button: {
-    marginLeft: moderateScale(10),
-    top: moderateScale(630),
-    position: 'absolute',
+    alignSelf: 'center',
+    marginTop: moderateScale(10),
   },
   addInput: {
     marginLeft: moderateScale(16),

@@ -13,6 +13,7 @@ import {
   Register,
   Profile,
 } from '../screens';
+import {COLORS} from '../helpers/colors';
 
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -39,7 +40,7 @@ const MainStack = () => {
         name="Profile"
         component={Profile}
         options={{headerShown: false}}
-       />
+      />
       <Stack.Screen
         name="MainApp"
         component={MainApp}
@@ -67,6 +68,8 @@ const MainApp = () => (
       options={{
         tabBarLabel: 'Notification',
         tabBarIcon: ({color, size}) => iconBar('bell', color, size),
+        tabBarBadge: '',
+        tabBarBadgeStyle: COLORS.red,
       }}
       name="Notification"
       component={Notification}
