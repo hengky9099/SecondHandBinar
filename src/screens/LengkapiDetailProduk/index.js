@@ -1,4 +1,4 @@
-import {StyleSheet, View} from 'react-native';
+import {Image, StyleSheet, View} from 'react-native';
 import React, {useState} from 'react';
 import {Formik} from 'formik';
 import * as Yup from 'yup';
@@ -22,12 +22,12 @@ const Index = ({navigation}) => {
     {label: 'Baju', value: '4'},
   ]);
 
-  const [data] = useState({
+  const data = {
     namaproduk: '',
-    kategori: [],
+    kategori: 0,
     deskripsi: '',
     hargaproduk: '',
-  });
+  };
 
   const [image, setImage] = useState('');
   const {dataLogin} = useSelector(state => state.login);
@@ -40,24 +40,28 @@ const Index = ({navigation}) => {
     image: image,
   };
 
-  const postDataProduk = async () => {
+  const postDataProduk = async values => {
     try {
       const body = new FormData();
-      body.append('name', data.namaproduk);
-      body.append('description', data.deskripsi);
-      body.append('base_price', data.hargaproduk);
-      body.append('category_ids', data.kategori);
-      body.append('location', 'dataLogin.address'); //ganti jd data user nanti
+      body.append('name', values.namaproduk);
+      body.append('description', values.deskripsi);
+      body.append('base_price', values.hargaproduk);
+      body.append('category_ids', 1);
+      body.append('location', 'Bekasi'); //ganti jd data user nanti
       body.append('image', {
-        uri: image.uri,
+        name: image.fileName,
         type: image.type,
+        uri: image.uri,
       });
+
+      console.log(values.kategori, 'Des');
 
       const res = await fetch(
         'https://market-final-project.herokuapp.com/seller/product',
         {
-          method: 'PUT',
+          method: 'POST',
           headers: {
+            accept: 'body',
             'Content-Type': 'multipart/form-data',
             access_token: `${dataLogin.access_token}`,
           },
@@ -72,10 +76,6 @@ const Index = ({navigation}) => {
       console.log(error, 'error lengkapi');
     }
   };
-
-  // const postDataProduct = () => {
-  //   postDataProduk();
-  // };
 
   const sendDataProduct = () => {
     dispacth(setDataProduct(dataProduct));
@@ -177,12 +177,15 @@ const Index = ({navigation}) => {
             <View>
               <Poppins style={styles.addInputText}>Foto Produk</Poppins>
               <InputAdd style={styles.addInput} onPress={addProductImage} />
+              <Image source={{uri: image.uri}} style={styles.image} />
             </View>
 
             <View style={styles.button}>
               <Button
                 onPressButton1={sendDataProduct}
-                onPressButton2={postDataProduk}
+                onPressButton2={() => {
+                  postDataProduk(values);
+                }}
                 numButton={2}
                 textButton1={'Preview'}
                 textButton2={'Terbitkan'}
@@ -228,5 +231,11 @@ const styles = StyleSheet.create({
   addInputText: {
     marginLeft: moderateScale(5),
     color: COLORS.black,
+  },
+  image: {
+    width: moderateScale(100),
+    height: moderateScale(100),
+    marginTop: moderateScale(5),
+    marginStart: moderateScale(15),
   },
 });
