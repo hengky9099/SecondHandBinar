@@ -15,6 +15,7 @@ const Index = ({navigation}) => {
   const dispacth = useDispatch();
   const [open, setOpen] = useState(false);
   const [value, setValue] = useState([]);
+
   const [items, setItems] = useState([
     {label: 'Tas', value: '1'},
     {label: 'Sepatu', value: '2'},
