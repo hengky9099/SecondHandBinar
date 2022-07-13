@@ -23,4 +23,6 @@ export const COLORS = {
   red: '#FA2C5A',
   yellow: '#F9CC00',
   green: '#73CA5C',
+  gray: '#C4C4C4',
+  shadow: '#00000099',
 };

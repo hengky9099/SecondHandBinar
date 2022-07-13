@@ -120,6 +120,7 @@ const styles = StyleSheet.create({
     padding: moderateScale(5),
     margin: moderateScale(10),
   },
+
   containerCamera: {
     backgroundColor: COLORS.primaryPurple,
     borderRadius: moderateScale(15),

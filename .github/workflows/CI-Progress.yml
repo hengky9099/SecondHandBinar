@@ -6,7 +6,7 @@ on:
     branches:
       [
         CI/CD,
-        components,
+        componentv2,
         AkunScreen,
         developments,
         login-featured,

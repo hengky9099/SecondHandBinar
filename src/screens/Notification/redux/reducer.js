@@ -6,7 +6,7 @@ const initialState = {
   refreshing: false,
 };
 
-const DaftarJualReducer = (state = initialState, action) => {
+const NotificationReducer = (state = initialState, action) => {
   switch (action.type) {
     case SET_NOTIFICATION:
       return {
@@ -30,4 +30,4 @@ const DaftarJualReducer = (state = initialState, action) => {
       return {...state};
   }
 };
-export default DaftarJualReducer;
+export default NotificationReducer;

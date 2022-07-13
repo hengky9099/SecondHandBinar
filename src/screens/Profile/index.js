@@ -1,19 +1,23 @@
-import {StyleSheet, Text, View, Scrollview} from 'react-native';
-import React, {useEffect, useState} from 'react';
+import {ScrollView, StyleSheet, Text, View} from 'react-native';
+import React, {useState} from 'react';
 import {Button, Header, Input} from '../../component';
 import {Formik} from 'formik';
 import * as Yup from 'yup';
 import {moderateScale} from 'react-native-size-matters';
 import DropDownPicker from 'react-native-dropdown-picker';
 import {COLORS} from '../../helpers/colors';
-import {useSelector} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 import ButtonCamera from '../../component/ButtonCamera';
 import {kota} from '../../helpers/kota';
 import {launchImageLibrary} from 'react-native-image-picker';
 import {baseUrl} from '@env';
 import axios from 'axios';
+import {setLoading} from '../../redux/globalAction';
 
 const Profile = ({navigation}) => {
+  const {dataLogin, dataUser} = useSelector(state => state.login);
+  const dispatch = useDispatch();
+
   const [open, setOpen] = useState(false);
   const [value, setValue] = useState(null);
   const [items, setItems] = useState(kota);
@@ -26,11 +30,9 @@ const Profile = ({navigation}) => {
     image: '',
   });
 
-  const {dataLogin} = useSelector(state => state.login);
-
-  useEffect(() => {
-    getProfile();
-  });
+  // useEffect(() => {
+  //   getProfile();
+  // });
 
   const getProfile = async () => {
     try {
@@ -49,6 +51,7 @@ const Profile = ({navigation}) => {
       console.log(error);
     }
   };
+
 
   const putProfile = async values => {
     try {
@@ -72,10 +75,9 @@ const Profile = ({navigation}) => {
         },
         body: body,
       });
-
-      console.log(await res.json());
     } catch (error) {
       console.log(error);
+      dispatch(setLoading(false));
     }
   };
 
@@ -93,13 +95,13 @@ const Profile = ({navigation}) => {
   });
   return (
     <Formik
-      enableReinitialize={true}
       validationSchema={validationProfile}
       initialValues={user}
+      enableReinitialize={true}
       onSubmit={putProfile}>
       {({handleChange, handleSubmit, handleBlur, values, errors, touched}) => {
         return (
-          <View flex={1} style={styles.container}>
+          <ScrollView flex={1} style={styles.container}>
             <Header
               headerName={'Lengkapi Info Akun'}
               onPressBack={() => {
@@ -163,10 +165,11 @@ const Profile = ({navigation}) => {
             {touched.phone_number && errors.phone_number && (
               <Text style={styles.errorValidation}>{errors.phone_number}</Text>
             )}
+
             <View style={styles.btnSimpan}>
               <Button textButton1={'Simpan'} onPressButton1={handleSubmit} />
             </View>
-          </View>
+          </ScrollView>
         );
       }}
     </Formik>
@@ -185,14 +188,9 @@ const styles = StyleSheet.create({
     color: 'red',
     marginBottom: moderateScale(10),
   },
-  contentContainer: {
-    alignItems: 'center',
-  },
+  contentContainer: {},
   btnSimpan: {
-    alignItems: 'center',
-    marginTop: moderateScale(640),
-    position: 'absolute',
-    left: moderateScale(10),
+    marginTop: moderateScale(15),
   },
   dropdownPicker: {
     width: moderateScale(325),
@@ -203,6 +201,9 @@ const styles = StyleSheet.create({
   },
   kota: {
     color: COLORS.black,
-    left: moderateScale(-145),
+    marginStart: moderateScale(5),
+  },
+  imageContainer: {
+    alignItems: 'center',
   },
 });
