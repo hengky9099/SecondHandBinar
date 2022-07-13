@@ -9,7 +9,7 @@ import {moderateScale} from 'react-native-size-matters';
 import {launchImageLibrary} from 'react-native-image-picker';
 import {useDispatch, useSelector} from 'react-redux';
 import {navigate} from '../../helpers/navigate';
-import {postDataProduk, setDataProduct} from './redux/action';
+import {setDataProduct} from './redux/action';
 
 const Index = ({navigation}) => {
   const dispacth = useDispatch();
@@ -40,9 +40,42 @@ const Index = ({navigation}) => {
     image: image,
   };
 
-  const postDataProduct = () => {
-    dispacth(postDataProduk(data, dataLogin, image));
+  const postDataProduk = async () => {
+    try {
+      const body = new FormData();
+      body.append('name', data.namaproduk);
+      body.append('description', data.deskripsi);
+      body.append('base_price', data.hargaproduk);
+      body.append('category_ids', data.kategori);
+      body.append('location', 'dataLogin.address'); //ganti jd data user nanti
+      body.append('image', {
+        uri: image.uri,
+        type: image.type,
+      });
+
+      const res = await fetch(
+        'https://market-final-project.herokuapp.com/seller/product',
+        {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'multipart/form-data',
+            access_token: `${dataLogin.access_token}`,
+          },
+          body: body,
+        },
+      );
+
+      const jsonRes = await res.json();
+
+      console.log(jsonRes, 'res fecting');
+    } catch (error) {
+      console.log(error, 'error lengkapi');
+    }
   };
+
+  // const postDataProduct = () => {
+  //   postDataProduk();
+  // };
 
   const sendDataProduct = () => {
     dispacth(setDataProduct(dataProduct));
@@ -149,7 +182,7 @@ const Index = ({navigation}) => {
             <View style={styles.button}>
               <Button
                 onPressButton1={sendDataProduct}
-                onPressButton2={postDataProduct}
+                onPressButton2={postDataProduk}
                 numButton={2}
                 textButton1={'Preview'}
                 textButton2={'Terbitkan'}

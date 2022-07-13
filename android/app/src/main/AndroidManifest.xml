@@ -5,7 +5,6 @@
 
     <application
       android:name=".MainApplication"
-      android:usesCleartextTraffic="true"
       android:label="@string/app_name"
       android:icon="@mipmap/logo_secondhand"
       android:roundIcon="@mipmap/logo_secondhand_round"
