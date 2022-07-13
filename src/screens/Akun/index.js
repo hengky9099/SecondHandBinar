@@ -61,7 +61,9 @@ const Akun = () => {
       <View style={styles.headerAkun}>
         <Poppins style={styles.textHeaderAkun}>Akun Saya</Poppins>
       </View>
-      <ButtonCamera />
+      <View style={styles.toCenter}>
+        <ButtonCamera type="notChange" />
+      </View>
       <View style={styles.listFiturAkun}>
         <MenuAkun nameIcon="edit-3" menuName="Ubah Akun" onPress={ubahAkun} />
         <MenuAkun
@@ -99,6 +101,9 @@ const styles = StyleSheet.create({
   toCamera: {
     padding: moderateScale(5),
     margin: moderateScale(10),
+  },
+  toCenter: {
+    alignSelf: 'center',
   },
   containerCamera: {
     backgroundColor: COLORS.primaryPurple,

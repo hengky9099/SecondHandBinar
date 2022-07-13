@@ -1,4 +1,4 @@
-import {Image, StyleSheet, View} from 'react-native';
+import {Image, StyleSheet, View, ScrollView} from 'react-native';
 import React, {useState} from 'react';
 import {Formik} from 'formik';
 import * as Yup from 'yup';
@@ -100,7 +100,7 @@ const Index = ({navigation}) => {
     <Formik validationSchema={validationProfile} initialValues={data}>
       {({handleChange, handleBlur, values, errors, touched}) => {
         return (
-          <View flex={1} style={styles.container}>
+          <ScrollView flex={1} style={styles.container}>
             <Header
               headerName={'Lengkapi Detail Produk'}
               onPressBack={() => {
@@ -192,7 +192,7 @@ const Index = ({navigation}) => {
                 textButton2={'Terbitkan'}
               />
             </View>
-          </View>
+          </ScrollView>
         );
       }}
     </Formik>
@@ -224,6 +224,7 @@ const styles = StyleSheet.create({
     marginStart: moderateScale(5),
   },
   button: {
+    alignSelf: 'center',
     marginTop: moderateScale(10),
   },
   addInput: {
