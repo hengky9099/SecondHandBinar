@@ -1,7 +1,8 @@
-import {DATA_PRODUCT} from './type';
+import {DATA_CATEGORY, DATA_PRODUCT} from './type';
 
 const initialState = {
   dataProduct: {},
+  dataCategory: [],
 };
 
 const ProductReducer = (state = initialState, action) => {
@@ -11,7 +12,11 @@ const ProductReducer = (state = initialState, action) => {
         ...state,
         dataProduct: action.payload,
       };
-
+    case DATA_CATEGORY:
+      return {
+        ...state,
+        dataCategory: action.payload,
+      };
     default:
       return state;
   }

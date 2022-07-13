@@ -4,5 +4,5 @@ export const currencyToIDR = price => {
     currency: 'IDR',
   })
     .format(price)
-    .split(','[0]);
+    .split(',')[0];
 };

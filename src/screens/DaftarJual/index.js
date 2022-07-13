@@ -217,12 +217,17 @@ const DaftarJual = () => {
         keyExtractor={(_item, index) => index}
         renderItem={({item, index}) => {
           if (index === 0) {
-            return <InputAdd onPress={() => navigation.navigate('Jual')} />;
+            return (
+              <InputAdd
+                style={styles.addButton}
+                onPress={() => navigation.navigate('Jual')}
+              />
+            );
           }
           return (
             <ItemProductCard
               productPrice={currencyToIDR(item.base_price)}
-              urlImageProduct={item.image_url}
+              url={item.image_url}
               productName={item.name}
               productType={item.categories}
             />

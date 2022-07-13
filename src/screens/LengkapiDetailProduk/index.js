@@ -9,37 +9,53 @@ import {moderateScale} from 'react-native-size-matters';
 import {launchImageLibrary} from 'react-native-image-picker';
 import {useDispatch, useSelector} from 'react-redux';
 import {navigate} from '../../helpers/navigate';
-import {setDataProduct} from './redux/action';
+import {getCategory, setDataProduct} from './redux/action';
+import {useEffect} from 'react';
 
 const Index = ({navigation}) => {
   const dispacth = useDispatch();
   const [open, setOpen] = useState(false);
   const [value, setValue] = useState([]);
-
-  const [items, setItems] = useState([
-    {label: 'Tas', value: '1'},
-    {label: 'Sepatu', value: '2'},
-    {label: 'Sandal', value: '3'},
-    {label: 'Baju', value: '4'},
-  ]);
+  const [items, setItems] = useState([{label: 'Pilih', value: '0'}]);
 
   const data = {
     namaproduk: '',
-    kategori: 0,
+    kategori: [],
     deskripsi: '',
     hargaproduk: '',
   };
 
   const [image, setImage] = useState('');
-  const {dataLogin} = useSelector(state => state.login);
+  const [listImage, setListImage] = useState([]);
+  const {dataLogin, dataUser} = useSelector(state => state.login);
+  const {dataCategory} = useSelector(state => state.dataProduct);
   const dataProduct = {
     name: data.namaproduk,
     category_ids: data.kategori,
     description: data.deskripsi,
     base_price: data.hargaproduk,
-    location: dataLogin.location,
     image: image,
   };
+
+  useEffect(() => {
+    dispacth(getCategory);
+
+    // const listCategory = () => {
+    //   dataCategory.filter(function (item) {
+    //     return setItems([
+    //       ...items,
+    //       {
+    //         label: item.name,
+    //         value: item.id,
+    //       },
+    //     ]);
+    //   });
+    // };
+
+    // listCategory;
+  }, [dispacth]);
+
+  console.log(dataCategory, 'in screen');
 
   const postDataProduk = async values => {
     try {
@@ -48,14 +64,22 @@ const Index = ({navigation}) => {
       body.append('description', values.deskripsi);
       body.append('base_price', values.hargaproduk);
       body.append('category_ids', 1);
-      body.append('location', 'Bekasi'); //ganti jd data user nanti
-      body.append('image', {
-        name: image.fileName,
-        type: image.type,
-        uri: image.uri,
-      });
+      body.append('location', dataUser.city);
+      // body.append('image', {
+      //   name: image.fileName,
+      //   type: image.type,
+      //   uri: image.uri,
+      // }); //multiple?
 
-      console.log(values.kategori, 'Des');
+      [...listImage].forEach(imageData => {
+        const imageName = imageData.path;
+
+        body.append('image', {
+          name: imageName,
+          type: imageData.mime,
+          uri: imageData.uri,
+        });
+      });
 
       const res = await fetch(
         'https://market-final-project.herokuapp.com/seller/product',
@@ -90,10 +114,10 @@ const Index = ({navigation}) => {
   };
 
   const validationProfile = Yup.object().shape({
-    namaproduk: Yup.string().required('Nama tidak boleh kosong'),
-    kategori: Yup.string().required('Kota tidak boleh kosong'),
-    deskripsi: Yup.string().required('Alamat tidak boleh kosong'),
-    hargaproduk: Yup.string().required('No. Handphone tidak boleh kosong'),
+    namaproduk: Yup.string().required('Nama Produk tidak boleh kosong'),
+    kategori: Yup.string().required('Kategori tidak boleh kosong'),
+    deskripsi: Yup.string().required('Deskripsi produk tidak boleh kosong'),
+    hargaproduk: Yup.string().required('Harga produk tidak boleh kosong'),
   });
 
   return (
@@ -109,11 +133,12 @@ const Index = ({navigation}) => {
             />
             <View style={styles.contentContainer}>
               <Input
-                inputName="Nama Produk*"
+                inputName="Nama Produk"
                 placeholder="Nama Produk"
                 onChangeText={handleChange('namaproduk')}
                 onBlur={handleBlur('namaproduk')}
                 value={values.namaproduk}
+                required={true}
               />
             </View>
             {touched.namaproduk && errors.namaproduk && (
@@ -125,11 +150,12 @@ const Index = ({navigation}) => {
             <View style={styles.contentContainer}>
               <Input
                 keyboardType={'numeric'}
-                inputName="Harga Produk*"
+                inputName="Harga Produk"
                 placeholder="Rp 0,00"
                 onChangeText={handleChange('hargaproduk')}
                 onBlur={handleBlur('hargaproduk')}
                 value={values.hargaproduk}
+                required={true}
               />
             </View>
 
@@ -140,7 +166,10 @@ const Index = ({navigation}) => {
             )}
 
             <View style={styles.contentContainer}>
-              <Poppins style={styles.kategori}>Kategori*</Poppins>
+              <View style={styles.toRow}>
+                <Poppins style={styles.kategori}>Kategori</Poppins>
+                <Poppins style={styles.asterik}>*</Poppins>
+              </View>
               <DropDownPicker
                 style={styles.dropdownPicker}
                 placeholder="Pilih Kategori"
@@ -158,8 +187,9 @@ const Index = ({navigation}) => {
             </View>
             <View style={styles.contentContainer}>
               <Input
-                inputName="Deskripsi*"
-                placeholder="Contoh: Jalan Hiu 33"
+                inputName="Deskripsi"
+                placeholder="Deskripsi mengenai produk yang dibuat"
+                required={true}
                 multiline={true}
                 numberOfLines={4}
                 styleInput={styles.deskripsiContainer}
@@ -176,9 +206,14 @@ const Index = ({navigation}) => {
             )}
 
             <View>
-              <Poppins style={styles.addInputText}>Foto Produk</Poppins>
-              <InputAdd style={styles.addInput} onPress={addProductImage} />
-              <Image source={{uri: image.uri}} style={styles.image} />
+              <View style={styles.toRow}>
+                <Poppins style={styles.addInputText}>Foto Produk</Poppins>
+                <Poppins style={styles.asterik}>*</Poppins>
+              </View>
+              <View style={styles.toRow}>
+                <InputAdd style={styles.addInput} onPress={addProductImage} />
+                <Image source={{uri: image.uri}} style={styles.image} />
+              </View>
             </View>
 
             <View style={styles.button}>
@@ -204,14 +239,14 @@ export default Index;
 const styles = StyleSheet.create({
   container: {
     backgroundColor: COLORS.white,
+    padding: moderateScale(8),
   },
   deskripsiContainer: {height: moderateScale(100), textAlignVertical: 'top'},
   errorValidation: {
     marginLeft: moderateScale(15),
-    color: 'red',
+    color: COLORS.red,
     marginBottom: moderateScale(10),
   },
-  contentContainer: {},
   dropdownPicker: {
     width: moderateScale(325),
     marginLeft: moderateScale(15),
@@ -225,7 +260,7 @@ const styles = StyleSheet.create({
   },
   button: {
     alignSelf: 'center',
-    marginTop: moderateScale(10),
+    marginTop: moderateScale(15),
   },
   addInput: {
     marginLeft: moderateScale(16),
@@ -234,10 +269,16 @@ const styles = StyleSheet.create({
     marginLeft: moderateScale(5),
     color: COLORS.black,
   },
+  contentContainer: {
+    marginTop: moderateScale(10),
+  },
   image: {
     width: moderateScale(100),
     height: moderateScale(100),
     marginTop: moderateScale(5),
     marginStart: moderateScale(15),
+  },
+  toRow: {
+    flexDirection: 'row',
   },
 });
