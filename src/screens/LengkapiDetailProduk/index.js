@@ -1,4 +1,4 @@
-import {Image, StyleSheet, View, ScrollView} from 'react-native';
+import {Image, StyleSheet, View, ScrollView, Alert} from 'react-native';
 import React, {useState} from 'react';
 import {Formik} from 'formik';
 import * as Yup from 'yup';
@@ -11,27 +11,30 @@ import {useDispatch, useSelector} from 'react-redux';
 import {navigate} from '../../helpers/navigate';
 import {getCategory, setDataProduct} from './redux/action';
 import {useEffect} from 'react';
+// import ImagePicker from 'react-native-image-crop-picker';
 
 const Index = ({navigation}) => {
   const dispacth = useDispatch();
   const [open, setOpen] = useState(false);
   const [value, setValue] = useState([]);
-  const [items, setItems] = useState([{label: 'Pilih', value: '0'}]);
 
-  const data = {
+  const [data, setData] = useState({
     namaproduk: '',
     kategori: [],
     deskripsi: '',
     hargaproduk: '',
-  };
+  });
 
-  const [image, setImage] = useState('');
-  const [listImage, setListImage] = useState([]);
+  const [image, setImage] = useState({});
+  // const [listImage, setListImage] = useState([]);
   const {dataLogin, dataUser} = useSelector(state => state.login);
   const {dataCategory} = useSelector(state => state.dataProduct);
+  const [items, setItems] = useState(dataCategory);
+  const kategori = [];
+
   const dataProduct = {
     name: data.namaproduk,
-    category_ids: data.kategori,
+    category_ids: kategori,
     description: data.deskripsi,
     base_price: data.hargaproduk,
     image: image,
@@ -39,47 +42,70 @@ const Index = ({navigation}) => {
 
   useEffect(() => {
     dispacth(getCategory);
-
-    // const listCategory = () => {
-    //   dataCategory.filter(function (item) {
-    //     return setItems([
-    //       ...items,
-    //       {
-    //         label: item.name,
-    //         value: item.id,
-    //       },
-    //     ]);
-    //   });
-    // };
-
-    // listCategory;
   }, [dispacth]);
 
-  console.log(dataCategory, 'in screen');
-
   const postDataProduk = async values => {
+    dataCategory.filter(function (item) {
+      if (value.length >= 1) {
+        [...value].forEach(category => {
+          if (category === item.id) {
+            return kategori.push({
+              id: category,
+              name: item.name,
+            });
+          }
+        });
+      } else {
+        return kategori.push({
+          id: null,
+          name: null,
+        });
+      }
+      // if (item.id === value[0]) {
+      //   return item.id === listKategori;
+      // } else if (listKategori.length >= 1) {
+      //   [...listKategori].forEach(category => {
+      //     setKategori([
+      //       ...kategori,
+      //       {
+      //         id: category,
+      //         name: item.name,
+      //       },
+      //     ]);
+      //   });
+      //   console.log(kategori, 'list kategori');
+      // }
+    });
+
+    console.log(value, 'sendKategori');
+
     try {
       const body = new FormData();
       body.append('name', values.namaproduk);
       body.append('description', values.deskripsi);
       body.append('base_price', values.hargaproduk);
-      body.append('category_ids', 1);
+      value.forEach(categori => body.append('category_ids', categori));
       body.append('location', dataUser.city);
-      // body.append('image', {
-      //   name: image.fileName,
-      //   type: image.type,
-      //   uri: image.uri,
-      // }); //multiple?
-
-      [...listImage].forEach(imageData => {
-        const imageName = imageData.path;
-
-        body.append('image', {
-          name: imageName,
-          type: imageData.mime,
-          uri: imageData.uri,
-        });
+      body.append('image', {
+        name: image.fileName,
+        type: image.type,
+        uri: image.uri,
       });
+
+      //multiple image but cant send to api => output {}
+      // listImage.forEach(imageData => {
+      //   const imageName = imageData.path.substring(
+      //     imageData.path.lastIndexOf('/') + 1,
+      //   );
+
+      //   body.append('image', {
+      //     name: imageName,
+      //     type: imageData.mime,
+      //     uri: imageData.path,
+      //   });
+      // });
+
+      console.log(body);
 
       const res = await fetch(
         'https://market-final-project.herokuapp.com/seller/product',
@@ -97,8 +123,45 @@ const Index = ({navigation}) => {
       const jsonRes = await res.json();
 
       console.log(jsonRes, 'res fecting');
+
+      if (jsonRes.name && jsonRes.message) {
+        Alert.alert('Pemberitahuan', jsonRes.message);
+        setData({
+          namaproduk: '',
+          kategori: [],
+          deskripsi: '',
+          hargaproduk: '',
+        });
+        while (kategori.length > 0) {
+          kategori.pop();
+        }
+        setImage({});
+        navigate('DaftarJual', {
+          createProduct: 'failed',
+        });
+      } else if (jsonRes.name === values.namaproduk) {
+        setData({
+          namaproduk: '',
+          kategori: [],
+          deskripsi: '',
+          hargaproduk: '',
+        });
+        setImage({});
+        while (kategori.length > 0) {
+          kategori.pop();
+        }
+        navigate('DaftarJual', {
+          createProduct: 'success',
+        });
+      }
     } catch (error) {
       console.log(error, 'error lengkapi');
+      while (kategori.length > 0) {
+        kategori.pop();
+      }
+      if (error === 'TypeError: Network request failed') {
+        Alert.alert('Pemberitahuan', 'Salah isian cek kembali isian Anda!');
+      }
     }
   };
 
@@ -111,6 +174,14 @@ const Index = ({navigation}) => {
     await launchImageLibrary({mediaType: 'photo'}).then(dataImage =>
       setImage(dataImage.assets[0]),
     );
+
+    //multiple picker image
+    // ImagePicker.openPicker({
+    //   multiple: true,
+    // }).then(images => {
+    //   console.log(images);
+    //   setListImage(images);
+    // });
   };
 
   const validationProfile = Yup.object().shape({
@@ -121,8 +192,11 @@ const Index = ({navigation}) => {
   });
 
   return (
-    <Formik validationSchema={validationProfile} initialValues={data}>
-      {({handleChange, handleBlur, values, errors, touched}) => {
+    <Formik
+      validationSchema={validationProfile}
+      initialValues={data}
+      onSubmit={sendDataProduct}>
+      {({handleChange, handleBlur, values, errors, touched, handleSubmit}) => {
         return (
           <ScrollView flex={1} style={styles.container}>
             <Header
@@ -170,20 +244,29 @@ const Index = ({navigation}) => {
                 <Poppins style={styles.kategori}>Kategori</Poppins>
                 <Poppins style={styles.asterik}>*</Poppins>
               </View>
-              <DropDownPicker
-                style={styles.dropdownPicker}
-                placeholder="Pilih Kategori"
-                multiple={true}
-                min={0}
-                max={5}
-                dropDownDirection="BOTTOM"
-                open={open}
-                value={value}
-                items={items}
-                setOpen={setOpen}
-                setValue={setValue}
-                setItems={setItems}
-              />
+              <View style={styles.categoryContainer}>
+                <DropDownPicker
+                  style={styles.dropdownPicker}
+                  schema={{
+                    label: 'name',
+                    value: 'id',
+                  }}
+                  placeholder="Pilih Kategori"
+                  searchable={true}
+                  searchPlaceholder="Search..."
+                  multiple={true}
+                  mode="BADGE"
+                  min={0}
+                  max={5}
+                  dropDownDirection="BOTTOM"
+                  open={open}
+                  value={value}
+                  items={items}
+                  setOpen={setOpen}
+                  setValue={setValue}
+                  setItems={setItems}
+                />
+              </View>
             </View>
             <View style={styles.contentContainer}>
               <Input
@@ -205,20 +288,23 @@ const Index = ({navigation}) => {
               </Poppins>
             )}
 
-            <View>
+            <View style={styles.contentContainer}>
               <View style={styles.toRow}>
                 <Poppins style={styles.addInputText}>Foto Produk</Poppins>
                 <Poppins style={styles.asterik}>*</Poppins>
               </View>
               <View style={styles.toRow}>
-                <InputAdd style={styles.addInput} onPress={addProductImage} />
-                <Image source={{uri: image.uri}} style={styles.image} />
+                {image.uri ? (
+                  <Image source={{uri: image.uri}} style={styles.image} />
+                ) : (
+                  <InputAdd style={styles.addInput} onPress={addProductImage} />
+                )}
               </View>
             </View>
 
             <View style={styles.button}>
               <Button
-                onPressButton1={sendDataProduct}
+                onPressButton1={handleSubmit}
                 onPressButton2={() => {
                   postDataProduk(values);
                 }}
@@ -243,13 +329,9 @@ const styles = StyleSheet.create({
   },
   deskripsiContainer: {height: moderateScale(100), textAlignVertical: 'top'},
   errorValidation: {
-    marginLeft: moderateScale(15),
     color: COLORS.red,
-    marginBottom: moderateScale(10),
   },
   dropdownPicker: {
-    width: moderateScale(325),
-    marginLeft: moderateScale(15),
     backgroundColor: COLORS.white,
     borderColor: COLORS.neutral2,
     borderRadius: moderateScale(10),
@@ -280,5 +362,11 @@ const styles = StyleSheet.create({
   },
   toRow: {
     flexDirection: 'row',
+  },
+  categoryContainer: {
+    marginHorizontal: moderateScale(18),
+  },
+  asterik: {
+    color: COLORS.red,
   },
 });
