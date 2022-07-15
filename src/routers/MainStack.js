@@ -6,12 +6,14 @@ import {
   Akun,
   DaftarJual,
   Home,
-  Jual,
+  LengkapiDetailProduk,
   Login,
   Notification,
   // NotificationBuyer,
   Register,
+  Profile,
 } from '../screens';
+import {COLORS} from '../helpers/colors';
 
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -27,6 +29,16 @@ const MainStack = () => {
       <Stack.Screen
         name="Login"
         component={Login}
+        options={{headerShown: false}}
+      />
+      <Stack.Screen
+        name="LengkapiDetailProduk"
+        component={LengkapiDetailProduk}
+        options={{headerShown: false}}
+      />
+      <Stack.Screen
+        name="Profile"
+        component={Profile}
         options={{headerShown: false}}
       />
       <Stack.Screen
@@ -56,6 +68,8 @@ const MainApp = () => (
       options={{
         tabBarLabel: 'Notification',
         tabBarIcon: ({color, size}) => iconBar('bell', color, size),
+        tabBarBadge: '',
+        tabBarBadgeStyle: COLORS.red,
       }}
       name="Notification"
       component={Notification}
@@ -74,7 +88,7 @@ const MainApp = () => (
         tabBarIcon: ({color, size}) => iconBar('plus-circle', color, size),
       }}
       name="Jual"
-      component={Jual}
+      component={LengkapiDetailProduk}
     />
     <Tab.Screen
       options={{

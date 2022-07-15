@@ -1,10 +1,11 @@
-import {StyleSheet, TouchableOpacity, View} from 'react-native';
-import React from 'react';
+import {StyleSheet, TouchableOpacity, View, Dimensions} from 'react-native';
+import React, {useState} from 'react';
 import {moderateScale} from 'react-native-size-matters';
 import {COLORS} from '../../helpers/colors';
 import Feather from 'react-native-vector-icons/Feather';
 import {Poppins} from '../FontComponents';
 
+const {width} = Dimensions.get('window');
 const ButtonFitur = ({nameFitur, nameIcon, onPressButton, disabled}) => {
   return (
     <TouchableOpacity
@@ -31,8 +32,12 @@ const styles = StyleSheet.create({
     marginHorizontal: moderateScale(8),
     padding: moderateScale(10),
   },
+  toButtonSelect: {backgroundColor: COLORS.primaryPurple},
   nameFitur: {
     fontSize: moderateScale(14),
     color: COLORS.white,
+  },
+  nameFiturSelect: {
+    color: COLORS.black,
   },
 });

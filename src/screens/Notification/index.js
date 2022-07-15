@@ -1,57 +1,102 @@
-import {View, StyleSheet} from 'react-native';
+import {View, Alert, FlatList, RefreshControl} from 'react-native';
 import React, {useEffect, useState} from 'react';
 import {ItemNotificationCard, Poppins} from '../../component';
-import {COLORS} from '../../helpers/colors';
-import {moderateScale} from 'react-native-size-matters';
+import {useDispatch, useSelector} from 'react-redux';
+import {setLoading} from '../../redux/globalAction';
+import axios from 'axios';
+import {baseUrl} from '@env';
+import {setNotification, setRefreshing} from './redux/action';
+import {navigate} from '../../helpers/navigate';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import {currencyToIDR, thisDate} from '../../helpers/change';
+import {setLogin} from '../Login/redux/action';
+import {useCallback} from 'react';
+import styles from './styles';
 
 const Notification = () => {
-  const [currentDate, setCurrentDate] = useState('');
+  const dispatch = useDispatch();
+  const {dataLogin} = useSelector(state => state.login);
+  const {refreshing} = useSelector(state => state.daftarjual);
+  const [notifikasi, setnotifikasi] = useState([]);
 
   useEffect(() => {
-    let monthNames = [
-      'Jan',
-      'Feb',
-      'Mar',
-      'Apr',
-      'May',
-      'Jun',
-      'Jul',
-      'Aug',
-      'Sep',
-      'Oct',
-      'Nov',
-      'Dec',
-    ];
-    let dateObj = new Date();
-    let date = dateObj.getDate();
-    let month = monthNames[dateObj.getMonth() + 1];
-    let hours = dateObj.getHours();
-    if (hours < 10) {
-      hours = '0' + hours.toString();
+    getDataNotification();
+  }, [getDataNotification]);
+
+  const getDataNotification = useCallback(async () => {
+    //OrderSeller
+    try {
+      dispatch(setLoading(true));
+      const res = await axios.get(`${baseUrl}/notification`, {
+        headers: {access_token: `${dataLogin.access_token}`},
+      });
+      setnotifikasi([...res.data]);
+      console.log('Data Notification: ', res.data);
+      dispatch(setNotification(res.data));
+      if (res.status === 200) {
+        dispatch(setLoading(false));
+        dispatch(setNotification(res.data));
+      }
+      if (res.status === 403) {
+        setLogin();
+        navigate('Login');
+      }
+    } catch (error) {
+      console.log(error);
+      dispatch(setLoading(false));
+
+      if ((error.message = 'Request failed with status code 401')) {
+        await AsyncStorage.setItem('@access_token', '');
+        Alert.alert(
+          'Pemberitahuan',
+          'Token Sudah Expired, silahkan Login kembali!',
+          [
+            {
+              text: 'OK',
+              onPress: () => {
+                navigate('Login');
+                dispatch(setLogin(''));
+              },
+            },
+          ],
+        );
+      }
+    } finally {
+      dispatch(setLoading(false));
     }
-    let min = dateObj.getMinutes();
-    if (min < 10) {
-      min = '0' + min.toString();
-    }
-    setCurrentDate(date + ' ' + month + ' ,' + ' ' + hours + ':' + min);
-  }, []);
+  }, [dataLogin, dispatch]);
+
+  const onRefresh = () => {
+    dispatch(setRefreshing(true));
+    dispatch(getDataNotification(dataLogin));
+  };
+
+  const renderDataNotification = ({item}) => (
+    <ItemNotificationCard
+      typeNotif={item.notification_type}
+      date={thisDate(item.transaction_date)}
+      productName={item.product_name}
+      productPrice={currencyToIDR(item.base_price)}
+      tawaran={currencyToIDR(item.bid_price)}
+      status={item.status}
+    />
+  );
+
   return (
     <View style={styles.container}>
       <View style={styles.header}>
         <Poppins style={styles.textHeader}>Notifikasi</Poppins>
         <View style={styles.containerNotifBar}>
-          <ItemNotificationCard
-            typeNotif={'Penawaran product'}
-            date={currentDate}
-            productName={'Jam Tangan Casio'}
-            productPrice={'Rp 250.000'}
-            tawaran={'Ditawar Rp 200.000'}
-          />
-          <ItemNotificationCard
-            typeNotif={'Berhasil di terbitkan'}
-            date={'19 Apr, 12:00'}
-            productName={'Jam Tangan Casio'}
-            productPrice={'Rp 250.000'}
+          <FlatList
+            refreshControl={
+              <RefreshControl onRefresh={onRefresh} refreshing={refreshing} />
+            }
+            data={notifikasi}
+            renderItem={renderDataNotification}
+            keyExtractor={(_item, index) => index}
+            numColumns={1}
+            key={1}
+            ListFooterComponent={<View style={styles.footerComponent} />}
           />
         </View>
       </View>
@@ -60,20 +105,3 @@ const Notification = () => {
 };
 
 export default Notification;
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: COLORS.white,
-  },
-  header: {
-    paddingHorizontal: moderateScale(15),
-    paddingVertical: moderateScale(10),
-  },
-  textHeader: {
-    fontSize: moderateScale(25),
-    color: COLORS.black,
-    fontWeight: 'bold',
-  },
-  containerNotifBar: {marginTop: moderateScale(10)},
-});

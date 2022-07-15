@@ -5,7 +5,9 @@ import Akun from './Akun';
 import DaftarJual from './DaftarJual';
 import Jual from './Jual';
 import Notification from './Notification';
-import NotificationBuyer from './NotificationBuyer';
+import Profile from './Profile';
+import LengkapiDetailProduk from './LengkapiDetailProduk';
+import NotificationBuyer from './Notification/NotificationBuyer';
 
 export {
   Home,
@@ -15,5 +17,7 @@ export {
   Jual,
   DaftarJual,
   Notification,
+  Profile,
   NotificationBuyer,
+  LengkapiDetailProduk,
 };

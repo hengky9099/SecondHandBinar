@@ -53,6 +53,7 @@ const Akun = () => {
   };
 
   const pengaturanAkun = () => null;
+  const ubahAkun = () => navigate('Profile');
 
   return (
     <View style={styles.container}>
@@ -60,9 +61,11 @@ const Akun = () => {
       <View style={styles.headerAkun}>
         <Poppins style={styles.textHeaderAkun}>Akun Saya</Poppins>
       </View>
-      <ButtonCamera />
+      <View style={styles.toCenter}>
+        <ButtonCamera type="notChange" />
+      </View>
       <View style={styles.listFiturAkun}>
-        <MenuAkun nameIcon="edit-3" menuName="Ubah Akun" onPress={Akun} />
+        <MenuAkun nameIcon="edit-3" menuName="Ubah Akun" onPress={ubahAkun} />
         <MenuAkun
           nameIcon="settings"
           menuName="Pengaturan Akun"
@@ -98,6 +101,9 @@ const styles = StyleSheet.create({
   toCamera: {
     padding: moderateScale(5),
     margin: moderateScale(10),
+  },
+  toCenter: {
+    alignSelf: 'center',
   },
   containerCamera: {
     backgroundColor: COLORS.primaryPurple,

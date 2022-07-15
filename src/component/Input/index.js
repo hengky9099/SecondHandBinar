@@ -1,17 +1,9 @@
-import {
-  StyleSheet,
-  TextInput,
-  TouchableOpacity,
-  View,
-  Dimensions,
-} from 'react-native';
+import {StyleSheet, TextInput, TouchableOpacity, View} from 'react-native';
 import React, {useState} from 'react';
 import {COLORS} from '../../helpers/colors';
 import Feather from 'react-native-vector-icons/Feather';
 import {moderateScale} from 'react-native-size-matters';
 import {Poppins} from '../FontComponents';
-
-const {width} = Dimensions.get('window');
 
 const Input = ({
   onChangeText,
@@ -24,9 +16,11 @@ const Input = ({
   password = false,
   styleInputName,
   inputName,
+  required = false,
   multiline,
   numberOfLines,
   onBlur,
+  keyboardType,
 }) => {
   const stylesInput = Array.isArray(styleInput)
     ? Object.assign({}, ...styleInput)
@@ -48,10 +42,11 @@ const Input = ({
 
   return (
     <View style={styles.page}>
-      <View>
+      <View style={styles.inputNameContainer}>
         <Poppins style={[styles.inputName, {...stylesInputName}]}>
           {inputName}
         </Poppins>
+        {required ? <Poppins style={styles.asterik}>*</Poppins> : null}
       </View>
       <View style={password ? styles.password : null}>
         <TextInput
@@ -65,13 +60,13 @@ const Input = ({
           onSubmitEditing={onSubmitEditing}
           multiline={multiline}
           numberOfLines={numberOfLines}
+          keyboardType={keyboardType}
         />
         {password ? (
           <TouchableOpacity style={styles.seenButton} onPress={seenPassword}>
             <Feather
               name={seenPass ? 'eye' : 'eye-off'}
               color={COLORS.neutral3}
-              style={styles.icon}
               size={17}
             />
           </TouchableOpacity>
@@ -85,30 +80,33 @@ export default Input;
 
 const styles = StyleSheet.create({
   input: {
-    width: width - moderateScale(30),
     height: moderateScale(48),
     borderRadius: moderateScale(16),
     borderColor: COLORS.neutral2,
     borderWidth: 1,
     padding: moderateScale(15),
     color: COLORS.neutral3,
+    marginHorizontal: moderateScale(15),
   },
   inputName: {
     fontSize: moderateScale(12),
     color: COLORS.black,
-  },
-  icon: {
-    width: moderateScale(22),
-    height: moderateScale(16),
   },
   password: {
     flexDirection: 'row',
     alignItems: 'center',
   },
   seenButton: {
-    marginStart: moderateScale(-30),
+    marginStart: moderateScale(-50),
   },
   page: {
     margin: moderateScale(5),
+  },
+  asterik: {
+    fontSize: moderateScale(12),
+    color: COLORS.red,
+  },
+  inputNameContainer: {
+    flexDirection: 'row',
   },
 });

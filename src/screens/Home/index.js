@@ -8,8 +8,12 @@ import {
 } from 'react-native';
 import React, {useEffect, useState} from 'react';
 import LinearGradient from 'react-native-linear-gradient';
-import ItemProductCard from '../../component/ItemProductCard/index';
-import {SearchBar, Poppins, ButtonFitur} from '../../component';
+import {
+  SearchBar,
+  Poppins,
+  ButtonFitur,
+  ItemProductCard,
+} from '../../component';
 import {moderateScale} from 'react-native-size-matters';
 import {Box} from '../../assets/Images';
 import {COLORS} from '../../helpers/colors';

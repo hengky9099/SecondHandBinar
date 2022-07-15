@@ -39,7 +39,6 @@ export default SearchBar;
 
 const styles = StyleSheet.create({
   container: {
-    justifyContent: 'center',
     height: moderateScale(48),
     width: width - moderateScale(30),
     borderRadius: moderateScale(20),

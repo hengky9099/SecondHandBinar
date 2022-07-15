@@ -5,7 +5,7 @@ import {moderateScale} from 'react-native-size-matters';
 import {Poppins} from '../FontComponents';
 import Dot from '../Dot';
 import Button from '../Button';
-import {Product} from '../../assets/Image';
+import {Jam} from '../../assets/Images';
 
 const ItemNotificationCard = ({
   urlImage,
@@ -15,7 +15,7 @@ const ItemNotificationCard = ({
   tawaran,
   date,
   seen = false,
-  status,
+  status = 'pending',
   button,
   textButton1,
   textButton2,
@@ -32,6 +32,10 @@ const ItemNotificationCard = ({
       height: moderateScale(48),
       borderRadius: moderateScale(12),
     },
+    text: {
+      color: COLORS.black,
+      fontSize: moderateScale(14),
+    },
     text1: {
       color: COLORS.neutral3,
       fontSize: moderateScale(10),
@@ -40,11 +44,12 @@ const ItemNotificationCard = ({
     text2: {
       color: COLORS.black,
       fontSize: moderateScale(14),
+      textDecorationLine: status === 'decline' ? 'line-through' : 'none',
     },
     text3: {
       color: COLORS.black,
       fontSize: moderateScale(14),
-      textDecorationLine: status ? 'line-through' : 'none',
+      textDecorationLine: status === 'accepted' ? 'line-through' : 'none',
     },
     toRow: {
       flexDirection: 'row',
@@ -65,14 +70,17 @@ const ItemNotificationCard = ({
     },
     buttonContainer: {
       marginTop: moderateScale(10),
+      alignItems: 'center',
     },
   });
 
   const statusTawaranCheck = (statusTawaran, tawaranPembeli) => {
-    if (tawaranPembeli && !statusTawaran) {
+    if (tawaranPembeli && statusTawaran === 'decline') {
       return `Ditawar ${tawaranPembeli}`;
-    } else if (tawaranPembeli && statusTawaran) {
+    } else if (tawaranPembeli && statusTawaran === 'accepted') {
       return `Berhasil Ditawar ${tawaranPembeli}`;
+    } else if (statusTawaran === 'pending') {
+      return `Ditawar ${tawaranPembeli}`;
     } else {
       return null;
     }
@@ -81,10 +89,7 @@ const ItemNotificationCard = ({
   return (
     <View style={styles.page}>
       <View style={styles.notifContainer}>
-        <Image
-          source={urlImage ? {uri: urlImage} : Product}
-          style={styles.image}
-        />
+        <Image source={urlImage ? {uri: urlImage} : Jam} style={styles.image} />
 
         <View style={styles.notifinfoContainer}>
           <View style={styles.toRow}>
@@ -96,12 +101,12 @@ const ItemNotificationCard = ({
           </View>
 
           <View>
-            <Poppins style={styles.text2}>{productName}</Poppins>
+            <Poppins style={styles.text}>{productName}</Poppins>
             <Poppins style={styles.text3}>{productPrice}</Poppins>
             <Poppins style={styles.text2}>
               {statusTawaranCheck(status, tawaran)}
             </Poppins>
-            {status ? (
+            {status === 'accepted' && status === 'buyer' ? (
               <Poppins style={styles.text1}>
                 Kamu akan segera dihubungi penjual via WhatsApp
               </Poppins>
