@@ -1,5 +1,5 @@
 import {ScrollView, StyleSheet, Text, View} from 'react-native';
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import {Button, Header, Input} from '../../component';
 import {Formik} from 'formik';
 import * as Yup from 'yup';
@@ -30,9 +30,9 @@ const Profile = ({navigation}) => {
     image: '',
   });
 
-  // useEffect(() => {
-  //   getProfile();
-  // });
+  useEffect(() => {
+    getProfile();
+  });
 
   const getProfile = async () => {
     try {
@@ -51,7 +51,6 @@ const Profile = ({navigation}) => {
       console.log(error);
     }
   };
-
 
   const putProfile = async values => {
     try {

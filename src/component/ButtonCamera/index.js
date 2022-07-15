@@ -4,7 +4,6 @@ import {moderateScale} from 'react-native-size-matters';
 import {COLORS} from '../../helpers/colors';
 import {cameraPic} from '../../assets';
 
-
 const ButtonCamera = ({onPress, url}) => {
   return (
     <View style={styles.container}>
