@@ -4,7 +4,7 @@ import {COLORS} from '../../helpers/colors';
 import Feather from 'react-native-vector-icons/Feather';
 import {moderateScale} from 'react-native-size-matters';
 
-const Input = ({
+const SearchBar = ({
   onChangeText,
   value,
   styleInput,
@@ -34,7 +34,7 @@ const Input = ({
   );
 };
 
-export default Input;
+export default SearchBar;
 
 const styles = StyleSheet.create({
   input: {
