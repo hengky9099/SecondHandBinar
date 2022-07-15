@@ -1,11 +1,10 @@
-import {StyleSheet, TouchableOpacity, View, Dimensions} from 'react-native';
-import React, {useState} from 'react';
+import {StyleSheet, TouchableOpacity, View} from 'react-native';
+import React from 'react';
 import {moderateScale} from 'react-native-size-matters';
 import {COLORS} from '../../helpers/colors';
 import Feather from 'react-native-vector-icons/Feather';
 import {Poppins} from '../FontComponents';
 
-const {width} = Dimensions.get('window');
 const ButtonFitur = ({nameFitur, nameIcon, onPressButton, disabled}) => {
   return (
     <TouchableOpacity
