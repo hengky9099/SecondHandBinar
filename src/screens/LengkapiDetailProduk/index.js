@@ -10,6 +10,7 @@ import {launchImageLibrary} from 'react-native-image-picker';
 import {useDispatch, useSelector} from 'react-redux';
 import {navigate} from '../../helpers/navigate';
 import {getCategory, setDataProduct} from './redux/action';
+import Toast from 'react-native-toast-message';
 import {useEffect} from 'react';
 // import ImagePicker from 'react-native-image-crop-picker';
 
@@ -17,14 +18,6 @@ const Index = ({navigation}) => {
   const dispacth = useDispatch();
   const [open, setOpen] = useState(false);
   const [value, setValue] = useState([]);
-
-  const [data, setData] = useState({
-    namaproduk: '',
-    kategori: [],
-    deskripsi: '',
-    hargaproduk: '',
-  });
-
   const [image, setImage] = useState({});
   // const [listImage, setListImage] = useState([]);
   const {dataLogin, dataUser} = useSelector(state => state.login);
@@ -32,19 +25,11 @@ const Index = ({navigation}) => {
   const [items, setItems] = useState(dataCategory);
   const kategori = [];
 
-  const dataProduct = {
-    name: data.namaproduk,
-    category_ids: kategori,
-    description: data.deskripsi,
-    base_price: data.hargaproduk,
-    image: image,
-  };
-
   useEffect(() => {
     dispacth(getCategory);
   }, [dispacth]);
 
-  const postDataProduk = async values => {
+  const getProductCategories = () => {
     dataCategory.filter(function (item) {
       if (value.length >= 1) {
         [...value].forEach(category => {
@@ -61,23 +46,11 @@ const Index = ({navigation}) => {
           name: null,
         });
       }
-      // if (item.id === value[0]) {
-      //   return item.id === listKategori;
-      // } else if (listKategori.length >= 1) {
-      //   [...listKategori].forEach(category => {
-      //     setKategori([
-      //       ...kategori,
-      //       {
-      //         id: category,
-      //         name: item.name,
-      //       },
-      //     ]);
-      //   });
-      //   console.log(kategori, 'list kategori');
-      // }
     });
+  };
 
-    console.log(value, 'sendKategori');
+  const postDataProduk = async values => {
+    getProductCategories();
 
     try {
       const body = new FormData();
@@ -126,30 +99,12 @@ const Index = ({navigation}) => {
 
       if (jsonRes.name && jsonRes.message) {
         Alert.alert('Pemberitahuan', jsonRes.message);
-        setData({
-          namaproduk: '',
-          kategori: [],
-          deskripsi: '',
-          hargaproduk: '',
-        });
-        while (kategori.length > 0) {
-          kategori.pop();
-        }
         setImage({});
         navigate('DaftarJual', {
           createProduct: 'failed',
         });
       } else if (jsonRes.name === values.namaproduk) {
-        setData({
-          namaproduk: '',
-          kategori: [],
-          deskripsi: '',
-          hargaproduk: '',
-        });
         setImage({});
-        while (kategori.length > 0) {
-          kategori.pop();
-        }
         navigate('DaftarJual', {
           createProduct: 'success',
         });
@@ -159,14 +114,19 @@ const Index = ({navigation}) => {
       while (kategori.length > 0) {
         kategori.pop();
       }
+      Toast.show({
+        type: 'errorToast',
+        text1: 'Produk gagal untuk diterbitkan',
+      });
       if (error === 'TypeError: Network request failed') {
         Alert.alert('Pemberitahuan', 'Salah isian cek kembali isian Anda!');
       }
     }
   };
 
-  const sendDataProduct = () => {
-    dispacth(setDataProduct(dataProduct));
+  const sendDataProduct = (values, dataImg) => {
+    getProductCategories();
+    dispacth(setDataProduct(values, dataImg, kategori));
     navigate('Preview');
   };
 
@@ -186,7 +146,6 @@ const Index = ({navigation}) => {
 
   const validationProfile = Yup.object().shape({
     namaproduk: Yup.string().required('Nama Produk tidak boleh kosong'),
-    kategori: Yup.string().required('Kategori tidak boleh kosong'),
     deskripsi: Yup.string().required('Deskripsi produk tidak boleh kosong'),
     hargaproduk: Yup.string().required('Harga produk tidak boleh kosong'),
   });
@@ -194,9 +153,27 @@ const Index = ({navigation}) => {
   return (
     <Formik
       validationSchema={validationProfile}
-      initialValues={data}
-      onSubmit={sendDataProduct}>
-      {({handleChange, handleBlur, values, errors, touched, handleSubmit}) => {
+      initialValues={{
+        namaproduk: '',
+        deskripsi: '',
+        hargaproduk: '',
+      }}
+      onSubmit={values => {
+        postDataProduk(values);
+        while (kategori.length > 0) {
+          kategori.pop();
+        }
+        setValue([]);
+      }}>
+      {({
+        handleChange,
+        handleBlur,
+        values,
+        errors,
+        touched,
+        handleSubmit,
+        resetForm,
+      }) => {
         return (
           <ScrollView flex={1} style={styles.container}>
             <Header
@@ -256,6 +233,13 @@ const Index = ({navigation}) => {
                   searchPlaceholder="Search..."
                   multiple={true}
                   mode="BADGE"
+                  badgeDotColors={[
+                    COLORS.purple5,
+                    COLORS.cream5,
+                    COLORS.neutral5,
+                  ]}
+                  badgeColors={[COLORS.purple2, COLORS.cream2, COLORS.neutral1]}
+                  listMode="SCROLLVIEW"
                   min={0}
                   max={5}
                   dropDownDirection="BOTTOM"
@@ -304,9 +288,13 @@ const Index = ({navigation}) => {
 
             <View style={styles.button}>
               <Button
-                onPressButton1={handleSubmit}
+                onPressButton1={() => {
+                  sendDataProduct(values, image);
+                  navigate('Preview');
+                }}
                 onPressButton2={() => {
-                  postDataProduk(values);
+                  handleSubmit();
+                  resetForm();
                 }}
                 numButton={2}
                 textButton1={'Preview'}
@@ -330,6 +318,7 @@ const styles = StyleSheet.create({
   deskripsiContainer: {height: moderateScale(100), textAlignVertical: 'top'},
   errorValidation: {
     color: COLORS.red,
+    marginHorizontal: moderateScale(18),
   },
   dropdownPicker: {
     backgroundColor: COLORS.white,

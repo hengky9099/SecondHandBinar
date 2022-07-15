@@ -15,10 +15,12 @@ export const getCategory = () => async dispatch => {
   }
 };
 
-export const setDataProduct = payload => {
+export const setDataProduct = (payload, image, kategori) => {
   return {
     type: DATA_PRODUCT,
     payload,
+    image,
+    kategori,
   };
 };
 

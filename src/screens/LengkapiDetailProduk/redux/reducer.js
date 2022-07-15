@@ -3,6 +3,8 @@ import {DATA_CATEGORY, DATA_PRODUCT} from './type';
 const initialState = {
   dataProduct: {},
   dataCategory: [],
+  image: {},
+  kategori: [],
 };
 
 const ProductReducer = (state = initialState, action) => {
@@ -11,6 +13,8 @@ const ProductReducer = (state = initialState, action) => {
       return {
         ...state,
         dataProduct: action.payload,
+        image: action.image,
+        kategori: action.kategori,
       };
     case DATA_CATEGORY:
       return {
