@@ -12,22 +12,25 @@ import {navigate} from '../../helpers/navigate';
 import {getCategory, setDataProduct} from './redux/action';
 import Toast from 'react-native-toast-message';
 import {useEffect} from 'react';
+import {setLoading} from '../../redux/globalAction';
+import LoadingBar from '../../component/LoadingBar';
 // import ImagePicker from 'react-native-image-crop-picker';
 
 const Index = ({navigation}) => {
-  const dispacth = useDispatch();
+  const dispatch = useDispatch();
   const [open, setOpen] = useState(false);
   const [value, setValue] = useState([]);
   const [image, setImage] = useState({});
   // const [listImage, setListImage] = useState([]);
   const {dataLogin, dataUser} = useSelector(state => state.login);
   const {dataCategory} = useSelector(state => state.dataProduct);
+  const {loading} = useSelector(state => state.global);
   const [items, setItems] = useState(dataCategory);
   const kategori = [];
 
   useEffect(() => {
-    dispacth(getCategory);
-  }, [dispacth]);
+    dispatch(getCategory);
+  }, [dispatch]);
 
   const getProductCategories = () => {
     dataCategory.filter(function (item) {
@@ -53,6 +56,7 @@ const Index = ({navigation}) => {
     getProductCategories();
 
     try {
+      dispatch(setLoading(true));
       const body = new FormData();
       body.append('name', values.namaproduk);
       body.append('description', values.deskripsi);
@@ -103,11 +107,13 @@ const Index = ({navigation}) => {
         navigate('DaftarJual', {
           createProduct: 'failed',
         });
+        dispatch(setLoading(false));
       } else if (jsonRes.name === values.namaproduk) {
         setImage({});
         navigate('DaftarJual', {
           createProduct: 'success',
         });
+        dispatch(setLoading(false));
       }
     } catch (error) {
       console.log(error, 'error lengkapi');
@@ -116,17 +122,18 @@ const Index = ({navigation}) => {
       }
       Toast.show({
         type: 'errorToast',
-        text1: 'Produk gagal untuk diterbitkan',
+        text1: 'Silahkan cek kembali form Anda!',
       });
       if (error === 'TypeError: Network request failed') {
         Alert.alert('Pemberitahuan', 'Salah isian cek kembali isian Anda!');
       }
+      dispatch(setLoading(false));
     }
   };
 
   const sendDataProduct = (values, dataImg) => {
     getProductCategories();
-    dispacth(setDataProduct(values, dataImg, kategori));
+    dispatch(setDataProduct(values, dataImg, kategori));
     navigate('Preview');
   };
 
@@ -287,19 +294,23 @@ const Index = ({navigation}) => {
             </View>
 
             <View style={styles.button}>
-              <Button
-                onPressButton1={() => {
-                  sendDataProduct(values, image);
-                  navigate('Preview');
-                }}
-                onPressButton2={() => {
-                  handleSubmit();
-                  resetForm();
-                }}
-                numButton={2}
-                textButton1={'Preview'}
-                textButton2={'Terbitkan'}
-              />
+              {loading ? (
+                <LoadingBar loading={loading} />
+              ) : (
+                <Button
+                  onPressButton1={() => {
+                    sendDataProduct(values, image);
+                    navigate('Preview');
+                  }}
+                  onPressButton2={() => {
+                    handleSubmit();
+                    resetForm();
+                  }}
+                  numButton={2}
+                  textButton1={'Preview'}
+                  textButton2={'Terbitkan'}
+                />
+              )}
             </View>
           </ScrollView>
         );
