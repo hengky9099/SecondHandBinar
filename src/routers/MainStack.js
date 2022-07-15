@@ -12,6 +12,7 @@ import {
   // NotificationBuyer,
   Register,
   Profile,
+  Search,
 } from '../screens';
 import {COLORS} from '../helpers/colors';
 
@@ -44,6 +45,11 @@ const MainStack = () => {
       <Stack.Screen
         name="MainApp"
         component={MainApp}
+        options={{headerShown: false}}
+      />
+      <Stack.Screen
+        name="Search"
+        component={Search}
         options={{headerShown: false}}
       />
     </Stack.Navigator>

@@ -21,6 +21,7 @@ import {useSelector, useDispatch} from 'react-redux';
 import LoadingBar from '../../component/LoadingBar';
 import {setRefreshing} from '../../redux/globalAction';
 import {navigate} from '../../helpers/navigate';
+import {currencyToIDR} from '../../helpers/change';
 
 export default function Home({navigation}) {
   const dispatch = useDispatch();
@@ -80,9 +81,7 @@ export default function Home({navigation}) {
           resizeMode="cover"
         />
         <View style={styles.textBannerContainer}>
-          <Poppins type="Bold" style={styles.textBR}>
-            {bannerName}
-          </Poppins>
+          <Poppins style={styles.textBR}>{bannerName}</Poppins>
         </View>
       </View>
     );
@@ -94,14 +93,6 @@ export default function Home({navigation}) {
         colors={['#ffe9c9', '#ffe9c9', '#ffffff']}
         style={styles.topNav}>
         <View style={styles.topNavContainer}>
-          <SearchBar
-            onChangeText={value => {
-              setSearch(value);
-            }}
-            value={search}
-            onSubmitEditing={() => navigate('Search', {search: search})}
-            styleInput={styles.searchBar}
-          />
           <FlatList
             style={styles.bannerContainer}
             data={banner}
@@ -109,6 +100,8 @@ export default function Home({navigation}) {
             keyExtractor={(_item, index) => index}
             renderItem={bannerItem}
             showsHorizontalScrollIndicator={false}
+            keyboardShouldPersistTaps="always"
+            keyboardDismissMode="on-drag"
           />
         </View>
       </LinearGradient>
@@ -123,20 +116,30 @@ export default function Home({navigation}) {
           keyExtractor={(_item, index) => index}
           renderItem={fiturButton}
           showsHorizontalScrollIndicator={false}
+          keyboardDismissMode="on-drag"
+          keyboardShouldPersistTaps="always"
         />
       </View>
     </View>
   );
 
   const renderItem = ({item}) => {
+    const categories = item.Categories;
+    const listCategories = [];
+    categories.forEach(data => {
+      return listCategories.push(data.name);
+    });
+
     return (
       <View style={styles.itemProduct}>
         <ItemProductCard
           productName={item?.name ? item.name : 'Nama Produk'}
           productType={
-            item?.Categories[0]?.name ? item?.Categories[0]?.name : 'Kategori'
+            item?.Categories[0]?.name ? listCategories.join(', ') : 'Kategori'
           }
-          productPrice={item?.base_price ? item?.base_price : 'Rp. 0'}
+          productPrice={
+            item?.base_price ? currencyToIDR(item?.base_price) : 'Rp. 0'
+          }
           url={item?.image_url}
           onPressCard={() =>
             navigation.navigate('DetailProductScreen', {id_product: item.id})
@@ -205,19 +208,36 @@ export default function Home({navigation}) {
   return (
     <View style={styles.container}>
       {list(dataProducts) ? (
-        <FlatList
-          refreshControl={
-            <RefreshControl onRefresh={onRefresh} refreshing={refreshing} />
-          }
-          ListHeaderComponent={renderHeader}
-          numColumns={2}
-          showsVerticalScrollIndicator={false}
-          data={list(dataProducts)}
-          horizontal={false}
-          keyExtractor={(_item, index) => index}
-          renderItem={renderItem}
-          ListFooterComponent={renderFooter(dataProducts)}
-        />
+        <>
+          <View style={styles.searchContainer}>
+            <SearchBar
+              onChangeText={value => {
+                setSearch(value);
+              }}
+              value={search}
+              onSubmitEditing={() => {
+                setSearch('');
+                navigate('Search', {search: search});
+              }}
+              styleInput={styles.searchBar}
+            />
+          </View>
+          <FlatList
+            refreshControl={
+              <RefreshControl onRefresh={onRefresh} refreshing={refreshing} />
+            }
+            ListHeaderComponent={renderHeader}
+            numColumns={2}
+            showsVerticalScrollIndicator={false}
+            data={list(dataProducts)}
+            horizontal={false}
+            keyExtractor={(_item, index) => index}
+            renderItem={renderItem}
+            ListFooterComponent={renderFooter(dataProducts)}
+            keyboardDismissMode="on-drag"
+            keyboardShouldPersistTaps="always"
+          />
+        </>
       ) : (
         <LoadingBar loading={loading} />
       )}
@@ -231,11 +251,10 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
   },
   topNav: {
-    height: moderateScale(450),
+    height: moderateScale(350),
   },
   topNavContainer: {
-    marginHorizontal: 20,
-    marginTop: 10,
+    marginHorizontal: moderateScale(20),
   },
   textBannerContainer: {
     alignSelf: 'center',
@@ -300,9 +319,14 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
   },
   bannerContainer: {
-    margin: moderateScale(10),
+    marginHorizontal: moderateScale(10),
   },
   searchBar: {
     width: moderateScale(320),
+  },
+  searchContainer: {
+    paddingHorizontal: moderateScale(20),
+    paddingTop: moderateScale(20),
+    backgroundColor: '#ffe9c9',
   },
 });

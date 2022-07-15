@@ -57,10 +57,6 @@ export const getProductperCategory = idCategory => async dispatch => {
   }
 };
 
-export const getSearchProduct = search => async dispatch => {
-  // ?search=
-};
-
 export const setProductSuccess = data => ({
   type: GET_PRODUCT_SUCCESS,
   payload: data,
