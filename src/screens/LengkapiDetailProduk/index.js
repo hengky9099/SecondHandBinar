@@ -165,22 +165,15 @@ const Index = ({navigation}) => {
         deskripsi: '',
         hargaproduk: '',
       }}
-      onSubmit={values => {
+      onSubmit={(values, {resetForm}) => {
         postDataProduk(values);
         while (kategori.length > 0) {
           kategori.pop();
         }
         setValue([]);
+        resetForm();
       }}>
-      {({
-        handleChange,
-        handleBlur,
-        values,
-        errors,
-        touched,
-        handleSubmit,
-        resetForm,
-      }) => {
+      {({handleChange, handleBlur, values, errors, touched, handleSubmit}) => {
         return (
           <ScrollView flex={1} style={styles.container}>
             <Header
@@ -304,7 +297,6 @@ const Index = ({navigation}) => {
                   }}
                   onPressButton2={() => {
                     handleSubmit();
-                    resetForm();
                   }}
                   numButton={2}
                   textButton1={'Preview'}
@@ -342,7 +334,7 @@ const styles = StyleSheet.create({
   },
   button: {
     alignSelf: 'center',
-    marginTop: moderateScale(15),
+    marginVertical: moderateScale(15),
   },
   addInput: {
     marginLeft: moderateScale(16),
