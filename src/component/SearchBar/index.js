@@ -1,66 +1,60 @@
-import {View, TextInput, Dimensions, StyleSheet} from 'react-native';
+import {StyleSheet, TextInput, View} from 'react-native';
 import React from 'react';
+import {COLORS} from '../../helpers/colors';
 import Feather from 'react-native-vector-icons/Feather';
 import {moderateScale} from 'react-native-size-matters';
-import {COLORS} from '../../helpers/colors';
 
-const {width} = Dimensions.get('window');
-
-const SearchBar = ({
-  onSubmit,
-  clicked,
-  setCLicked,
-  searchText,
-  setSearchText,
+const Input = ({
+  onChangeText,
+  value,
+  styleInput,
+  onSubmitEditing,
+  onEndEditing,
 }) => {
+  const stylesInput = Array.isArray(styleInput)
+    ? Object.assign({}, ...styleInput)
+    : styleInput;
+
   return (
-    <View style={styles.container}>
-      <View
-        style={
-          clicked ? styles.searchBar__clicked : styles.searchBar__unclicked
-        }>
+    <View style={styles.page}>
+      <View style={styles.toRow}>
         <TextInput
-          placeholder="Cari di second Chace"
-          style={styles.input}
-          value={searchText}
-          onChangeText={setSearchText}
-          onSubmitEditing={onSubmit}
-          onFocus={() => {
-            setCLicked(true);
-          }}
+          style={[styles.input, {...stylesInput}]}
+          onChangeText={onChangeText}
+          value={value}
+          placeholder="Search in Here"
+          onSubmitEditing={onSubmitEditing}
+          onEndEditing={onEndEditing}
         />
-        <Feather name="search" size={24} />
+        <View style={styles.icon}>
+          <Feather name="search" color={COLORS.black} size={17} />
+        </View>
       </View>
     </View>
   );
 };
 
-export default SearchBar;
+export default Input;
 
 const styles = StyleSheet.create({
-  container: {
-    height: moderateScale(48),
-    width: width - moderateScale(30),
-    borderRadius: moderateScale(20),
-    backgroundColor: COLORS.white,
-    marginTop: moderateScale(20),
-    flexDirection: 'column',
-    // justifyContent: 'space-evenly',
-  },
   input: {
-    fontSize: moderateScale(15),
-    width: '90%',
-    marginLeft: moderateScale(10),
+    height: moderateScale(48),
+    borderRadius: moderateScale(16),
+    borderColor: COLORS.neutral2,
+    borderWidth: 1,
+    padding: moderateScale(15),
+    color: COLORS.neutral3,
+    backgroundColor: COLORS.white,
+    paddingHorizontal: moderateScale(30),
   },
-  searchBar__unclicked: {
+  toRow: {
     flexDirection: 'row',
-    width: '95%',
     alignItems: 'center',
   },
-  searchBar__clicked: {
-    flexDirection: 'row',
-    width: '80%',
-    alignItems: 'center',
-    justifyContent: 'space-evenly',
+  page: {
+    margin: moderateScale(5),
+  },
+  icon: {
+    marginStart: moderateScale(-30),
   },
 });

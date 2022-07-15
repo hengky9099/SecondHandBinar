@@ -3,8 +3,8 @@ import {
   View,
   Image,
   FlatList,
-  ScrollView,
   TouchableOpacity,
+  RefreshControl,
 } from 'react-native';
 import React, {useEffect, useState} from 'react';
 import LinearGradient from 'react-native-linear-gradient';
@@ -15,29 +15,78 @@ import {
   ItemProductCard,
 } from '../../component';
 import {moderateScale} from 'react-native-size-matters';
-import {Box} from '../../assets/Images';
 import {COLORS} from '../../helpers/colors';
-import {getProduct} from './redux/action';
+import {getProduct, getProductperCategory} from './redux/action';
 import {useSelector, useDispatch} from 'react-redux';
+import LoadingBar from '../../component/LoadingBar';
+import {setRefreshing} from '../../redux/globalAction';
+import {navigate} from '../../helpers/navigate';
 
 export default function Home({navigation}) {
   const dispatch = useDispatch();
-  const {products, lengthProducts} = useSelector(state => state.home);
+  const {
+    products,
+    lengthProducts,
+    dataCategory,
+    dataProductperCategory,
+    banner,
+  } = useSelector(state => state.home);
+  const {loading, refreshing} = useSelector(state => state.global);
   const [end, setEnd] = useState(16);
   const [dataProducts, setDataProducts] = useState('dataAllProduct');
-
-  const produkHobi = products.filter(function (item) {
-    return item?.Categories[0]?.name === 'Hobi dan Koleksi';
-  });
-
-  const produkKendaraan = products.filter(function (item) {
-    return item?.Categories[0]?.name === 'Otomotif';
-  });
+  const [search, setSearch] = useState('');
 
   useEffect(() => {
     const getAllProduct = () => dispatch(getProduct());
     getAllProduct();
   }, [dispatch]);
+
+  const onRefresh = () => {
+    dispatch(setRefreshing(true));
+    dispatch(getProduct());
+  };
+
+  const fiturButton = ({item}) => {
+    return (
+      <ButtonFitur
+        nameIcon="search"
+        nameFitur={item.name}
+        onPressButton={() => {
+          dispatch(getProductperCategory(item.id));
+          setDataProducts('dataProductperCategory');
+        }}
+      />
+    );
+  };
+
+  const headerFiturButton = () => {
+    return (
+      <ButtonFitur
+        nameIcon="search"
+        nameFitur="Semua"
+        onPressButton={() => setDataProducts('dataAllProduct')}
+      />
+    );
+  };
+
+  const bannerItem = ({item}) => {
+    const bannerName = item.name.replace(/[^a-zA-Z ]/g, ' ');
+
+    return (
+      <View>
+        <Image
+          source={{uri: item.image_url}}
+          style={styles.imageBanner}
+          resizeMode="cover"
+        />
+        <View style={styles.textBannerContainer}>
+          <Poppins type="Bold" style={styles.textBR}>
+            {bannerName}
+          </Poppins>
+        </View>
+      </View>
+    );
+  };
 
   const renderHeader = () => (
     <View>
@@ -46,50 +95,35 @@ export default function Home({navigation}) {
         style={styles.topNav}>
         <View style={styles.topNavContainer}>
           <SearchBar
-            style={styles.searchBar}
-            placeholder="Cari di Second chance"
-            inputStyle={styles.inputStyle}
+            onChangeText={value => {
+              setSearch(value);
+            }}
+            value={search}
+            onSubmitEditing={() => navigate('Search', {search: search})}
+            styleInput={styles.searchBar}
           />
-          <View style={styles.topNavLeft}>
-            <Poppins style={styles.textBR}>Bulan Ramadhan</Poppins>
-            <Poppins style={styles.textBD}>Banyak diskon!</Poppins>
-            <Poppins style={styles.textDH}>Diskon Hingga</Poppins>
-            <Poppins style={styles.textPercent}>60%</Poppins>
-          </View>
-          <View style={styles.topNavRight}>
-            <Image
-              source={Box}
-              style={styles.topNavRight}
-              resizeMode={'cover'}
-            />
-          </View>
+          <FlatList
+            style={styles.bannerContainer}
+            data={banner}
+            horizontal={true}
+            keyExtractor={(_item, index) => index}
+            renderItem={bannerItem}
+            showsHorizontalScrollIndicator={false}
+          />
         </View>
       </LinearGradient>
       <View style={styles.categories}>
-        <Poppins style={styles.textTK}>Telusuri Kategori</Poppins>
-        <ScrollView
+        <Poppins type="Bold" style={styles.textTK}>
+          Telusuri Kategori
+        </Poppins>
+        <FlatList
+          ListHeaderComponent={headerFiturButton}
+          data={dataCategory}
           horizontal={true}
+          keyExtractor={(_item, index) => index}
+          renderItem={fiturButton}
           showsHorizontalScrollIndicator={false}
-          style={styles.fitur}>
-          <ButtonFitur
-            nameIcon={'search'}
-            nameFitur={'Semua'}
-            onPressButton={() => setDataProducts('dataAllProduct')}
-          />
-          <ButtonFitur
-            nameIcon={'search'}
-            nameFitur={'Hobi'}
-            onPressButton={() => setDataProducts('dataProductHobi')}
-          />
-          <ButtonFitur
-            nameIcon={'search'}
-            nameFitur={'Kendaraan'}
-            onPressButton={() => setDataProducts('dataProductKendaraan')}
-          />
-          <ButtonFitur nameIcon={'box'} nameFitur={'Product'} />
-          <ButtonFitur nameIcon={'heart'} nameFitur={'Diminati'} />
-          <ButtonFitur nameIcon={'dollar-sign'} nameFitur={'Terjual'} />
-        </ScrollView>
+        />
       </View>
     </View>
   );
@@ -134,28 +168,8 @@ export default function Home({navigation}) {
           </View>
         );
       }
-    } else if (data === 'dataProductHobi') {
-      if (end < produkHobi.length) {
-        return (
-          <View style={styles.footer}>
-            <TouchableOpacity
-              onPress={() => {
-                setEnd(tmp + 10);
-              }}
-              style={styles.loadMoreBtn}>
-              <Poppins style={styles.btnText}>Load More</Poppins>
-            </TouchableOpacity>
-          </View>
-        );
-      } else if (end > produkHobi.length || end === produkHobi.length) {
-        return (
-          <View style={styles.footer}>
-            <Poppins style={styles.text}>No More Data</Poppins>
-          </View>
-        );
-      }
-    } else if (data === 'dataProductKendaraan') {
-      if (end < produkKendaraan.length) {
+    } else if (data === 'dataProductperCategory') {
+      if (end < dataProductperCategory.length) {
         return (
           <View style={styles.footer}>
             <TouchableOpacity
@@ -168,8 +182,8 @@ export default function Home({navigation}) {
           </View>
         );
       } else if (
-        end > produkKendaraan.length ||
-        end === produkKendaraan.length
+        end > dataProductperCategory.length ||
+        end === dataProductperCategory.length
       ) {
         return (
           <View style={styles.footer}>
@@ -183,25 +197,30 @@ export default function Home({navigation}) {
   const list = data => {
     if (data === 'dataAllProduct') {
       return products.slice(0, end);
-    } else if (data === 'dataProductHobi') {
-      return produkHobi.slice(0, end);
-    } else if (data === 'dataProductKendaraan') {
-      return produkKendaraan.slice(0, end);
+    } else if (data === 'dataProductperCategory') {
+      return dataProductperCategory.slice(0, end);
     }
   };
 
   return (
     <View style={styles.container}>
-      <FlatList
-        ListHeaderComponent={renderHeader}
-        numColumns={2}
-        showsVerticalScrollIndicator={false}
-        data={list(dataProducts)}
-        horizontal={false}
-        keyExtractor={(_item, index) => index}
-        renderItem={renderItem}
-        ListFooterComponent={renderFooter(dataProducts)}
-      />
+      {list(dataProducts) ? (
+        <FlatList
+          refreshControl={
+            <RefreshControl onRefresh={onRefresh} refreshing={refreshing} />
+          }
+          ListHeaderComponent={renderHeader}
+          numColumns={2}
+          showsVerticalScrollIndicator={false}
+          data={list(dataProducts)}
+          horizontal={false}
+          keyExtractor={(_item, index) => index}
+          renderItem={renderItem}
+          ListFooterComponent={renderFooter(dataProducts)}
+        />
+      ) : (
+        <LoadingBar loading={loading} />
+      )}
     </View>
   );
 }
@@ -213,37 +232,29 @@ const styles = StyleSheet.create({
   },
   topNav: {
     height: moderateScale(450),
-    width: moderateScale(600),
   },
   topNavContainer: {
     marginHorizontal: 20,
     marginTop: 10,
   },
-  topNavLeft: {
-    alignContent: 'space-around',
-    justifyContent: 'center',
-    marginTop: -40,
-    height: 200,
-  },
-  topNavRight: {
-    flexDirection: 'column',
-    width: moderateScale(130),
-    height: moderateScale(123),
-    borderRadius: moderateScale(20),
-    marginTop: moderateScale(-50),
-    marginLeft: moderateScale(100),
-  },
-  ter: {
-    margin: moderateScale(15),
+  textBannerContainer: {
     alignSelf: 'center',
+  },
+  imageBanner: {
+    height: moderateScale(135),
+    width: moderateScale(300),
+    borderRadius: moderateScale(10),
+    margin: moderateScale(10),
+  },
+  footer: {
+    marginHorizontal: moderateScale(50),
+    alignSelf: 'center',
+    marginBottom: moderateScale(15),
   },
   loadMoreBtn: {
     padding: moderateScale(13),
     backgroundColor: COLORS.purple5,
     borderRadius: moderateScale(5),
-    marginHorizontal: moderateScale(50),
-    alignItems: 'center',
-    marginVertical: moderateScale(20),
   },
   btnText: {
     color: COLORS.white,
@@ -256,55 +267,20 @@ const styles = StyleSheet.create({
     fontSize: moderateScale(18),
   },
   categories: {
-    borderRadius: 20,
-    marginHorizontal: 16,
-    marginTop: -200,
-  },
-  middleNav: {
-    flexDirection: 'column',
-    height: 160,
-    marginHorizontal: 20,
-    marginTop: -70,
-    alignItems: 'center',
-  },
-  middleCardNav: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    marginVertical: 20,
-    marginHorizontal: 20,
-  },
-  cardWrapper: {
-    marginTop: 10,
-    flex: 1,
-    flexWrap: 'wrap',
-    justifyContent: 'space-between',
-    marginHorizontal: 16,
+    marginTop: moderateScale(-200),
+    padding: moderateScale(10),
   },
   textBR: {
-    fontFamily: 'Poppins-Bold',
     fontSize: moderateScale(22),
-    marginHorizontal: moderateScale(2),
-    marginTop: moderateScale(100),
     color: COLORS.black,
-  },
-  textBD: {
-    fontFamily: 'Poppins-Bold',
-    fontSize: moderateScale(22),
-    marginHorizontal: moderateScale(2),
-    color: COLORS.black,
-  },
-  textDH: {
-    marginHorizontal: moderateScale(2),
-    fontSize: moderateScale(12),
-    color: COLORS.black,
-    marginTop: moderateScale(10),
+    textTransform: 'capitalize',
   },
   textTK: {
-    fontFamily: 'Poppins-Bold',
     fontSize: moderateScale(16),
     marginHorizontal: moderateScale(2),
     marginTop: moderateScale(40),
     color: COLORS.black,
+    marginBottom: moderateScale(10),
   },
   textPercent: {
     fontSize: moderateScale(20),
@@ -315,9 +291,6 @@ const styles = StyleSheet.create({
     marginTop: moderateScale(19),
     marginHorizontal: moderateScale(5),
   },
-  inputStyle: {
-    size: 12,
-  },
   itemProduct: {
     margin: moderateScale(15),
     marginTop: moderateScale(15),
@@ -325,5 +298,11 @@ const styles = StyleSheet.create({
   list: {
     marginTop: moderateScale(15),
     alignSelf: 'center',
+  },
+  bannerContainer: {
+    margin: moderateScale(10),
+  },
+  searchBar: {
+    width: moderateScale(320),
   },
 });
