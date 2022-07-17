@@ -22,7 +22,7 @@ const SearchBar = ({
           style={[styles.input, {...stylesInput}]}
           onChangeText={onChangeText}
           value={value}
-          placeholder="Search in Here"
+          placeholder="Cari di Second Chance"
           onSubmitEditing={onSubmitEditing}
           onEndEditing={onEndEditing}
         />

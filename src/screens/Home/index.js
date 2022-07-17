@@ -74,15 +74,15 @@ export default function Home({navigation}) {
     const bannerName = item.name.replace(/[^a-zA-Z ]/g, ' ');
 
     return (
-      <View>
+      <View style={styles.bannerContainer}>
+        <View style={styles.textBannerContainer}>
+          <Poppins style={styles.textBR}>{bannerName}</Poppins>
+        </View>
         <Image
           source={{uri: item.image_url}}
           style={styles.imageBanner}
           resizeMode="cover"
         />
-        <View style={styles.textBannerContainer}>
-          <Poppins style={styles.textBR}>{bannerName}</Poppins>
-        </View>
       </View>
     );
   };
@@ -106,7 +106,7 @@ export default function Home({navigation}) {
         </View>
       </LinearGradient>
       <View style={styles.categories}>
-        <Poppins type="Bold" style={styles.textTK}>
+        <Poppins type="Medium" style={styles.textTK}>
           Telusuri Kategori
         </Poppins>
         <FlatList
@@ -257,13 +257,12 @@ const styles = StyleSheet.create({
     marginHorizontal: moderateScale(20),
   },
   textBannerContainer: {
-    alignSelf: 'center',
+    alignSelf: 'flex-start',
   },
   imageBanner: {
     height: moderateScale(135),
     width: moderateScale(300),
     borderRadius: moderateScale(10),
-    margin: moderateScale(10),
   },
   footer: {
     marginHorizontal: moderateScale(50),
@@ -290,15 +289,15 @@ const styles = StyleSheet.create({
     padding: moderateScale(10),
   },
   textBR: {
-    fontSize: moderateScale(22),
+    fontSize: moderateScale(17),
     color: COLORS.black,
     textTransform: 'capitalize',
   },
   textTK: {
-    fontSize: moderateScale(16),
+    fontSize: moderateScale(14),
     marginHorizontal: moderateScale(2),
     marginTop: moderateScale(40),
-    color: COLORS.black,
+    color: COLORS.neutral5,
     marginBottom: moderateScale(10),
   },
   textPercent: {
@@ -326,7 +325,7 @@ const styles = StyleSheet.create({
   },
   searchContainer: {
     paddingHorizontal: moderateScale(20),
-    paddingTop: moderateScale(20),
+    paddingVertical: moderateScale(10),
     backgroundColor: '#ffe9c9',
   },
 });
