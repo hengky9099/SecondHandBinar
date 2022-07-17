@@ -9,7 +9,6 @@ import {
   LengkapiDetailProduk,
   Login,
   Notification,
-  // NotificationBuyer,
   Register,
   Profile,
 } from '../screens';
@@ -74,14 +73,6 @@ const MainApp = () => (
       name="Notification"
       component={Notification}
     />
-    {/* <Tab.Screen
-      options={{
-        tabBarLabel: 'Notification',
-        tabBarIcon: ({color, size}) => iconBar('bell', color, size),
-      }}
-      name="Notification"
-      component={NotificationBuyer}
-    /> */}
     <Tab.Screen
       options={{
         tabBarLabel: 'Jual',

@@ -42,8 +42,8 @@ const DaftarJual = () => {
   const [product, setProduct] = useState([]);
 
   useEffect(() => {
-    getDataOrderSeller();
     getDataProductSeller();
+    getDataOrderSeller();
   }, [getDataOrderSeller, getDataProductSeller]);
 
   const getDataOrderSeller = useCallback(async () => {
@@ -224,7 +224,10 @@ const DaftarJual = () => {
               productPrice={currencyToIDR(item.base_price)}
               urlImageProduct={item.image_url}
               productName={item.name}
-              productType={item.categories}
+              productType={item?.Categories?.map(a => a.name)
+                .toString()
+                .split(',')
+                .join(', ')}
             />
           );
         }}
@@ -267,11 +270,13 @@ const DaftarJual = () => {
           return (
             <ItemNotificationCard
               urlImage={item.image_url}
-              typeNotif={item.status}
               date={thisDate(item.updatedAt)}
               productName={item.product_name}
               productPrice={currencyToIDR(item.base_price)}
               tawaran={currencyToIDR(item.price)}
+              onPress={() =>
+                navigation.navigate('infoPenawar', {id_order: item.id})
+              }
             />
           );
         }}

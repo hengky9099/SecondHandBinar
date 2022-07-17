@@ -16,7 +16,7 @@ import styles from './styles';
 const Notification = () => {
   const dispatch = useDispatch();
   const {dataLogin} = useSelector(state => state.login);
-  const {refreshing} = useSelector(state => state.daftarjual);
+  const {refreshing} = useSelector(state => state.notifikasi);
   const [notifikasi, setnotifikasi] = useState([]);
 
   useEffect(() => {
@@ -73,7 +73,7 @@ const Notification = () => {
 
   const renderDataNotification = ({item}) => (
     <ItemNotificationCard
-      typeNotif={item.notification_type}
+      onPress={setRead(item.id)}
       date={thisDate(item.transaction_date)}
       productName={item.product_name}
       productPrice={currencyToIDR(item.base_price)}
@@ -82,22 +82,34 @@ const Notification = () => {
     />
   );
 
+  const setRead = id => {
+    for (let i in notifikasi) {
+      if (notifikasi[i].id === id) {
+        notifikasi[i].read = true;
+        break;
+      }
+    }
+    setNotification(notifikasi);
+  };
+
   return (
     <View style={styles.container}>
       <View style={styles.header}>
         <Poppins style={styles.textHeader}>Notifikasi</Poppins>
         <View style={styles.containerNotifBar}>
-          <FlatList
-            refreshControl={
-              <RefreshControl onRefresh={onRefresh} refreshing={refreshing} />
-            }
-            data={notifikasi}
-            renderItem={renderDataNotification}
-            keyExtractor={(_item, index) => index}
-            numColumns={1}
-            key={1}
-            ListFooterComponent={<View style={styles.footerComponent} />}
-          />
+          {notifikasi ? (
+            <FlatList
+              refreshControl={
+                <RefreshControl onRefresh={onRefresh} refreshing={refreshing} />
+              }
+              data={notifikasi}
+              renderItem={renderDataNotification}
+              keyExtractor={(_item, index) => index}
+              numColumns={1}
+              key={1}
+              ListFooterComponent={<View style={styles.footerComponent} />}
+            />
+          ) : null}
         </View>
       </View>
     </View>
