@@ -11,6 +11,7 @@ import {
   Notification,
   Register,
   Profile,
+  InfoPenawar,
 } from '../screens';
 import {COLORS} from '../helpers/colors';
 
@@ -43,6 +44,11 @@ const MainStack = () => {
       <Stack.Screen
         name="MainApp"
         component={MainApp}
+        options={{headerShown: false}}
+      />
+      <Stack.Screen
+        name="InfoPenawar"
+        component={InfoPenawar}
         options={{headerShown: false}}
       />
     </Stack.Navigator>

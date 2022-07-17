@@ -275,7 +275,7 @@ const DaftarJual = () => {
               productPrice={currencyToIDR(item.base_price)}
               tawaran={currencyToIDR(item.price)}
               onPress={() =>
-                navigation.navigate('infoPenawar', {id_order: item.id})
+                navigation.navigate('InfoPenawar', {id_order: item.id})
               }
             />
           );

@@ -10,6 +10,5 @@ export const allReducers = combineReducers({
   login: LoginReducer,
   notifikasi: NotificationReducer,
   daftarjual: DaftarJualReducer,
-  notifikasi: NotificationReducer,
   global: GlobalReducer,
 });
