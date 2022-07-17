@@ -1,6 +1,6 @@
 import React from 'react';
 import TestRenderer from 'react-test-renderer';
-import {MenuAkun} from '../../src/component';
+import MenuAkun from '../../src/component/MenuAkun';
 
 describe('MenuAkun Component Testing', () => {
   beforeAll(done => {

@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">SecondHandBinar</string>
+    <string moduleConfig="true" name="CodePushDeploymentKey">Nu9fdiIAV8ZxmgX3fPuNAOjAhaw7XvZyNUApx</string>
 </resources>
