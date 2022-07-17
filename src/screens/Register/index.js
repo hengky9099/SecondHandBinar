@@ -4,18 +4,16 @@ import {
   StyleSheet,
   TouchableOpacity,
   ActivityIndicator,
+  ScrollView,
 } from 'react-native';
 import React from 'react';
-import Header from '../../component/Header';
-import Input from '../../component/Input';
 import {moderateScale} from 'react-native-size-matters';
-import {Poppins} from '../../component/FontComponents';
 import {COLORS} from '../../helpers/colors';
-import Button from '../../component/Button';
 import {Formik} from 'formik';
 import * as Yup from 'yup';
 import {useDispatch, useSelector} from 'react-redux';
 import {postRegister} from './redux/action';
+import {Button, Header, Input, Poppins} from '../../component';
 
 const Register = ({navigation}) => {
   const {loading} = useSelector(state => state.global);
@@ -23,6 +21,7 @@ const Register = ({navigation}) => {
 
   // For validation
   const validationSignUp = Yup.object().shape({
+    name: Yup.string().required("Name field can't be empty"),
     email: Yup.string()
       .email('Please enter a valid Email Address!')
       .required("Email field can't be empty"),
@@ -43,7 +42,7 @@ const Register = ({navigation}) => {
       onSubmit={signUp}>
       {({handleChange, handleSubmit, values, handleBlur, errors, touched}) => {
         return (
-          <View flex={1}>
+          <ScrollView flex={1}>
             <Header onPressBack={() => navigation.goBack()} />
             <Poppins style={styles.title}>Daftar</Poppins>
             <View style={styles.contentContainer}>
@@ -55,6 +54,9 @@ const Register = ({navigation}) => {
                 value={values.name}
               />
             </View>
+            {touched.name && errors.name && (
+              <Text style={styles.errorValidation}>{errors.name}</Text>
+            )}
             <View style={styles.contentContainer}>
               <Input
                 inputName="Email"
@@ -77,6 +79,7 @@ const Register = ({navigation}) => {
                 onChangeText={handleChange('password')}
                 onBlur={handleBlur('password')}
                 value={values.password}
+                styleInput={styles.inputPassword}
               />
             </View>
 
@@ -88,7 +91,7 @@ const Register = ({navigation}) => {
               {loading ? (
                 <ActivityIndicator />
               ) : (
-                <Button textButton1={'Daftar'} onPressButton1={handleSubmit} />
+                <Button textButton1="Daftar" onPressButton1={handleSubmit} />
               )}
             </View>
             <View style={styles.bottom}>
@@ -99,7 +102,7 @@ const Register = ({navigation}) => {
                 <Text style={styles.txtToLoginRight}>Masuk di sini</Text>
               </TouchableOpacity>
             </View>
-          </View>
+          </ScrollView>
         );
       }}
     </Formik>
@@ -110,7 +113,7 @@ export default Register;
 
 const styles = StyleSheet.create({
   contentContainer: {
-    alignItems: 'center',
+    marginHorizontal: moderateScale(10),
   },
   title: {
     marginHorizontal: moderateScale(10),
@@ -120,7 +123,6 @@ const styles = StyleSheet.create({
     color: COLORS.black,
   },
   btnDaftar: {
-    alignItems: 'center',
     marginVertical: moderateScale(30),
   },
   bottom: {
@@ -144,5 +146,8 @@ const styles = StyleSheet.create({
     marginLeft: moderateScale(15),
     color: 'red',
     marginBottom: moderateScale(10),
+  },
+  inputPassword: {
+    width: moderateScale(310),
   },
 });

@@ -3,6 +3,7 @@ import React from 'react';
 import {moderateScale} from 'react-native-size-matters';
 import {Poppins} from '../FontComponents';
 import {COLORS} from '../../helpers/colors';
+import {Jam} from '../../assets/Images';
 
 const ItemProductCard = ({
   onPressCard,
@@ -13,7 +14,7 @@ const ItemProductCard = ({
 }) => {
   return (
     <TouchableOpacity style={styles.card} onPress={onPressCard}>
-      <Image source={{uri: url}} style={styles.image} />
+      <Image source={url ? {uri: url} : Jam} style={styles.image} />
       <Poppins numberOfLines={1} style={styles.textProductName}>
         {productName}
       </Poppins>

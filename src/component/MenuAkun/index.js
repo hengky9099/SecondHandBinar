@@ -23,9 +23,12 @@ const styles = StyleSheet.create({
     fontSize: moderateScale(14),
     color: COLORS.black,
     marginStart: moderateScale(15),
+    marginBottom: moderateScale(18),
   },
   page: {
     flexDirection: 'row',
     margin: moderateScale(10),
+    borderBottomWidth: moderateScale(1),
+    borderColor: COLORS.neutral1,
   },
 });

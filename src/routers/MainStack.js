@@ -6,10 +6,11 @@ import {
   Akun,
   DaftarJual,
   Home,
-  Jual,
+  LengkapiDetailProduk,
   Login,
   Notification,
   Register,
+  Profile,
 } from '../screens';
 import {COLORS} from '../helpers/colors';
 
@@ -27,6 +28,16 @@ const MainStack = () => {
       <Stack.Screen
         name="Login"
         component={Login}
+        options={{headerShown: false}}
+      />
+      <Stack.Screen
+        name="LengkapiDetailProduk"
+        component={LengkapiDetailProduk}
+        options={{headerShown: false}}
+      />
+      <Stack.Screen
+        name="Profile"
+        component={Profile}
         options={{headerShown: false}}
       />
       <Stack.Screen
@@ -68,7 +79,7 @@ const MainApp = () => (
         tabBarIcon: ({color, size}) => iconBar('plus-circle', color, size),
       }}
       name="Jual"
-      component={Jual}
+      component={LengkapiDetailProduk}
     />
     <Tab.Screen
       options={{

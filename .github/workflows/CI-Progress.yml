@@ -1,0 +1,41 @@
+name: CI Progress
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      [
+        CI/CD,
+        componentv2,
+        AkunScreen,
+        developments,
+        login-featured,
+        register-featured,
+      ]
+  pull_request:
+    branches: [main, developments]
+
+jobs:
+  testing:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: instalation modules
+        run: yarn
+
+      - name: Unit Testing
+        run: yarn test -u --runInBand --forceExit
+
+  check-linter:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: instalation modules
+        run: yarn
+
+      - name: cleaning code
+        run: yarn lint

@@ -5,7 +5,7 @@ import {moderateScale} from 'react-native-size-matters';
 import {Poppins} from '../FontComponents';
 import Dot from '../Dot';
 import Button from '../Button';
-import {Jam} from '../../assets/Fonts/Images';
+import {Jam} from '../../assets/Images';
 
 const ItemNotificationCard = ({
   urlImage,
@@ -104,22 +104,25 @@ const ItemNotificationCard = ({
               ) : (
                 <Poppins style={styles.text1}>Penawaran Produk</Poppins>
               )}
-
               <View style={styles.dateContainer}>
                 <Poppins style={styles.text1}>{date}</Poppins>
                 {seen ? null : <Dot color={COLORS.purple4} />}
               </View>
             </View>
-
             <View>
               <Poppins style={styles.text}>{productName}</Poppins>
               <Poppins style={styles.text3}>{productPrice}</Poppins>
               <Poppins style={styles.text2}>
                 {statusTawaranCheck(status, tawaran)}
-              </Poppins>
-              {status === 'accepted' && typeNotif === 'buyer' ? (
-                <Poppins style={styles.text1}>
-                  Kamu akan segera dihubungi penjual via WhatsApp
+          <View>
+            <Poppins style={styles.text}>{productName}</Poppins>
+            <Poppins style={styles.text3}>{productPrice}</Poppins>
+            <Poppins style={styles.text2}>
+              {statusTawaranCheck(status, tawaran)}
+            </Poppins>
+            {status === 'accepted' && status === 'buyer' ? (
+              <Poppins style={styles.text1}>
+                Kamu akan segera dihubungi penjual via WhatsApp
                 </Poppins>
               ) : null}
             </View>
