@@ -5,7 +5,7 @@ import {moderateScale} from 'react-native-size-matters';
 import {Poppins} from '../FontComponents';
 import Dot from '../Dot';
 import Button from '../Button';
-import {Jam} from '../../assets/Fonts/Images';
+import {Jam} from '../../assets/Images';
 
 const ItemNotificationCard = ({
   urlImage,
