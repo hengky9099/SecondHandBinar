@@ -8,6 +8,7 @@ import {GlobalReducer} from '../globalReducer';
 export const allReducers = combineReducers({
   register: RegisterReducer,
   login: LoginReducer,
+  notifikasi: NotificationReducer,
   daftarjual: DaftarJualReducer,
   notifikasi: NotificationReducer,
   global: GlobalReducer,

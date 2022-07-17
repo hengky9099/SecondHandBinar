@@ -10,6 +10,7 @@ import StatusBarCore from './StatusBarCore';
 import ItemNotificationCard from './ItemNotificationCard';
 import IdentityCard from './IdentityCard';
 import InputAdd from './InputAdd';
+import BottomSheet from './BottomSheet';
 
 export {
   Button,
@@ -24,5 +25,6 @@ export {
   ItemNotificationCard,
   IdentityCard,
   InputAdd,
+  BottomSheet,
 };
 export * from './FontComponents';

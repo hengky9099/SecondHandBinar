@@ -104,13 +104,11 @@ const ItemNotificationCard = ({
               ) : (
                 <Poppins style={styles.text1}>Penawaran Produk</Poppins>
               )}
-
               <View style={styles.dateContainer}>
                 <Poppins style={styles.text1}>{date}</Poppins>
                 {seen ? null : <Dot color={COLORS.purple4} />}
               </View>
             </View>
-
             <View>
               <Poppins style={styles.text}>{productName}</Poppins>
               <Poppins style={styles.text3}>{productPrice}</Poppins>
