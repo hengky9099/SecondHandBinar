@@ -44,7 +44,7 @@ const ItemNotificationCard = ({
     text2: {
       color: COLORS.black,
       fontSize: moderateScale(14),
-      textDecorationLine: status === 'decline' ? 'line-through' : 'none',
+      textDecorationLine: status === 'declined' ? 'line-through' : 'none',
     },
     text3: {
       color: COLORS.black,
@@ -69,13 +69,17 @@ const ItemNotificationCard = ({
       flexDirection: 'row',
     },
     buttonContainer: {
-      marginTop: moderateScale(10),
+      marginTop: moderateScale(-10),
+      marginBottom: moderateScale(10),
       alignItems: 'center',
     },
   });
 
   const statusTawaranCheck = (statusTawaran, tawaranPembeli) => {
-    if (tawaranPembeli && statusTawaran === 'decline') {
+    if (
+      (tawaranPembeli && statusTawaran === 'declined') ||
+      statusTawaran === ''
+    ) {
       return `Ditawar ${tawaranPembeli}`;
     } else if (tawaranPembeli && statusTawaran === 'accepted') {
       return `Berhasil Ditawar ${tawaranPembeli}`;
@@ -117,7 +121,7 @@ const ItemNotificationCard = ({
           </View>
         </View>
       </View>
-      {button ? (
+      {button !== 'declined' ? (
         <View style={styles.buttonContainer}>
           <Button
             numButton={2}

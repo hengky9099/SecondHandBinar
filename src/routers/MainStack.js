@@ -12,13 +12,14 @@ import {
   // NotificationBuyer,
   Register,
 } from '../screens';
+import InfoPenawar from '../screens/InfoPenawar';
 
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
 
 const MainStack = () => {
   return (
-    <Stack.Navigator initialRouteName="Login">
+    <Stack.Navigator initialRouteName="Info">
       <Stack.Screen
         name="Register"
         component={Register}
@@ -32,6 +33,11 @@ const MainStack = () => {
       <Stack.Screen
         name="MainApp"
         component={MainApp}
+        options={{headerShown: false}}
+      />
+      <Stack.Screen
+        name="Info"
+        component={InfoPenawar}
         options={{headerShown: false}}
       />
     </Stack.Navigator>
