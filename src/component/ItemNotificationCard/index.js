@@ -114,15 +114,10 @@ const ItemNotificationCard = ({
               <Poppins style={styles.text3}>{productPrice}</Poppins>
               <Poppins style={styles.text2}>
                 {statusTawaranCheck(status, tawaran)}
-          <View>
-            <Poppins style={styles.text}>{productName}</Poppins>
-            <Poppins style={styles.text3}>{productPrice}</Poppins>
-            <Poppins style={styles.text2}>
-              {statusTawaranCheck(status, tawaran)}
-            </Poppins>
-            {status === 'accepted' && status === 'buyer' ? (
-              <Poppins style={styles.text1}>
-                Kamu akan segera dihubungi penjual via WhatsApp
+              </Poppins>
+              {status === 'accepted' && typeNotif === 'buyer' ? (
+                <Poppins style={styles.text1}>
+                  Kamu akan segera dihubungi penjual via WhatsApp
                 </Poppins>
               ) : null}
             </View>
