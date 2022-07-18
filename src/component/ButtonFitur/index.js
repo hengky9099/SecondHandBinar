@@ -6,7 +6,10 @@ import Feather from 'react-native-vector-icons/Feather';
 import {Poppins} from '../FontComponents';
 
 const {width} = Dimensions.get('window');
+
 const ButtonFitur = ({nameFitur, nameIcon, onPressButton, disabled}) => {
+  const [selected, setSelected] = useState([]);
+
   return (
     <TouchableOpacity onPress={() => setSelected(onPressButton)}>
       {setSelected ? (

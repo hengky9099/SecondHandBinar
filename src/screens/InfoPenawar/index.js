@@ -21,6 +21,7 @@ import axios from 'axios';
 import {baseUrl} from '@env';
 import {useSelector} from 'react-redux';
 import {currencyToIDR, thisDate} from '../../helpers/change';
+import {goBack} from '../../helpers/navigate';
 
 const InfoPenawar = ({route}) => {
   const id = route.params.id_order;
@@ -90,7 +91,6 @@ const InfoPenawar = ({route}) => {
     return num.toString().substring(0);
   };
 
-
   const onPressBtnHubungi = () => {
     Linking.openURL(
       `https://api.whatsapp.com/send?phone=62${convertPhoneNumber(
@@ -108,7 +108,10 @@ const InfoPenawar = ({route}) => {
               <RefreshControl refreshing={refresh} onRefresh={onRefresh} />
             }>
             <View>
-              <Header headerName={'Info Penawar'} />
+              <Header
+                headerName={'Info Penawar'}
+                onPressBack={() => goBack()}
+              />
               <IdentityCard
                 urlImage={
                   data?.User?.image_url

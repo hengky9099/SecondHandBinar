@@ -6,7 +6,7 @@ import {
   Akun,
   DaftarJual,
   Home,
-  Jual,
+  LengkapiDetailProduk,
   Login,
   Notification,
   Register,
@@ -20,7 +20,7 @@ const Tab = createBottomTabNavigator();
 
 const MainStack = () => {
   return (
-    <Stack.Navigator initialRouteName="Info">
+    <Stack.Navigator initialRouteName="Login">
       <Stack.Screen
         name="Register"
         component={Register}
@@ -39,11 +39,6 @@ const MainStack = () => {
       <Stack.Screen
         name="Profile"
         component={Profile}
-        options={{headerShown: false}}
-      />
-      <Stack.Screen
-        name="MainApp"
-        component={MainApp}
         options={{headerShown: false}}
       />
       <Stack.Screen
@@ -85,7 +80,7 @@ const MainApp = () => (
         tabBarIcon: ({color, size}) => iconBar('plus-circle', color, size),
       }}
       name="Jual"
-      component={Jual}
+      component={LengkapiDetailProduk}
     />
 
     <Tab.Screen

@@ -24,7 +24,6 @@ import {seller} from '../../assets/Images';
 import {useDispatch, useSelector} from 'react-redux';
 import {setLoading} from '../../redux/globalAction';
 import axios from 'axios';
-import {setOrderSeller, setProductSeller, setRefreshing} from './redux/action';
 import {baseUrl} from '@env';
 import {setLogin} from '../Login/redux/action';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -41,6 +40,7 @@ const DaftarJual = ({route}) => {
   const [buttonFiturName, setButtonFiturName] = useState('Product');
   const [orderan, setOrderan] = useState([]);
   const [product, setProduct] = useState([]);
+  const [refresh, setRefresh] = useState(false);
 
   const {refreshing} = useSelector(state => state.daftarjual);
   const {dataLogin, dataUser} = useSelector(state => state.login);
@@ -57,37 +57,35 @@ const DaftarJual = ({route}) => {
       const res = await axios.get(`${baseUrl}/seller/order`, {
         headers: {access_token: `${dataLogin.access_token}`},
       });
-      setOrderan([...res.data]);
+      setOrderan(res.data);
       console.log('Data Order Seller: ', res.data);
-      dispatch(setOrderSeller(res.data));
-      if (res.status === 200) {
-        dispatch(setLoading(false));
-        dispatch(setOrderSeller(res.data));
-      }
-      if (res.status === 403) {
-        setLogin();
-        navigate('Login');
-      }
+      // if (res.status === 200) {
+      //   dispatch(setLoading(false));
+      // }
+      // if (res.status === 403) {
+      //   setLogin();
+      //   navigate('Login');
+      // }
     } catch (error) {
       console.log(error);
       dispatch(setLoading(false));
 
-      if ((error.message = 'Request failed with status code 401')) {
-        await AsyncStorage.setItem('@access_token', '');
-        Alert.alert(
-          'Pemberitahuan',
-          'Token Sudah Expired, silahkan Login kembali!',
-          [
-            {
-              text: 'OK',
-              onPress: () => {
-                navigate('Login');
-                dispatch(setLogin(''));
-              },
-            },
-          ],
-        );
-      }
+      // if ((error.message = 'Request failed with status code 401')) {
+      //   await AsyncStorage.setItem('@access_token', '');
+      //   Alert.alert(
+      //     'Pemberitahuan',
+      //     'Token Sudah Expired, silahkan Login kembali!',
+      //     [
+      //       {
+      //         text: 'OK',
+      //         onPress: () => {
+      //           navigate('Login');
+      //           dispatch(setLogin(''));
+      //         },
+      //       },
+      //     ],
+      //   );
+      // }
     } finally {
       dispatch(setLoading(false));
     }
@@ -100,46 +98,46 @@ const DaftarJual = ({route}) => {
       const res = await axios.get(`${baseUrl}/seller/product`, {
         headers: {access_token: `${dataLogin.access_token}`},
       });
-      setProduct([...res.data]);
+      setProduct(res.data);
       console.log('Data Product Seller: ', res.data);
-      dispatch(setProductSeller(res.data));
-      if (res.status === 200) {
-        dispatch(setLoading(false));
-        dispatch(setProductSeller(res.data));
-      }
-      if (res.status === 403) {
-        setLogin();
-        navigate('Login');
-      }
+      // dispatch(setProductSeller(res.data));
+      // if (res.status === 200) {
+      //   dispatch(setLoading(false));
+      // }
+      // if (res.status === 403) {
+      //   dispatch(setLogin(''));
+      //   navigate('Login');
+      // }
     } catch (error) {
       console.log(error);
-      dispatch(setLoading(false));
+      // dispatch(setLoading(false));
 
-      if ((error.message = 'Request failed with status code 401')) {
-        await AsyncStorage.setItem('@access_token', '');
-        Alert.alert(
-          'Pemberitahuan',
-          'Token Sudah Expired, silahkan Login kembali!',
-          [
-            {
-              text: 'OK',
-              onPress: () => {
-                navigate('Login');
-                dispatch(setLogin(''));
-              },
-            },
-          ],
-        );
-      }
+      // if ((error.message = 'Request failed with status code 401')) {
+      //   await AsyncStorage.setItem('@access_token', '');
+      //   Alert.alert(
+      //     'Pemberitahuan',
+      //     'Token Sudah Expired, silahkan Login kembali!',
+      //     [
+      //       {
+      //         text: 'OK',
+      //         onPress: () => {
+      //           navigate('Login');
+      //           dispatch(setLogin(''));
+      //         },
+      //       },
+      //     ],
+      //   );
+      // }
     } finally {
       dispatch(setLoading(false));
     }
   }, [dataLogin, dispatch]);
 
   const onRefresh = () => {
-    dispatch(setRefreshing(true));
-    dispatch(getDataOrderSeller(dataLogin));
-    dispatch(getDataProductSeller(dataLogin));
+    setRefresh(true);
+    // dispatch(getDataOrderSeller(dataLogin));
+    getDataProductSeller(dataLogin);
+    setRefresh(false);
   };
 
   const renderHeader = () => {
@@ -209,7 +207,7 @@ const DaftarJual = ({route}) => {
     return (
       <FlatList
         refreshControl={
-          <RefreshControl onRefresh={onRefresh} refreshing={refreshing} />
+          <RefreshControl onRefresh={onRefresh} refreshing={refresh} />
         }
         columnWrapperStyle={[
           styles.contentProduct,
@@ -319,7 +317,8 @@ const DaftarJual = ({route}) => {
       });
     }
   };
-
+  console.log('=====================================');
+  console.log(orderan);
   return (
     <SafeAreaView style={[styles.container]}>
       {showToast(createProduct)}

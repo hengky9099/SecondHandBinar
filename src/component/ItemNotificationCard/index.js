@@ -17,7 +17,7 @@ const ItemNotificationCard = ({
   date,
   seen = false,
   status = 'pending',
-  button,
+  button = 'declined',
   textButton1,
   textButton2,
   onPressButton1,
@@ -145,4 +145,3 @@ const ItemNotificationCard = ({
 };
 
 export default ItemNotificationCard;
-
