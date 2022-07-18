@@ -1,4 +1,4 @@
-import {Image, StyleSheet, View} from 'react-native';
+import {Image, StyleSheet, TouchableOpacity, View} from 'react-native';
 import React from 'react';
 import {COLORS} from '../../helpers/colors';
 import {moderateScale} from 'react-native-size-matters';
@@ -9,6 +9,7 @@ import {Jam} from '../../assets/Images';
 
 const ItemNotificationCard = ({
   urlImage,
+  onPress,
   typeNotif,
   productName,
   productPrice,
@@ -75,11 +76,13 @@ const ItemNotificationCard = ({
   });
 
   const statusTawaranCheck = (statusTawaran, tawaranPembeli) => {
-    if (tawaranPembeli && statusTawaran === 'decline') {
+    if (tawaranPembeli && statusTawaran === 'declined' && 'e') {
+      return `Ditawar ${tawaranPembeli}`;
+    } else if (tawaranPembeli && statusTawaran === 'bid') {
       return `Ditawar ${tawaranPembeli}`;
     } else if (tawaranPembeli && statusTawaran === 'accepted') {
       return `Berhasil Ditawar ${tawaranPembeli}`;
-    } else if (statusTawaran === 'pending') {
+    } else if (statusTawaran === 'pending' && 'bid') {
       return `Ditawar ${tawaranPembeli}`;
     } else {
       return null;
@@ -88,43 +91,50 @@ const ItemNotificationCard = ({
 
   return (
     <View style={styles.page}>
-      <View style={styles.notifContainer}>
-        <Image source={urlImage ? {uri: urlImage} : Jam} style={styles.image} />
-
-        <View style={styles.notifinfoContainer}>
-          <View style={styles.toRow}>
-            <Poppins style={styles.text1}>{typeNotif}</Poppins>
-            <View style={styles.dateContainer}>
-              <Poppins style={styles.text1}>{date}</Poppins>
-              {seen ? null : <Dot color={COLORS.purple4} />}
+      <TouchableOpacity onPress={onPress}>
+        <View style={styles.notifContainer}>
+          <Image
+            source={urlImage ? {uri: urlImage} : Jam}
+            style={styles.image}
+          />
+          <View style={styles.notifinfoContainer}>
+            <View style={styles.toRow}>
+              {status === 'create' ? (
+                <Poppins style={styles.text1}>Berhasil diterbitkan</Poppins>
+              ) : (
+                <Poppins style={styles.text1}>Penawaran Produk</Poppins>
+              )}
+              <View style={styles.dateContainer}>
+                <Poppins style={styles.text1}>{date}</Poppins>
+                {seen ? null : <Dot color={COLORS.purple4} />}
+              </View>
+            </View>
+            <View>
+              <Poppins style={styles.text}>{productName}</Poppins>
+              <Poppins style={styles.text3}>{productPrice}</Poppins>
+              <Poppins style={styles.text2}>
+                {statusTawaranCheck(status, tawaran)}
+              </Poppins>
+              {status === 'accepted' && typeNotif === 'buyer' ? (
+                <Poppins style={styles.text1}>
+                  Kamu akan segera dihubungi penjual via WhatsApp
+                </Poppins>
+              ) : null}
             </View>
           </View>
-
-          <View>
-            <Poppins style={styles.text}>{productName}</Poppins>
-            <Poppins style={styles.text3}>{productPrice}</Poppins>
-            <Poppins style={styles.text2}>
-              {statusTawaranCheck(status, tawaran)}
-            </Poppins>
-            {status === 'accepted' && status === 'buyer' ? (
-              <Poppins style={styles.text1}>
-                Kamu akan segera dihubungi penjual via WhatsApp
-              </Poppins>
-            ) : null}
+        </View>
+        {button ? (
+          <View style={styles.buttonContainer}>
+            <Button
+              numButton={2}
+              textButton1={textButton1}
+              textButton2={textButton2}
+              onPressButton1={onPressButton1}
+              onPressButton2={onPressButton2}
+            />
           </View>
-        </View>
-      </View>
-      {button ? (
-        <View style={styles.buttonContainer}>
-          <Button
-            numButton={2}
-            textButton1={textButton1}
-            textButton2={textButton2}
-            onPressButton1={onPressButton1}
-            onPressButton2={onPressButton2}
-          />
-        </View>
-      ) : null}
+        ) : null}
+      </TouchableOpacity>
     </View>
   );
 };
