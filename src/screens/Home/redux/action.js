@@ -13,8 +13,6 @@ export const getProduct = () => async dispatch => {
     dispatch(setProductSuccess(res.data));
     dispatch(setLengthProducts(res.data.length));
     dispatch(setLoading(false));
-
-    console.log(res.data);
   } catch (error) {
     console.log(error, 'error');
     dispatch(setLoading(false));

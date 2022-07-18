@@ -6,7 +6,7 @@ import {Button, Header, Input, InputAdd, Poppins} from '../../component';
 import DropDownPicker from 'react-native-dropdown-picker';
 import {COLORS} from '../../helpers/colors';
 import {moderateScale} from 'react-native-size-matters';
-import {launchImageLibrary} from 'react-native-image-picker';
+// import {launchImageLibrary} from 'react-native-image-picker';
 import {useDispatch, useSelector} from 'react-redux';
 import {navigate} from '../../helpers/navigate';
 import {getCategory, setDataProduct} from './redux/action';
@@ -14,14 +14,14 @@ import Toast from 'react-native-toast-message';
 import {useEffect} from 'react';
 import {setLoading} from '../../redux/globalAction';
 import LoadingBar from '../../component/LoadingBar';
-// import ImagePicker from 'react-native-image-crop-picker';
+import ImagePicker from 'react-native-image-crop-picker';
 
 const Index = ({navigation}) => {
   const dispatch = useDispatch();
   const [open, setOpen] = useState(false);
   const [value, setValue] = useState([]);
   const [image, setImage] = useState({});
-  // const [listImage, setListImage] = useState([]);
+  const [listImage, setListImage] = useState([]);
   const {dataLogin, dataUser} = useSelector(state => state.login);
   const {dataCategory} = useSelector(state => state.dataProduct);
   const {loading} = useSelector(state => state.global);
@@ -63,10 +63,25 @@ const Index = ({navigation}) => {
       body.append('base_price', values.hargaproduk);
       value.forEach(categori => body.append('category_ids', categori));
       body.append('location', dataUser.city);
-      body.append('image', {
-        name: image.fileName,
-        type: image.type,
-        uri: image.uri,
+      // body.append('image', {
+      //   name: image.fileName,
+      //   type: image.type,
+      //   uri: image.uri,
+      // });
+
+      //multiple image but cant send to api => output {}
+
+      listImage.forEach(element => {
+        const imageName = element.path.substring(
+          element.path.lastIndexOf('/') + 1,
+        );
+
+        const imageFile = {
+          uri: element.path,
+          type: element.mime,
+          name: imageName,
+        };
+        body.append('image', imageFile);
       });
 
       //multiple image but cant send to api => output {}
@@ -99,7 +114,7 @@ const Index = ({navigation}) => {
 
       const jsonRes = await res.json();
 
-      console.log(jsonRes, 'res fecting');
+      console.log(res, 'res fecting');
 
       if (jsonRes.name && jsonRes.message) {
         Alert.alert('Pemberitahuan', jsonRes.message);
@@ -137,19 +152,28 @@ const Index = ({navigation}) => {
     navigate('Preview');
   };
 
-  const addProductImage = async () => {
-    await launchImageLibrary({mediaType: 'photo'}).then(dataImage =>
-      setImage(dataImage.assets[0]),
-    );
+  // const addProductImage = async () => {
+  //   await launchImageLibrary({mediaType: 'photo'}).then(dataImage =>
+  //     setImage(dataImage.assets[0]),
+  //   );
 
-    //multiple picker image
-    // ImagePicker.openPicker({
-    //   multiple: true,
-    // }).then(images => {
-    //   console.log(images);
-    //   setListImage(images);
-    // });
+  //multiple picker image
+
+  const addProductImage = async () => {
+    ImagePicker.openPicker({
+      multiple: true,
+    }).then(images => {
+      console.log(images);
+      setListImage(images);
+    });
   };
+
+  // ImagePicker.openPicker({
+  //   multiple: true,
+  // }).then(images => {
+  //   console.log(images);
+  //   setListImage(images);
+  // });
 
   const validationProfile = Yup.object().shape({
     namaproduk: Yup.string().required('Nama Produk tidak boleh kosong'),
@@ -230,7 +254,7 @@ const Index = ({navigation}) => {
                   }}
                   placeholder="Pilih Kategori"
                   searchable={true}
-                  searchPlaceholder="Search..."
+                  searchPlaceholder="Cari..."
                   multiple={true}
                   mode="BADGE"
                   badgeDotColors={[
