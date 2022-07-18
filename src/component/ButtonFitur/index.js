@@ -8,14 +8,16 @@ import {Poppins} from '../FontComponents';
 const {width} = Dimensions.get('window');
 const ButtonFitur = ({nameFitur, nameIcon, onPressButton, disabled}) => {
   return (
-    <TouchableOpacity
-      activeOpacity={disabled ? 1 : 0.7}
-      onPress={!disabled && onPressButton}>
-      <View style={styles.toButton}>
-        <Poppins type="Medium" style={styles.nameFitur}>
-          <Feather name={nameIcon} size={18} /> {nameFitur}
-        </Poppins>
-      </View>
+    <TouchableOpacity onPress={() => setSelected(onPressButton)}>
+      {setSelected ? (
+        <View style={[styles.toButton, selected && styles.toButtonSelect]}>
+          <Poppins
+            type="Medium"
+            style={[styles.nameFitur, selected && styles.nameFiturSelect]}>
+            <Feather name={nameIcon} size={20} /> {nameFitur}
+          </Poppins>
+        </View>
+      ) : null}
     </TouchableOpacity>
   );
 };

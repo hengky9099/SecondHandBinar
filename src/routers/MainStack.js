@@ -9,9 +9,9 @@ import {
   LengkapiDetailProduk,
   Login,
   Notification,
-  // NotificationBuyer,
   Register,
   Profile,
+  InfoPenawar,
 } from '../screens';
 import {COLORS} from '../helpers/colors';
 
@@ -46,6 +46,11 @@ const MainStack = () => {
         component={MainApp}
         options={{headerShown: false}}
       />
+      <Stack.Screen
+        name="InfoPenawar"
+        component={InfoPenawar}
+        options={{headerShown: false}}
+      />
     </Stack.Navigator>
   );
 };
@@ -74,14 +79,6 @@ const MainApp = () => (
       name="Notification"
       component={Notification}
     />
-    {/* <Tab.Screen
-      options={{
-        tabBarLabel: 'Notification',
-        tabBarIcon: ({color, size}) => iconBar('bell', color, size),
-      }}
-      name="Notification"
-      component={NotificationBuyer}
-    /> */}
     <Tab.Screen
       options={{
         tabBarLabel: 'Jual',
