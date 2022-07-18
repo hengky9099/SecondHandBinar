@@ -22,6 +22,7 @@ import LoadingBar from '../../component/LoadingBar';
 import {setRefreshing} from '../../redux/globalAction';
 import {navigate} from '../../helpers/navigate';
 import {currencyToIDR} from '../../helpers/change';
+import Feather from 'react-native-vector-icons/Feather';
 
 export default function Home({navigation}) {
   const dispatch = useDispatch();
@@ -33,14 +34,53 @@ export default function Home({navigation}) {
     banner,
   } = useSelector(state => state.home);
   const {loading, refreshing} = useSelector(state => state.global);
-  const [end, setEnd] = useState(16);
+  const [page, setPage] = useState(1);
   const [dataProducts, setDataProducts] = useState('dataAllProduct');
   const [search, setSearch] = useState('');
+  const [listNumber, setListNumber] = useState([]);
+  const [startData] = useState(1);
+  const [endData, setEndData] = useState(5);
+  const [idCategory, setIdCategory] = useState(0);
 
   useEffect(() => {
-    const getAllProduct = () => dispatch(getProduct());
+    const getAllProduct = () => dispatch(getProduct(page));
     getAllProduct();
-  }, [dispatch]);
+    dispatch(getProductperCategory(idCategory, page));
+  }, [dispatch, page, idCategory]);
+
+  useEffect(() => {
+    const renderListNumber = data => {
+      let renderer = [];
+      const lengthPageAllProduct = Math.ceil(
+        lengthProducts ? lengthProducts : 0 / 20,
+      );
+      const lengthPageProductperCategories = Math.ceil(
+        dataProductperCategory.length / 20,
+      );
+
+      if (data === 'dataAllProduct') {
+        setEndData(lengthPageAllProduct);
+      } else if (data === 'dataProductperCategory') {
+        setEndData(lengthPageProductperCategories);
+      }
+
+      for (let index = startData; index <= endData; index++) {
+        renderer.push({
+          title: index,
+          isActive: index === 1 ? true : false,
+        });
+      }
+
+      setListNumber(renderer);
+    };
+    renderListNumber();
+  }, [
+    products,
+    startData,
+    endData,
+    dataProductperCategory.length,
+    lengthProducts,
+  ]);
 
   const onRefresh = () => {
     dispatch(setRefreshing(true));
@@ -53,7 +93,9 @@ export default function Home({navigation}) {
         nameIcon="search"
         nameFitur={item.name}
         onPressButton={() => {
-          dispatch(getProductperCategory(item.id));
+          setPage(1);
+          dispatch(getProductperCategory(item.id, page));
+          setIdCategory(item.id);
           setDataProducts('dataProductperCategory');
         }}
       />
@@ -65,7 +107,10 @@ export default function Home({navigation}) {
       <ButtonFitur
         nameIcon="search"
         nameFitur="Semua"
-        onPressButton={() => setDataProducts('dataAllProduct')}
+        onPressButton={() => {
+          setPage(1);
+          setDataProducts('dataAllProduct');
+        }}
       />
     );
   };
@@ -100,8 +145,6 @@ export default function Home({navigation}) {
             keyExtractor={(_item, index) => index}
             renderItem={bannerItem}
             showsHorizontalScrollIndicator={false}
-            keyboardShouldPersistTaps="always"
-            keyboardDismissMode="on-drag"
           />
         </View>
       </LinearGradient>
@@ -116,8 +159,6 @@ export default function Home({navigation}) {
           keyExtractor={(_item, index) => index}
           renderItem={fiturButton}
           showsHorizontalScrollIndicator={false}
-          keyboardDismissMode="on-drag"
-          keyboardShouldPersistTaps="always"
         />
       </View>
     </View>
@@ -149,60 +190,77 @@ export default function Home({navigation}) {
     );
   };
 
-  const renderFooter = data => {
-    const tmp = end;
-    if (data === 'dataAllProduct') {
-      if (end < lengthProducts) {
-        return (
-          <View style={styles.footer}>
-            <TouchableOpacity
-              onPress={() => {
-                setEnd(tmp + 10);
-              }}
-              style={styles.loadMoreBtn}>
-              <Poppins style={styles.btnText}>Load More</Poppins>
-            </TouchableOpacity>
-          </View>
-        );
-      } else if (end > lengthProducts || end === lengthProducts) {
-        return (
-          <View style={styles.footer}>
-            <Poppins style={styles.text}>No More Data</Poppins>
-          </View>
-        );
-      }
-    } else if (data === 'dataProductperCategory') {
-      if (end < dataProductperCategory.length) {
-        return (
-          <View style={styles.footer}>
-            <TouchableOpacity
-              onPress={() => {
-                setEnd(tmp + 10);
-              }}
-              style={styles.loadMoreBtn}>
-              <Poppins style={styles.btnText}>Load More</Poppins>
-            </TouchableOpacity>
-          </View>
-        );
-      } else if (
-        end > dataProductperCategory.length ||
-        end === dataProductperCategory.length
-      ) {
-        return (
-          <View style={styles.footer}>
-            <Poppins style={styles.text}>No More Data</Poppins>
-          </View>
-        );
-      }
-    }
+  const renderFooter = (data, {itemCateogory}) => {
+    return (
+      <View flexDirection="row" justifyContent="center" flex={1}>
+        <View flexDirection="row">
+          <TouchableOpacity onPress={() => setPage(1)} style={{marginRight: 2}}>
+            <Feather name="chevrons-left" color={'#2094F6'} size={24} />
+          </TouchableOpacity>
+          <TouchableOpacity
+            onPress={() => {
+              if (page > 1 && data === 'dataProductperCategory') {
+                setPage(prevState => prevState - 1);
+                dispatch(getProductperCategory(itemCateogory.id, page));
+              } else if (page > 1 && data === 'dataAllProduct') {
+                setPage(prevState => prevState - 1);
+                dispatch(getProduct(page));
+              }
+            }}>
+            <Feather name="chevron-left" color={'#2094F6'} size={24} />
+          </TouchableOpacity>
+        </View>
+        <View flexDirection="row">
+          {listNumber.map((item, index) => {
+            return (
+              <TouchableOpacity
+                onPress={() => {
+                  setPage(index + 1);
+                }}
+                key={item.title}
+                style={{
+                  backgroundColor: index === page - 1 ? '#2094F6' : null,
+                  marginRight:
+                    parseInt(item.title, 10) === listNumber.length ? 0 : 20,
+                }}>
+                <Poppins style={{color: index === page - 1 ? 'white' : '#666'}}>
+                  {item.title}
+                </Poppins>
+              </TouchableOpacity>
+            );
+          })}
+        </View>
+        <View flexDirection="row">
+          <TouchableOpacity
+            onPress={() => {
+              if (page < 5) {
+                setPage(prevState => prevState + 1);
+              }
+            }}>
+            <Feather name="chevron-right" color={'#2094F6'} size={24} />
+          </TouchableOpacity>
+          <TouchableOpacity
+            onPress={() => {
+              setPage(5);
+            }}
+            style={{marginLeft: 2}}>
+            <Feather name="chevrons-right" color={'#2094F6'} size={24} />
+          </TouchableOpacity>
+        </View>
+      </View>
+    );
   };
 
   const list = data => {
     if (data === 'dataAllProduct') {
-      return products.slice(0, end);
+      return products;
     } else if (data === 'dataProductperCategory') {
-      return dataProductperCategory.slice(0, end);
+      return dataProductperCategory;
     }
+  };
+
+  const renderEmpty = () => {
+    return <Poppins style={styles.empty}>Tidak ada data</Poppins>;
   };
 
   return (
@@ -226,16 +284,16 @@ export default function Home({navigation}) {
             refreshControl={
               <RefreshControl onRefresh={onRefresh} refreshing={refreshing} />
             }
+            contentContainerStyle={{flexGrow: 1}}
             ListHeaderComponent={renderHeader}
+            ListEmptyComponent={renderEmpty}
             numColumns={2}
             showsVerticalScrollIndicator={false}
             data={list(dataProducts)}
             horizontal={false}
             keyExtractor={(_item, index) => index}
             renderItem={renderItem}
-            ListFooterComponent={renderFooter(dataProducts)}
-            keyboardDismissMode="on-drag"
-            keyboardShouldPersistTaps="always"
+            ListFooterComponent={renderFooter(dataProducts, dataCategory)}
           />
         </>
       ) : (
@@ -273,6 +331,8 @@ const styles = StyleSheet.create({
     padding: moderateScale(13),
     backgroundColor: COLORS.purple5,
     borderRadius: moderateScale(5),
+    flexDirection: 'row',
+    margin: moderateScale(5),
   },
   btnText: {
     color: COLORS.white,
@@ -327,5 +387,9 @@ const styles = StyleSheet.create({
     paddingHorizontal: moderateScale(20),
     paddingVertical: moderateScale(10),
     backgroundColor: '#ffe9c9',
+  },
+  empty: {
+    alignSelf: 'center',
+    margin: moderateScale(10),
   },
 });

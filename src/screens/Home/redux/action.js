@@ -10,14 +10,17 @@ import {
 } from './type';
 import {setLoading, setRefreshing} from '../../../redux/globalAction';
 
-export const getProduct = () => async dispatch => {
+export const getProduct = page => async dispatch => {
   dispatch(setLoading(true));
   try {
-    const res = await axios.get(`${baseUrl}/buyer/product`, {
-      validateStatus: status => status < 501,
-    });
-    dispatch(setProductSuccess(res.data));
-    dispatch(setLengthProducts(res.data.length));
+    const res = await axios.get(
+      `${baseUrl}/buyer/product?page=${page}&per_page=20`,
+      {
+        validateStatus: status => status < 501,
+      },
+    );
+    dispatch(setProductSuccess(res.data.data));
+    dispatch(setLengthProducts(res.data.data.length));
 
     const resCategory = await axios.get(`${baseUrl}/seller/category`);
     dispatch(setCategory(resCategory.data));
@@ -27,8 +30,9 @@ export const getProduct = () => async dispatch => {
 
     dispatch(setLoading(false));
     dispatch(setRefreshing(false));
+    console.log(page, 'page all product');
   } catch (error) {
-    console.log(error, 'error');
+    console.log('error', error);
     dispatch(setLoading(false));
     dispatch(setRefreshing(false));
 
@@ -36,22 +40,20 @@ export const getProduct = () => async dispatch => {
   }
 };
 
-export const getProductperCategory = idCategory => async dispatch => {
+export const getProductperCategory = (idCategory, page) => async dispatch => {
   dispatch(setLoading(true));
   try {
     const res = await axios.get(
-      `${baseUrl}/buyer/product?category_id=${idCategory}`,
+      `${baseUrl}/buyer/product?category_id=${idCategory}&page=${page}&per_page=20`,
       {
         validateStatus: status => status < 501,
       },
     );
-    dispatch(setCategoryProduct(res.data));
-
+    dispatch(setCategoryProduct(res.data.data));
     dispatch(setLoading(false));
-
-    console.log(res.data);
+    console.log(page, 'page product by category');
   } catch (error) {
-    console.log(error, 'error');
+    console.log('error', error);
     dispatch(setLoading(false));
     Alert.alert('Error');
   }
