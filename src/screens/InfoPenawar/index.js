@@ -1,5 +1,13 @@
-import {FlatList, StyleSheet, TouchableOpacity, View} from 'react-native';
-import React, {useEffect, useMemo, useState} from 'react';
+import {
+  Alert,
+  Linking,
+  RefreshControl,
+  ScrollView,
+  StyleSheet,
+  TouchableOpacity,
+  View,
+} from 'react-native';
+import React, {useCallback, useEffect, useState} from 'react';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {
   Header,
@@ -9,151 +17,152 @@ import {
 } from '../../component';
 import {moderateScale} from 'react-native-size-matters';
 import {COLORS} from '../../helpers/colors';
+import axios from 'axios';
+import {baseUrl} from '@env';
+import {useSelector} from 'react-redux';
+import {currencyToIDR, thisDate} from '../../helpers/change';
 
-const InfoPenawar = () => {
-  const [datas, setDatas] = useState(data);
+const InfoPenawar = ({route}) => {
+  const id = route.params.id_order;
+  const [data, setData] = useState([]);
+  const {dataLogin} = useSelector(state => state.login);
+  const [refresh, setRefresh] = useState(false);
 
-  const data = useMemo(() => {
-    return [
-      {
-        id: 1,
-        productName: 'Kaos Kaki',
-        price: 'Rp 20.000',
-        date: '29 Mei. 20.00',
-        tawaran: 'Rp 15.000',
-      },
-      {
-        id: 2,
-        productName: 'Baju',
-        price: 'Rp 30.000',
-        date: '20 Mei. 20.00',
-        tawaran: 'Rp 30.000',
-      },
-      {
-        id: 3,
-        productName: 'Lol',
-        price: 'Rp 30.000',
-        date: '29 Mei. 20.00',
-        tawaran: 'Rp 38.000',
-      },
-      {
-        id: 4,
-        productName: 'Hahaha',
-        price: 'Rp 30.000',
-        date: '28 Mei. 23.00',
-        tawaran: 'Rp 90.000',
-      },
-      {
-        id: 5,
-        productName: 'Wkwkwk',
-        price: 'Rp 30.000',
-        date: '20 Mei. 23.00',
-        tawaran: 'Rp 30.000',
-      },
-    ];
-  }, []);
+  const onRefresh = () => {
+    setRefresh(true);
+    getDataOrderbyStatus();
+    setRefresh(false);
+  };
 
   useEffect(() => {
-    setDatas(data);
-  }, [data]);
+    getDataOrderbyStatus();
+  }, [getDataOrderbyStatus, onPressAccepted]);
 
-  const onPressButtonCard = item => {
-    const newData = data.map(newItem => {
-      if (newItem.id === item.id) {
-        return {
-          ...newItem,
-          selected: true,
-        };
-      }
-      return {
-        ...newItem,
-        selected: false,
-      };
-    });
-    setDatas(newData);
+  const getDataOrderbyStatus = useCallback(async () => {
+    try {
+      const res = await axios.get(`${baseUrl}/seller/order/${id}`, {
+        headers: {access_token: `${dataLogin.access_token}`},
+      });
+      console.log('DATA RES: ', res.data);
+      setData(res.data);
+    } catch (error) {
+      console.log(error);
+    }
+  }, [dataLogin.access_token, id]);
+
+  const onPressAccepted = useCallback(async () => {
+    try {
+      const res = await axios.patch(
+        `${baseUrl}/seller/order/${id}`,
+        {status: ''},
+        {
+          headers: {access_token: `${dataLogin.access_token}`},
+        },
+      );
+      console.log(res);
+      getDataOrderbyStatus();
+    } catch (error) {
+      console.log(error);
+    }
+  }, [id, getDataOrderbyStatus, dataLogin.access_token]);
+
+  const onPressDecline = async () => {
+    try {
+      const res = await axios.patch(
+        `${baseUrl}/seller/order/${id}`,
+        {status: 'declined'},
+        {
+          headers: {access_token: `${dataLogin.access_token}`},
+        },
+      );
+      getDataOrderbyStatus();
+      console.log('PATCH : ', res);
+    } catch (error) {
+      console.log(error);
+    }
   };
 
-  const onPressAccepted = item => {
-    const newData = data.map(newItem => {
-      if (newItem.id === item.id) {
-        return {
-          ...newItem,
-          tempStatus: 'accepted',
-        };
-      }
-      return {
-        ...newItem,
-        tempStatus: 'pending',
-      };
-    });
-    setDatas(newData);
+  const onPressBtnStatus = () => {
+    Alert.alert('Tes', 'tombol status nih');
   };
 
-  const onPressDecline = item => {
-    const newData = data.map(newItem => {
-      if (newItem.id === item.id) {
-        return {
-          ...newItem,
-          tempStatus: 'decline',
-        };
-      }
-      return {
-        ...newItem,
-        tempStatus: 'pending',
-      };
-    });
-    setDatas(newData);
+  const convertPhoneNumber = num => {
+    return num.toString().substring(0);
   };
 
-  const renderItem = ({item}) => {
-    return (
-      <TouchableOpacity onPress={() => onPressButtonCard(item)}>
-        <ItemNotificationCard
-          button={item.selected}
-          seen={true}
-          textButton1={'Tolak'}
-          textButton2={'Terima'}
-          typeNotif={'Penawaran Produk'}
-          productName={item.productName}
-          productPrice={item.price}
-          date={item.date}
-          tawaran={item.tawaran}
-          status={item.tempStatus}
-          onPressButton1={() => {
-            onPressDecline(item);
-          }}
-          onPressButton2={() => {
-            onPressAccepted(item);
-          }}
-        />
-      </TouchableOpacity>
+
+  const onPressBtnHubungi = () => {
+    Linking.openURL(
+      `https://api.whatsapp.com/send?phone=62${convertPhoneNumber(
+        data.User.phone_number,
+      )}`,
     );
   };
 
   return (
-    <SafeAreaView style={styles.container}>
-      <View>
-        <Header headerName={'Info Penawar'} />
-        <IdentityCard
-          urlImage={'https://avatars.githubusercontent.com/u/62233239?v=4'}
-          nama={'Meisy'}
-          kota={'Solo'}
-        />
-      </View>
-      <View>
-        <Poppins style={styles.topText}>Daftar Produkmu yang Ditawar</Poppins>
-      </View>
-      <View flex={1}>
-        <View style={styles.card}>
-          <FlatList
-            showsVerticalScrollIndicator={false}
-            data={datas}
-            renderItem={renderItem}
-            keyExtractor={(item, index) => index}
-          />
-        </View>
-      </View>
-    </SafeAreaView>
+    <>
+      {data.id ? (
+        <SafeAreaView style={styles.container}>
+          <ScrollView
+            refreshControl={
+              <RefreshControl refreshing={refresh} onRefresh={onRefresh} />
+            }>
+            <View>
+              <Header headerName={'Info Penawar'} />
+              <IdentityCard
+                urlImage={
+                  data?.User?.image_url
+                    ? data?.User?.image_url
+                    : 'https://avatars.githubusercontent.com/u/62233239?v=4'
+                }
+                nama={data?.User?.full_name}
+                kota={data?.User?.city}
+              />
+            </View>
+            <View>
+              <Poppins style={styles.topText}>
+                Daftar Produkmu yang Ditawar
+              </Poppins>
+            </View>
+            <View flex={1}>
+              <View style={styles.card}>
+                <TouchableOpacity onPress={() => console.log('Pressed')}>
+                  <ItemNotificationCard
+                    button={data?.status}
+                    seen={true}
+                    urlImage={data?.Product?.image_url}
+                    textButton1={data.status === 'pending' ? 'Tolak' : 'Status'}
+                    textButton2={
+                      data.status === 'pending' ? 'Terima' : 'Hubungi'
+                    }
+                    typeNotif={'Penawaran Produk'}
+                    productName={data?.product_name}
+                    productPrice={currencyToIDR(data?.base_price)}
+                    date={thisDate(data?.transaction_date)}
+                    tawaran={currencyToIDR(data?.price)}
+                    status={data?.status}
+                    onPressButton1={() => {
+                      if (data.status === 'pending') {
+                        onPressDecline();
+                      } else {
+                        onPressBtnStatus();
+                      }
+                    }}
+                    onPressButton2={() => {
+                      if (data.status === 'pending') {
+                        onPressAccepted(data?.id);
+                      } else {
+                        onPressBtnHubungi(data?.id);
+                      }
+                    }}
+                  />
+                </TouchableOpacity>
+              </View>
+            </View>
+          </ScrollView>
+        </SafeAreaView>
+      ) : null}
+    </>
   );
 };
 

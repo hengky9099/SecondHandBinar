@@ -1,5 +1,5 @@
 import {ScrollView, StyleSheet, Text, View} from 'react-native';
-import React, {useState, useEffect} from 'react';
+import React, {useState} from 'react';
 import {Button, Header, Input} from '../../component';
 import {Formik} from 'formik';
 import * as Yup from 'yup';
@@ -10,8 +10,8 @@ import {useDispatch, useSelector} from 'react-redux';
 import ButtonCamera from '../../component/ButtonCamera';
 import {kota} from '../../helpers/kota';
 import {launchImageLibrary} from 'react-native-image-picker';
-import {baseUrl} from '@env';
 import axios from 'axios';
+import {baseUrl} from '@env';
 import {setLoading} from '../../redux/globalAction';
 
 const Profile = ({navigation}) => {
@@ -22,58 +22,68 @@ const Profile = ({navigation}) => {
   const [value, setValue] = useState(null);
   const [items, setItems] = useState(kota);
   const [image, setImage] = useState('');
-  const [user, setUser] = useState({
-    full_name: '',
-    city: '',
-    address: '',
-    phone_number: '',
-    image: '',
+  const [user] = useState({
+    name: dataUser?.full_name,
+    kota: dataUser?.city,
+    alamat: dataUser.address === 'null' ? '' : dataUser.address,
+    handphone: dataUser.phone_number === 'null' ? '' : dataUser.phone_number,
   });
 
-  useEffect(() => {
-    getProfile();
-  });
+  // useEffect(() => {
+  //   getProfile();
+  // });
 
-  const getProfile = async () => {
+  // const getProfile = async () => {
+  //   try {
+  //     const res = await axios.get(`${baseUrl}/auth/user`, {
+  //       headers: {access_token: `${dataLogin.access_token}`},
+  //     });
+  //     console.log(res.data);
+  //     setUser({
+  //       name: res.data.full_name,
+  //       kota: res.data.city,
+  //       alamat: (res.data.address = 'null' ? '' : res.data.address),
+  //       handphone: (res.data.phone_number = 'null'
+  //         ? ''
+  //         : res.data.phone_number),
+  //     });
+  //   } catch (error) {
+  //     console.log(error);
+  //   }
+  // };
+
+  const postProfile = async () => {
     try {
-      const res = await axios.get(`${baseUrl}/auth/user`, {
-        headers: {access_token: `${dataLogin.access_token}`},
-      });
-      setUser({
-        full_name: res.data.full_name,
-        city: res.data.city,
-        address: res.data.address,
-        phone_number: res.data.phone_number,
-        image: res.data.image_url,
-      });
-      console.log(user);
-    } catch (error) {
-      console.log(error);
-    }
-  };
+      dispatch(setLoading(true));
 
-  const putProfile = async values => {
-    try {
-      const body = new FormData();
-      body.append('full_name', values.full_name);
-      body.append('phone_number', values.phone_number);
-      body.append('address', values.address);
-      body.append('city', value);
-      body.append('image', {
-        uri: image.uri,
-        name: image.fileName,
-        type: image.type,
+      const formData = new FormData();
+      formData.append('full_name', user.name);
+      formData.append('email', dataLogin.email);
+      formData.append('phone_number', user.handphone);
+      formData.append('address', user.alamat);
+      formData.append('city', user.kota);
+      formData.append('image_url', {
+        uri: image,
+        name: image,
+        type: 'image/jpeg',
       });
-      console.log(body);
-
-      const res = await fetch(`${baseUrl}/auth/user`, {
-        method: 'PUT',
+      const res = await axios.put(`${baseUrl}/auth/user`, formData, {
         headers: {
-          'Content-Type': 'multipart/form-data',
           access_token: `${dataLogin.access_token}`,
+          'Content-Type': 'multipart/form-data',
         },
-        body: body,
       });
+      console.log(res);
+      dispatch(setLoading(false));
+      // axios({
+      //   url: `${baseUrl}/auth/user`,
+      //   method: 'PUT',
+      //   data: formData,
+      //   headers: {
+      //     Accept: 'application/json',
+      //     'Content-Type': 'multipart/form-data',
+      //   },
+      // });
     } catch (error) {
       console.log(error);
       dispatch(setLoading(false));
@@ -81,24 +91,27 @@ const Profile = ({navigation}) => {
   };
 
   const changeProfilePhoto = async () => {
-    await launchImageLibrary({mediaType: 'photo'}).then(image =>
-      setImage(image.assets[0]),
+    await launchImageLibrary({mediaType: 'photo'}).then(imageUrl =>
+      setImage(imageUrl.assets[0].uri),
     );
   };
 
   // For validation
   const validationProfile = Yup.object().shape({
-    full_name: Yup.string().required('Nama tidak boleh kosong'),
-    address: Yup.string().required('Alamat tidak boleh kosong'),
-    phone_number: Yup.string().required('No. Handphone tidak boleh kosong'),
+    name: Yup.string().required('Nama tidak boleh kosong'),
+    kota: Yup.string().required('Kota tidak boleh kosong'),
+    alamat: Yup.string().required('Alamat tidak boleh kosong'),
+    handphone: Yup.string().required('No. Handphone tidak boleh kosong'),
   });
   return (
     <Formik
       validationSchema={validationProfile}
       initialValues={user}
       enableReinitialize={true}
-      onSubmit={putProfile}>
-      {({handleChange, handleSubmit, handleBlur, values, errors, touched}) => {
+      // validationSchema={validationProfile}
+      // initialValues={{name: '', kota: '', alamat: '', handphone: ''}}
+      onSubmit={postProfile}>
+      {({handleChange, handleBlur, values, errors, touched, handleSubmit}) => {
         return (
           <ScrollView flex={1} style={styles.container}>
             <Header
@@ -107,19 +120,22 @@ const Profile = ({navigation}) => {
                 navigation.goBack();
               }}
             />
-            <View style={styles.contentContainer}>
-              <ButtonCamera onPress={changeProfilePhoto} url={user.image} />
-
-              <Input
-                inputName="Nama*"
-                placeholder="Nama Lengkap"
-                onChangeText={handleChange('full_name')}
-                onBlur={handleBlur('full_name')}
-                value={values.full_name}
+            <View style={styles.imageContainer}>
+              <ButtonCamera
+                url={dataUser.image_url}
+                onPress={changeProfilePhoto}
               />
             </View>
-            {touched.full_name && errors.full_name && (
-              <Text style={styles.errorValidation}>{errors.full_name}</Text>
+            <Input
+              inputName="Nama*"
+              placeholder="Nama Lengkap"
+              onChangeText={handleChange('name')}
+              onBlur={handleBlur('name')}
+              value={values.name}
+            />
+
+            {touched.name && errors.name && (
+              <Text style={styles.errorValidation}>{errors.name}</Text>
             )}
 
             <View style={styles.contentContainer}>
@@ -141,28 +157,28 @@ const Profile = ({navigation}) => {
                 multiline={true}
                 numberOfLines={4}
                 styleInput={styles.alamatContainer}
-                onChangeText={handleChange('address')}
-                onBlur={handleBlur('address')}
-                value={values.address}
+                onChangeText={handleChange('alamat')}
+                onBlur={handleBlur('alamat')}
+                value={values.alamat}
               />
             </View>
 
-            {touched.address && errors.address && (
-              <Text style={styles.errorValidation}>{errors.address}</Text>
+            {touched.alamat && errors.alamat && (
+              <Text style={styles.errorValidation}>{errors.alamat}</Text>
             )}
             <View style={styles.contentContainer}>
               <Input
                 keyboardType={'numeric'}
                 inputName="No Handphone*"
                 placeholder="Contoh: 08123456789"
-                onChangeText={handleChange('phone_number')}
-                onBlur={handleBlur('phone_number')}
-                value={values.phone_number}
+                onChangeText={handleChange('handphone')}
+                onBlur={handleBlur('handphone')}
+                value={values.handphone}
               />
             </View>
 
-            {touched.phone_number && errors.phone_number && (
-              <Text style={styles.errorValidation}>{errors.phone_number}</Text>
+            {touched.handphone && errors.handphone && (
+              <Text style={styles.errorValidation}>{errors.handphone}</Text>
             )}
 
             <View style={styles.btnSimpan}>

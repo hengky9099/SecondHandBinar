@@ -45,12 +45,13 @@ const ItemNotificationCard = ({
     text2: {
       color: COLORS.black,
       fontSize: moderateScale(14),
-      textDecorationLine: status === 'decline' ? 'line-through' : 'none',
+      textDecorationLine: status === 'declined' ? 'line-through' : 'none',
     },
     text3: {
       color: COLORS.black,
       fontSize: moderateScale(14),
-      textDecorationLine: status === 'accepted' ? 'line-through' : 'none',
+      textDecorationLine:
+        status === 'accepted' || status === '' ? 'line-through' : 'none',
     },
     toRow: {
       flexDirection: 'row',
@@ -70,13 +71,17 @@ const ItemNotificationCard = ({
       flexDirection: 'row',
     },
     buttonContainer: {
-      marginTop: moderateScale(10),
+      marginTop: moderateScale(-10),
+      marginBottom: moderateScale(10),
       alignItems: 'center',
     },
   });
 
   const statusTawaranCheck = (statusTawaran, tawaranPembeli) => {
-    if (tawaranPembeli && statusTawaran === 'declined' && 'e') {
+    if (
+      (tawaranPembeli && statusTawaran === 'declined' && 'e') ||
+      statusTawaran === ''
+    ) {
       return `Ditawar ${tawaranPembeli}`;
     } else if (tawaranPembeli && statusTawaran === 'bid') {
       return `Ditawar ${tawaranPembeli}`;
@@ -123,20 +128,21 @@ const ItemNotificationCard = ({
             </View>
           </View>
         </View>
-        {button ? (
-          <View style={styles.buttonContainer}>
-            <Button
-              numButton={2}
-              textButton1={textButton1}
-              textButton2={textButton2}
-              onPressButton1={onPressButton1}
-              onPressButton2={onPressButton2}
-            />
-          </View>
-        ) : null}
       </TouchableOpacity>
+      {button !== 'declined' ? (
+        <View style={styles.buttonContainer}>
+          <Button
+            numButton={2}
+            textButton1={textButton1}
+            textButton2={textButton2}
+            onPressButton1={onPressButton1}
+            onPressButton2={onPressButton2}
+          />
+        </View>
+      ) : null}
     </View>
   );
 };
 
 export default ItemNotificationCard;
+
