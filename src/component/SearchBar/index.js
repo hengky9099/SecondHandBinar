@@ -2,7 +2,6 @@ import {View, TextInput, Dimensions, StyleSheet} from 'react-native';
 import React from 'react';
 import Feather from 'react-native-vector-icons/Feather';
 import {moderateScale} from 'react-native-size-matters';
-
 import {COLORS} from '../../helpers/colors';
 
 const {width} = Dimensions.get('window');

@@ -16,6 +16,7 @@ const Input = ({
   password = false,
   styleInputName,
   inputName,
+  required = false,
   multiline,
   numberOfLines,
   onBlur,
@@ -41,10 +42,11 @@ const Input = ({
 
   return (
     <View style={styles.page}>
-      <View>
+      <View style={styles.inputNameContainer}>
         <Poppins style={[styles.inputName, {...stylesInputName}]}>
           {inputName}
         </Poppins>
+        {required ? <Poppins style={styles.asterik}>*</Poppins> : null}
       </View>
       <View style={password ? styles.password : null}>
         <TextInput
@@ -99,5 +101,12 @@ const styles = StyleSheet.create({
   },
   page: {
     margin: moderateScale(5),
+  },
+  asterik: {
+    fontSize: moderateScale(12),
+    color: COLORS.red,
+  },
+  inputNameContainer: {
+    flexDirection: 'row',
   },
 });

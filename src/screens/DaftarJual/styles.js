@@ -60,5 +60,9 @@ const styles = StyleSheet.create({
     fontSize: moderateScale(14),
     marginTop: moderateScale(10),
   },
+  addButton: {
+    width: moderateScale(156),
+    height: moderateScale(206),
+  },
 });
 export {styles};

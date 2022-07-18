@@ -11,6 +11,7 @@ import ItemNotificationCard from './ItemNotificationCard';
 import IdentityCard from './IdentityCard';
 import InputAdd from './InputAdd';
 import BottomSheet from './BottomSheet';
+import Categories from './Categories';
 
 export {
   Button,
@@ -19,6 +20,7 @@ export {
   Header,
   ItemProductCard,
   SearchBar,
+  Categories,
   ButtonFitur,
   ButtonCamera,
   StatusBarCore,

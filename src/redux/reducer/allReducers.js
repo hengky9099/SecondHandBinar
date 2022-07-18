@@ -1,5 +1,7 @@
 import {combineReducers} from 'redux';
 import DaftarJualReducer from '../../screens/DaftarJual/redux/reducer';
+import ProductReducer from '../../screens/LengkapiDetailProduk/redux/reducer';
+import {HomeReducer} from '../../screens/Home/redux/reducer';
 import LoginReducer from '../../screens/Login/redux/reducer';
 import NotificationReducer from '../../screens/Notification/redux/reducer';
 import RegisterReducer from '../../screens/Register/redux/reducer';
@@ -10,5 +12,7 @@ export const allReducers = combineReducers({
   login: LoginReducer,
   notifikasi: NotificationReducer,
   daftarjual: DaftarJualReducer,
+  dataProduct: ProductReducer,
   global: GlobalReducer,
+  home: HomeReducer,
 });

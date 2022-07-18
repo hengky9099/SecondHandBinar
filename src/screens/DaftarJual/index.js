@@ -31,15 +31,19 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import {navigate} from '../../helpers/navigate';
 import {currencyToIDR, thisDate} from '../../helpers/change';
 import {useCallback} from 'react';
+import Toast from 'react-native-toast-message';
 
-const DaftarJual = () => {
-  const navigation = useNavigation();
-  const [buttonFiturName, setButtonFiturName] = useState('Product');
+const DaftarJual = ({route}) => {
+  const createProduct = route.params?.createProduct;
   const dispatch = useDispatch();
-  const {refreshing} = useSelector(state => state.daftarjual);
-  const {dataLogin, dataUser} = useSelector(state => state.login);
+  const navigation = useNavigation();
+
+  const [buttonFiturName, setButtonFiturName] = useState('Product');
   const [orderan, setOrderan] = useState([]);
   const [product, setProduct] = useState([]);
+
+  const {refreshing} = useSelector(state => state.daftarjual);
+  const {dataLogin, dataUser} = useSelector(state => state.login);
 
   useEffect(() => {
     getDataProductSeller();
@@ -217,12 +221,17 @@ const DaftarJual = () => {
         keyExtractor={(_item, index) => index}
         renderItem={({item, index}) => {
           if (index === 0) {
-            return <InputAdd onPress={() => navigation.navigate('Jual')} />;
+            return (
+              <InputAdd
+                style={styles.addButton}
+                onPress={() => navigation.navigate('Jual')}
+              />
+            );
           }
           return (
             <ItemProductCard
               productPrice={currencyToIDR(item.base_price)}
-              urlImageProduct={item.image_url}
+              url={item.image_url}
               productName={item.name}
               productType={item?.Categories?.map(a => a.name)
                 .toString()
@@ -297,8 +306,23 @@ const DaftarJual = () => {
     }
   };
 
+  const showToast = status => {
+    if (status === 'success') {
+      return Toast.show({
+        type: 'successToast',
+        text1: 'Produk berhasil diterbitkan.',
+      });
+    } else if (status === 'failed') {
+      return Toast.show({
+        type: 'errorToast',
+        text1: 'Produk gagal untuk diterbitkan',
+      });
+    }
+  };
+
   return (
     <SafeAreaView style={[styles.container]}>
+      {showToast(createProduct)}
       <FlatList
         ListHeaderComponent={renderHeader}
         ListHeaderComponentStyle={styles.headerComponent}
