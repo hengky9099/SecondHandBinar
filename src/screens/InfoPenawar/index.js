@@ -90,6 +90,7 @@ const InfoPenawar = ({route}) => {
     return num.toString().substring(0);
   };
 
+
   const onPressBtnHubungi = () => {
     Linking.openURL(
       `https://api.whatsapp.com/send?phone=62${convertPhoneNumber(

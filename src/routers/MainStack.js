@@ -9,10 +9,11 @@ import {
   Jual,
   Login,
   Notification,
-  // NotificationBuyer,
   Register,
+  Profile,
+  InfoPenawar,
 } from '../screens';
-import InfoPenawar from '../screens/InfoPenawar';
+import {COLORS} from '../helpers/colors';
 
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -36,7 +37,17 @@ const MainStack = () => {
         options={{headerShown: false}}
       />
       <Stack.Screen
-        name="Info"
+        name="Profile"
+        component={Profile}
+        options={{headerShown: false}}
+      />
+      <Stack.Screen
+        name="MainApp"
+        component={MainApp}
+        options={{headerShown: false}}
+      />
+      <Stack.Screen
+        name="InfoPenawar"
         component={InfoPenawar}
         options={{headerShown: false}}
       />
@@ -62,18 +73,12 @@ const MainApp = () => (
       options={{
         tabBarLabel: 'Notification',
         tabBarIcon: ({color, size}) => iconBar('bell', color, size),
+        tabBarBadge: '',
+        tabBarBadgeStyle: COLORS.red,
       }}
       name="Notification"
       component={Notification}
     />
-    {/* <Tab.Screen
-      options={{
-        tabBarLabel: 'Notification',
-        tabBarIcon: ({color, size}) => iconBar('bell', color, size),
-      }}
-      name="Notification"
-      component={NotificationBuyer}
-    /> */}
     <Tab.Screen
       options={{
         tabBarLabel: 'Jual',

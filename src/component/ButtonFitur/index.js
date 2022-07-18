@@ -11,15 +11,16 @@ const ButtonFitur = ({nameFitur, nameIcon, onPressButton}) => {
   const [selected, setSelected] = useState([]);
 
   return (
-    <TouchableOpacity
-      onPress={onPressButton ? onPressButton : () => setSelected()}>
-      <View style={[styles.toButton, selected && styles.toButtonSelect]}>
-        <Poppins
-          type="Medium"
-          style={[styles.nameFitur, selected && styles.nameFiturSelect]}>
-          <Feather name={nameIcon} size={20} /> {nameFitur}
-        </Poppins>
-      </View>
+    <TouchableOpacity onPress={() => setSelected(onPressButton)}>
+      {setSelected ? (
+        <View style={[styles.toButton, selected && styles.toButtonSelect]}>
+          <Poppins
+            type="Medium"
+            style={[styles.nameFitur, selected && styles.nameFiturSelect]}>
+            <Feather name={nameIcon} size={20} /> {nameFitur}
+          </Poppins>
+        </View>
+      ) : null}
     </TouchableOpacity>
   );
 };
