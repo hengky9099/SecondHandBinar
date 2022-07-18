@@ -49,7 +49,8 @@ const ItemNotificationCard = ({
     text3: {
       color: COLORS.black,
       fontSize: moderateScale(14),
-      textDecorationLine: status === 'accepted' ? 'line-through' : 'none',
+      textDecorationLine:
+        status === 'accepted' || status === '' ? 'line-through' : 'none',
     },
     toRow: {
       flexDirection: 'row',

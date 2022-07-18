@@ -105,7 +105,6 @@ const Profile = ({navigation}) => {
       enableReinitialize={true}
       validationSchema={validationProfile}
       initialValues={user}>
-
       {({handleChange, handleBlur, values, errors, touched}) => {
         return (
           <View flex={1} style={styles.container}>

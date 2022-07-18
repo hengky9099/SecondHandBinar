@@ -10,7 +10,6 @@ import {launchImageLibrary} from 'react-native-image-picker';
 import {useSelector} from 'react-redux';
 import axios from 'axios';
 import {baseUrl} from '@env';
-import {textToBinary} from '../../helpers/functions';
 
 const Index = ({navigation}) => {
   const [open, setOpen] = useState(false);
@@ -21,7 +20,7 @@ const Index = ({navigation}) => {
     {label: 'Sandal', value: '3'},
     {label: 'Baju', value: '4'},
   ]);
-  const [data, setData] = useState({
+  const [data] = useState({
     namaproduk: '',
     kategori: [],
     deskripsi: '',
