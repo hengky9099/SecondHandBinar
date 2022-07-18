@@ -78,7 +78,10 @@ const ItemNotificationCard = ({
   });
 
   const statusTawaranCheck = (statusTawaran, tawaranPembeli) => {
-    if (tawaranPembeli && statusTawaran === 'declined' && 'e' || statusTawaran === '') {
+    if (
+      (tawaranPembeli && statusTawaran === 'declined' && 'e') ||
+      statusTawaran === ''
+    ) {
       return `Ditawar ${tawaranPembeli}`;
     } else if (tawaranPembeli && statusTawaran === 'bid') {
       return `Ditawar ${tawaranPembeli}`;
@@ -125,7 +128,7 @@ const ItemNotificationCard = ({
             </View>
           </View>
         </View>
-      </View>
+      </TouchableOpacity>
       {button !== 'declined' ? (
         <View style={styles.buttonContainer}>
           <Button
@@ -142,3 +145,4 @@ const ItemNotificationCard = ({
 };
 
 export default ItemNotificationCard;
+
