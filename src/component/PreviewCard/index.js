@@ -14,6 +14,7 @@ import {COLORS} from '../../helpers/colors';
 import Button from '../Button';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import Header from '../Header';
+import {goBack} from '../../helpers/navigate';
 
 const {width, height} = Dimensions.get('window');
 
@@ -46,9 +47,8 @@ const PreviewCard = ({
     <SafeAreaView>
       <ScrollView showsVerticalScrollIndicator={false} style={styles.container}>
         <View style={styles.header}>
-          <Header backArrowBackground={true} />
+          <Header backArrowBackground={true} onPressBack={() => goBack()} />
         </View>
-
         <View style={styles.wrap}>
           <ScrollView
             onScroll={({nativeEvent}) => onChange(nativeEvent)}
