@@ -15,7 +15,7 @@ import axios from 'axios';
 import {setLoading} from '../../redux/globalAction';
 
 const Profile = ({navigation}) => {
-  const {dataLogin, dataUser} = useSelector(state => state.login);
+  const {dataLogin} = useSelector(state => state.login);
   const dispatch = useDispatch();
 
   const [open, setOpen] = useState(false);
@@ -65,14 +65,14 @@ const Profile = ({navigation}) => {
       });
       console.log(body);
 
-      const res = await fetch(`${baseUrl}/auth/user`, {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'multipart/form-data',
-          access_token: `${dataLogin.access_token}`,
-        },
-        body: body,
-      });
+      // const res = await fetch(`${baseUrl}/auth/user`, {
+      //   method: 'PUT',
+      //   headers: {
+      //     'Content-Type': 'multipart/form-data',
+      //     access_token: `${dataLogin.access_token}`,
+      //   },
+      //   body: body,
+      // });
     } catch (error) {
       console.log(error);
       dispatch(setLoading(false));
@@ -80,8 +80,8 @@ const Profile = ({navigation}) => {
   };
 
   const changeProfilePhoto = async () => {
-    await launchImageLibrary({mediaType: 'photo'}).then(image =>
-      setImage(image.assets[0]),
+    await launchImageLibrary({mediaType: 'photo'}).then(images =>
+      setImage(images.assets[0]),
     );
   };
 

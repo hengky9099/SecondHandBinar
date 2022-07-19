@@ -30,12 +30,12 @@ const styles = StyleSheet.create({
   },
   footerComponent: {height: moderateScale(100)},
   contentDiminati: {
-    paddingHorizontal: moderateScale(10),
+    paddingHorizontal: moderateScale(15),
   },
-  contentProduct: {
-    justifyContent: 'space-evenly',
-    alignSelf: 'flex-start',
-    marginHorizontal: moderateScale(10),
+  containerProduct: {
+    justifyContent: 'space-between',
+    margin: moderateScale(15),
+    marginTop: moderateScale(3),
   },
   productView: {
     marginTop: moderateScale(10),
@@ -61,8 +61,8 @@ const styles = StyleSheet.create({
     marginTop: moderateScale(10),
   },
   addButton: {
-    width: moderateScale(156),
-    height: moderateScale(206),
+    width: moderateScale(150),
+    height: moderateScale(200),
   },
 });
 export {styles};

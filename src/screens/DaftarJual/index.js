@@ -1,11 +1,4 @@
-import {
-  View,
-  ScrollView,
-  FlatList,
-  Image,
-  Alert,
-  RefreshControl,
-} from 'react-native';
+import {View, ScrollView, FlatList, Image, RefreshControl} from 'react-native';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import React, {useEffect, useState} from 'react';
 import {COLORS} from '../../helpers/colors';
@@ -25,8 +18,6 @@ import {useDispatch, useSelector} from 'react-redux';
 import {setLoading} from '../../redux/globalAction';
 import axios from 'axios';
 import {baseUrl} from '@env';
-import {setLogin} from '../Login/redux/action';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import {navigate} from '../../helpers/navigate';
 import {currencyToIDR, thisDate} from '../../helpers/change';
 import {useCallback} from 'react';
@@ -36,13 +27,10 @@ const DaftarJual = ({route}) => {
   const createProduct = route.params?.createProduct;
   const dispatch = useDispatch();
   const navigation = useNavigation();
-
   const [buttonFiturName, setButtonFiturName] = useState('Product');
   const [orderan, setOrderan] = useState([]);
   const [product, setProduct] = useState([]);
   const [refresh, setRefresh] = useState(false);
-
-  const {refreshing} = useSelector(state => state.daftarjual);
   const {dataLogin, dataUser} = useSelector(state => state.login);
 
   useEffect(() => {
@@ -59,33 +47,9 @@ const DaftarJual = ({route}) => {
       });
       setOrderan(res.data);
       console.log('Data Order Seller: ', res.data);
-      // if (res.status === 200) {
-      //   dispatch(setLoading(false));
-      // }
-      // if (res.status === 403) {
-      //   setLogin();
-      //   navigate('Login');
-      // }
     } catch (error) {
       console.log(error);
       dispatch(setLoading(false));
-
-      // if ((error.message = 'Request failed with status code 401')) {
-      //   await AsyncStorage.setItem('@access_token', '');
-      //   Alert.alert(
-      //     'Pemberitahuan',
-      //     'Token Sudah Expired, silahkan Login kembali!',
-      //     [
-      //       {
-      //         text: 'OK',
-      //         onPress: () => {
-      //           navigate('Login');
-      //           dispatch(setLogin(''));
-      //         },
-      //       },
-      //     ],
-      //   );
-      // }
     } finally {
       dispatch(setLoading(false));
     }
@@ -100,34 +64,8 @@ const DaftarJual = ({route}) => {
       });
       setProduct(res.data);
       console.log('Data Product Seller: ', res.data);
-      // dispatch(setProductSeller(res.data));
-      // if (res.status === 200) {
-      //   dispatch(setLoading(false));
-      // }
-      // if (res.status === 403) {
-      //   dispatch(setLogin(''));
-      //   navigate('Login');
-      // }
     } catch (error) {
       console.log(error);
-      // dispatch(setLoading(false));
-
-      // if ((error.message = 'Request failed with status code 401')) {
-      //   await AsyncStorage.setItem('@access_token', '');
-      //   Alert.alert(
-      //     'Pemberitahuan',
-      //     'Token Sudah Expired, silahkan Login kembali!',
-      //     [
-      //       {
-      //         text: 'OK',
-      //         onPress: () => {
-      //           navigate('Login');
-      //           dispatch(setLogin(''));
-      //         },
-      //       },
-      //     ],
-      //   );
-      // }
     } finally {
       dispatch(setLoading(false));
     }
@@ -135,7 +73,7 @@ const DaftarJual = ({route}) => {
 
   const onRefresh = () => {
     setRefresh(true);
-    // dispatch(getDataOrderSeller(dataLogin));
+    getDataOrderSeller(dataLogin);
     getDataProductSeller(dataLogin);
     setRefresh(false);
   };
@@ -158,7 +96,10 @@ const DaftarJual = ({route}) => {
           typeIdentity={'Penjual'}
           onPressButton={() => navigate('Profile')}
         />
-        <ScrollView horizontal={true} style={styles.btnFiturContainer}>
+        <ScrollView
+          horizontal={true}
+          showsHorizontalScrollIndicator={false}
+          style={styles.btnFiturContainer}>
           <View style={styles.btnContainer}>
             <ButtonFitur
               onPressButton={() => setButtonFiturName('Product')}
@@ -209,14 +150,12 @@ const DaftarJual = ({route}) => {
         refreshControl={
           <RefreshControl onRefresh={onRefresh} refreshing={refresh} />
         }
-        columnWrapperStyle={[
-          styles.contentProduct,
-          {flexDirection: 'row', flexWrap: 'wrap'},
-        ]}
+        showsVerticalScrollIndicator={false}
+        columnWrapperStyle={styles.containerProduct}
         data={product}
         numColumns={2}
         key={2}
-        keyExtractor={(_item, index) => index}
+        keyExtractor={(item, index) => item.id}
         renderItem={({item, index}) => {
           if (index === 0) {
             return (
@@ -235,6 +174,9 @@ const DaftarJual = ({route}) => {
                 .toString()
                 .split(',')
                 .join(', ')}
+              onPressCard={() =>
+                navigation.navigate('Preview', {id_order: item.id})
+              }
             />
           );
         }}
@@ -246,7 +188,10 @@ const DaftarJual = ({route}) => {
   const productView = () => {
     return (
       <View style={styles.productView}>
-        <InputAdd onPress={() => navigation.navigate('Jual')} />
+        <InputAdd
+          style={styles.addButton}
+          onPress={() => navigation.navigate('Jual')}
+        />
       </View>
     );
   };
@@ -266,8 +211,9 @@ const DaftarJual = ({route}) => {
     return (
       <FlatList
         refreshControl={
-          <RefreshControl onRefresh={onRefresh} refreshing={refreshing} />
+          <RefreshControl onRefresh={onRefresh} refreshing={refresh} />
         }
+        showsVerticalScrollIndicator={false}
         contentContainerStyle={styles.contentDiminati}
         key={1}
         keyExtractor={(_item, index) => index}
@@ -277,7 +223,7 @@ const DaftarJual = ({route}) => {
           return (
             <ItemNotificationCard
               urlImage={item.image_url}
-              date={thisDate(item.updatedAt)}
+              date={thisDate(item.transaction_date)}
               productName={item.product_name}
               productPrice={currencyToIDR(item.base_price)}
               tawaran={currencyToIDR(item.price)}
@@ -295,12 +241,12 @@ const DaftarJual = ({route}) => {
   const tampilkan = buttonName => {
     if (buttonName === 'Product') {
       return productsView();
+    } else if (buttonName === 'Diminati') {
+      return diminatisView();
     } else if (buttonName === 'Products') {
       return productView();
     } else if (buttonName === 'Diminatis') {
       return diminatiView();
-    } else if (buttonName === 'Diminati') {
-      return diminatisView();
     }
   };
 
@@ -317,8 +263,7 @@ const DaftarJual = ({route}) => {
       });
     }
   };
-  console.log('=====================================');
-  console.log(orderan);
+
   return (
     <SafeAreaView style={[styles.container]}>
       {showToast(createProduct)}
