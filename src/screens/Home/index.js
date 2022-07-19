@@ -44,9 +44,12 @@ export default function Home({navigation}) {
 
   useEffect(() => {
     const getAllProduct = () => dispatch(getProduct(page));
-    getAllProduct();
-    dispatch(getProductperCategory(idCategory, page));
-  }, [dispatch, page, idCategory]);
+    if (dataProducts === 'dataAllProduct') {
+      getAllProduct();
+    } else if (dataProducts === 'dataProductperCategory') {
+      dispatch(getProductperCategory(idCategory, page));
+    }
+  }, [dispatch, page, idCategory, dataProducts]);
 
   useEffect(() => {
     const renderListNumber = data => {
@@ -59,9 +62,17 @@ export default function Home({navigation}) {
       );
 
       if (data === 'dataAllProduct') {
-        setEndData(lengthPageAllProduct);
+        if (lengthPageAllProduct > 10) {
+          setEndData(10);
+        } else {
+          setEndData(lengthPageAllProduct);
+        }
       } else if (data === 'dataProductperCategory') {
-        setEndData(lengthPageProductperCategories);
+        if (lengthPageProductperCategories > 10) {
+          setEndData(10);
+        } else {
+          setEndData(lengthPageProductperCategories);
+        }
       }
 
       for (let index = startData; index <= endData; index++) {
@@ -73,13 +84,14 @@ export default function Home({navigation}) {
 
       setListNumber(renderer);
     };
-    renderListNumber();
+    renderListNumber(dataProducts);
   }, [
     products,
     startData,
     endData,
     dataProductperCategory.length,
     lengthProducts,
+    dataProducts,
   ]);
 
   const onRefresh = () => {
@@ -94,7 +106,6 @@ export default function Home({navigation}) {
         nameFitur={item.name}
         onPressButton={() => {
           setPage(1);
-          dispatch(getProductperCategory(item.id, page));
           setIdCategory(item.id);
           setDataProducts('dataProductperCategory');
         }}
@@ -190,61 +201,83 @@ export default function Home({navigation}) {
     );
   };
 
-  const renderFooter = (data, {itemCateogory}) => {
+  const pagination = ({item, index}) => {
     return (
-      <View flexDirection="row" justifyContent="center" flex={1}>
-        <View flexDirection="row">
-          <TouchableOpacity onPress={() => setPage(1)} style={{marginRight: 2}}>
-            <Feather name="chevrons-left" color={'#2094F6'} size={24} />
+      <TouchableOpacity
+        onPress={() => {
+          setPage(index + 1);
+        }}
+        key={item.title}
+        style={{
+          backgroundColor: index === page - 1 ? COLORS.purple3 : null,
+          marginRight: parseInt(item.title, 10) === listNumber.length ? 0 : 20,
+          padding: moderateScale(7),
+          marginBottom: moderateScale(5),
+          borderRadius: moderateScale(10),
+        }}>
+        <Poppins
+          style={{
+            fontSize: moderateScale(14),
+            color: index === page - 1 ? COLORS.purple1 : '#666',
+          }}>
+          {item.title}
+        </Poppins>
+      </TouchableOpacity>
+    );
+  };
+
+  const renderFooter = (data, {itemCategory}) => {
+    return (
+      <View flexDirection="row" flex={1} style={styles.containerListPage}>
+        <View
+          flexDirection="row"
+          justifyContent="center"
+          style={styles.containerNextPage}>
+          <TouchableOpacity onPress={() => setPage(1)} style={{marginRight: 5}}>
+            <Feather name="chevrons-left" color={COLORS.purple5} size={24} />
           </TouchableOpacity>
           <TouchableOpacity
             onPress={() => {
               if (page > 1 && data === 'dataProductperCategory') {
-                setPage(prevState => prevState - 1);
-                dispatch(getProductperCategory(itemCateogory.id, page));
+                setPage(prevState => (prevState - 1 < 1 ? 1 : prevState - 1));
+                dispatch(getProductperCategory(itemCategory.id, page));
               } else if (page > 1 && data === 'dataAllProduct') {
-                setPage(prevState => prevState - 1);
+                setPage(prevState => (prevState - 1 < 1 ? 1 : prevState - 1));
                 dispatch(getProduct(page));
               }
             }}>
-            <Feather name="chevron-left" color={'#2094F6'} size={24} />
+            <Feather name="chevron-left" color={COLORS.purple5} size={24} />
           </TouchableOpacity>
         </View>
         <View flexDirection="row">
-          {listNumber.map((item, index) => {
-            return (
-              <TouchableOpacity
-                onPress={() => {
-                  setPage(index + 1);
-                }}
-                key={item.title}
-                style={{
-                  backgroundColor: index === page - 1 ? '#2094F6' : null,
-                  marginRight:
-                    parseInt(item.title, 10) === listNumber.length ? 0 : 20,
-                }}>
-                <Poppins style={{color: index === page - 1 ? 'white' : '#666'}}>
-                  {item.title}
-                </Poppins>
-              </TouchableOpacity>
-            );
-          })}
+          <FlatList
+            data={listNumber}
+            horizontal={true}
+            keyExtractor={(_item, index) => index}
+            renderItem={pagination}
+            showsHorizontalScrollIndicator={false}
+          />
         </View>
-        <View flexDirection="row">
+        <View
+          flexDirection="row"
+          justifyContent="center"
+          style={{
+            padding: moderateScale(7),
+          }}>
           <TouchableOpacity
             onPress={() => {
               if (page < 5) {
                 setPage(prevState => prevState + 1);
               }
             }}>
-            <Feather name="chevron-right" color={'#2094F6'} size={24} />
+            <Feather name="chevron-right" color={COLORS.purple5} size={24} />
           </TouchableOpacity>
           <TouchableOpacity
             onPress={() => {
               setPage(5);
             }}
             style={{marginLeft: 2}}>
-            <Feather name="chevrons-right" color={'#2094F6'} size={24} />
+            <Feather name="chevrons-right" color={COLORS.purple5} size={24} />
           </TouchableOpacity>
         </View>
       </View>
@@ -391,5 +424,12 @@ const styles = StyleSheet.create({
   empty: {
     alignSelf: 'center',
     margin: moderateScale(10),
+  },
+  containerNextPage: {
+    padding: moderateScale(7),
+  },
+  containerListPage: {
+    justifyContent: 'center',
+    marginHorizontal: moderateScale(60),
   },
 });
