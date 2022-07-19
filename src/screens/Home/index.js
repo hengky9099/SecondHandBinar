@@ -274,7 +274,11 @@ export default function Home({navigation}) {
           </TouchableOpacity>
           <TouchableOpacity
             onPress={() => {
-              setPage(5);
+              if (endData === 10) {
+                setPage(10);
+              } else {
+                setPage(endData);
+              }
             }}
             style={{marginLeft: 2}}>
             <Feather name="chevrons-right" color={COLORS.purple5} size={24} />
