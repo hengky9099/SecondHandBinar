@@ -1,14 +1,11 @@
-import {Dimensions, StyleSheet} from 'react-native';
+import {StyleSheet} from 'react-native';
 import {moderateScale} from 'react-native-size-matters';
 import {COLORS} from '../../helpers/colors';
-
-const width = Dimensions.get('window').width;
-const height = Dimensions.get('window').height;
 
 const styles = StyleSheet.create({
   container: {
     backgroundColor: COLORS.white,
-    height: height,
+    flex: 1,
   },
   headerDJ: {
     paddingHorizontal: moderateScale(15),
@@ -21,14 +18,12 @@ const styles = StyleSheet.create({
   },
   btnFiturContainer: {flexGrow: 0},
   btnContainer: {
-    width: width - moderateScale(230),
     height: moderateScale(44),
     borderRadius: moderateScale(16),
   },
   headerComponent: {
-    marginBottom: moderateScale(80),
+    marginBottom: moderateScale(20),
   },
-  footerComponent: {height: moderateScale(100)},
   contentDiminati: {
     paddingHorizontal: moderateScale(15),
   },

@@ -1,9 +1,10 @@
-import {DATA_PRODUCT} from './type';
+import {DATA_PRODUCT, STATUS_TOAST_POST_PRODUCT} from './type';
 
 const initialState = {
   dataProduct: {},
   image: {},
   kategori: [],
+  statusToastPostProduct: '',
 };
 
 const ProductReducer = (state = initialState, action) => {
@@ -14,6 +15,12 @@ const ProductReducer = (state = initialState, action) => {
         dataProduct: action.payload,
         image: action.image,
         kategori: action.kategori,
+      };
+
+    case STATUS_TOAST_POST_PRODUCT:
+      return {
+        ...state,
+        statusToastPostProduct: action.payload,
       };
 
     default:

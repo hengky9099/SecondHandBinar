@@ -19,8 +19,10 @@ export const getProduct = page => async dispatch => {
         validateStatus: status => status < 501,
       },
     );
-    dispatch(setProductSuccess(res.data.data));
-    dispatch(setLengthProducts(res.data.data.length));
+    console.log(res);
+
+    dispatch(setProductSuccess(res.data));
+    dispatch(setLengthProducts(res.data.length));
 
     const resCategory = await axios.get(`${baseUrl}/seller/category`);
     dispatch(setCategory(resCategory.data));
@@ -49,7 +51,7 @@ export const getProductperCategory = (idCategory, page) => async dispatch => {
         validateStatus: status => status < 501,
       },
     );
-    dispatch(setCategoryProduct(res.data.data));
+    dispatch(setCategoryProduct(res.data));
     dispatch(setLoading(false));
     console.log(page, 'page product by category');
   } catch (error) {

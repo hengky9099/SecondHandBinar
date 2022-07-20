@@ -1,5 +1,5 @@
 // import {baseUrl} from '@env';
-import {DATA_PRODUCT} from './type';
+import {DATA_PRODUCT, STATUS_TOAST_POST_PRODUCT} from './type';
 
 export const setDataProduct = (payload, image, kategori) => {
   return {
@@ -7,5 +7,12 @@ export const setDataProduct = (payload, image, kategori) => {
     payload,
     image,
     kategori,
+  };
+};
+
+export const setStatusToastPostProduct = payload => {
+  return {
+    type: STATUS_TOAST_POST_PRODUCT,
+    payload,
   };
 };

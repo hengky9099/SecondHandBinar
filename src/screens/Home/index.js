@@ -41,6 +41,7 @@ export default function Home({navigation}) {
   const [startData] = useState(1);
   const [endData, setEndData] = useState(5);
   const [idCategory, setIdCategory] = useState(0);
+  const [clickedFiturName, setClickedFiturName] = useState('dataAllProduct');
 
   useEffect(() => {
     const getAllProduct = () => dispatch(getProduct(page));
@@ -62,8 +63,8 @@ export default function Home({navigation}) {
       );
 
       if (data === 'dataAllProduct') {
-        if (lengthPageAllProduct > 10) {
-          setEndData(10);
+        if (lengthPageAllProduct > 15) {
+          setEndData(15);
         } else {
           setEndData(lengthPageAllProduct);
         }
@@ -108,7 +109,9 @@ export default function Home({navigation}) {
           setPage(1);
           setIdCategory(item.id);
           setDataProducts('dataProductperCategory');
+          setClickedFiturName(item.name);
         }}
+        clicked={clickedFiturName === item.name ? true : false}
       />
     );
   };
@@ -121,7 +124,9 @@ export default function Home({navigation}) {
         onPressButton={() => {
           setPage(1);
           setDataProducts('dataAllProduct');
+          setClickedFiturName('dataAllProduct');
         }}
+        clicked={clickedFiturName === 'dataAllProduct' ? true : false}
       />
     );
   };

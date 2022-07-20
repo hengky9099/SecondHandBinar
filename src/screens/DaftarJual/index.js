@@ -22,9 +22,9 @@ import {navigate} from '../../helpers/navigate';
 import {currencyToIDR, thisDate} from '../../helpers/change';
 import {useCallback} from 'react';
 import Toast from 'react-native-toast-message';
+import {setStatusToastPostProduct} from '../LengkapiDetailProduk/redux/action';
 
-const DaftarJual = ({route}) => {
-  const createProduct = route.params?.createProduct;
+const DaftarJual = ({}) => {
   const dispatch = useDispatch();
   const navigation = useNavigation();
   const [buttonFiturName, setButtonFiturName] = useState('Product');
@@ -32,6 +32,7 @@ const DaftarJual = ({route}) => {
   const [product, setProduct] = useState([]);
   const [refresh, setRefresh] = useState(false);
   const {dataLogin, dataUser} = useSelector(state => state.login);
+  const {statusToastPostProduct} = useSelector(state => state.dataProduct);
 
   useEffect(() => {
     getDataProductSeller();
@@ -80,7 +81,7 @@ const DaftarJual = ({route}) => {
 
   const renderHeader = () => {
     return (
-      <>
+      <View style={styles.headerComponent}>
         <StatusBarCore backgroundColor={COLORS.white} barStyle="dark-content" />
         <View style={styles.headerDJ}>
           <Poppins style={styles.textHeaderDJ}>Daftar Jual Saya</Poppins>
@@ -102,45 +103,60 @@ const DaftarJual = ({route}) => {
           style={styles.btnFiturContainer}>
           <View style={styles.btnContainer}>
             <ButtonFitur
-              onPressButton={() => setButtonFiturName('Product')}
+              onPressButton={() => {
+                setButtonFiturName('Product');
+              }}
               nameFitur={'Product'}
               nameIcon={'box'}
+              clicked={buttonFiturName === 'Product' ? true : false}
             />
           </View>
 
           <View style={styles.btnContainer}>
             <ButtonFitur
-              onPressButton={() => setButtonFiturName('Diminati')}
+              onPressButton={() => {
+                setButtonFiturName('Diminati');
+              }}
               nameFitur={'Diminati'}
               nameIcon={'heart'}
+              clicked={buttonFiturName === 'Diminati' ? true : false}
             />
           </View>
 
           <View style={styles.btnContainer}>
             <ButtonFitur
-              onPressButton={() => setButtonFiturName('DaftarJual')}
+              onPressButton={() => {
+                setButtonFiturName('DaftarJual');
+              }}
               nameFitur={'Terjual'}
+              clicked={buttonFiturName === 'DaftarJual' ? true : false}
               nameIcon={'dollar-sign'}
             />
           </View>
 
           <View style={styles.btnContainer}>
             <ButtonFitur
-              onPressButton={() => setButtonFiturName('Products')}
+              onPressButton={() => {
+                setButtonFiturName('Products');
+              }}
               nameFitur={'Products'}
+              clicked={buttonFiturName === 'Products' ? true : false}
               nameIcon={'box'}
             />
           </View>
 
           <View style={styles.btnContainer}>
             <ButtonFitur
-              onPressButton={() => setButtonFiturName('Diminatis')}
+              onPressButton={() => {
+                setButtonFiturName('Diminatis');
+              }}
               nameFitur={'Diminatis'}
+              clicked={buttonFiturName === 'Diminatis' ? true : false}
               nameIcon={'heart'}
             />
           </View>
         </ScrollView>
-      </>
+      </View>
     );
   };
 
@@ -233,7 +249,6 @@ const DaftarJual = ({route}) => {
             />
           );
         }}
-        ListFooterComponent={<View style={styles.footerComponent} />}
       />
     );
   };
@@ -252,25 +267,26 @@ const DaftarJual = ({route}) => {
 
   const showToast = status => {
     if (status === 'success') {
+      dispatch(setStatusToastPostProduct(''));
       return Toast.show({
         type: 'successToast',
         text1: 'Produk berhasil diterbitkan.',
       });
     } else if (status === 'failed') {
+      dispatch(setStatusToastPostProduct(''));
       return Toast.show({
         type: 'errorToast',
         text1: 'Produk gagal untuk diterbitkan',
       });
+    } else {
+      return null;
     }
   };
 
   return (
     <SafeAreaView style={[styles.container]}>
-      {showToast(createProduct)}
-      <FlatList
-        ListHeaderComponent={renderHeader}
-        ListHeaderComponentStyle={styles.headerComponent}
-      />
+      {showToast(statusToastPostProduct)}
+      {renderHeader()}
       {tampilkan(buttonFiturName)}
     </SafeAreaView>
   );

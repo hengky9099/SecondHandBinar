@@ -9,7 +9,7 @@ import {moderateScale} from 'react-native-size-matters';
 // import {launchImageLibrary} from 'react-native-image-picker';
 import {useDispatch, useSelector} from 'react-redux';
 import {navigate} from '../../helpers/navigate';
-import {setDataProduct} from './redux/action';
+import {setDataProduct, setStatusToastPostProduct} from './redux/action';
 import Toast from 'react-native-toast-message';
 import {setLoading} from '../../redux/globalAction';
 import LoadingBar from '../../component/LoadingBar';
@@ -19,7 +19,7 @@ const Index = ({navigation}) => {
   const dispatch = useDispatch();
   const [open, setOpen] = useState(false);
   const [value, setValue] = useState([]);
-  const [image, setImage] = useState({});
+  // const [image, setImage] = useState({});
   const [listImage, setListImage] = useState([]);
   const {dataLogin, dataUser} = useSelector(state => state.login);
   const {dataCategory} = useSelector(state => state.home);
@@ -113,16 +113,16 @@ const Index = ({navigation}) => {
 
       if (jsonRes.name && jsonRes.message) {
         Alert.alert('Pemberitahuan', jsonRes.message);
-        setImage({});
-        navigate('DaftarJual', {
-          createProduct: 'failed',
-        });
+        // setImage({});
+        setListImage({});
+        dispatch(setStatusToastPostProduct('failed'));
+        navigate('DaftarJual');
         dispatch(setLoading(false));
       } else if (jsonRes.name === values.namaproduk) {
-        setImage({});
-        navigate('DaftarJual', {
-          createProduct: 'success',
-        });
+        // setImage({});
+        setListImage({});
+        dispatch(setStatusToastPostProduct('success'));
+        navigate('DaftarJual');
         dispatch(setLoading(false));
       }
     } catch (error) {
@@ -297,8 +297,11 @@ const Index = ({navigation}) => {
                 <Poppins style={styles.asterik}>*</Poppins>
               </View>
               <View style={styles.toRow}>
-                {image.uri ? (
-                  <Image source={{uri: image.uri}} style={styles.image} />
+                {listImage[0]?.path ? (
+                  <Image
+                    source={{uri: listImage[0]?.path}}
+                    style={styles.image}
+                  />
                 ) : (
                   <InputAdd style={styles.addInput} onPress={addProductImage} />
                 )}
@@ -311,7 +314,8 @@ const Index = ({navigation}) => {
               ) : (
                 <Button
                   onPressButton1={() => {
-                    sendDataProduct(values, image);
+                    // sendDataProduct(values, image);
+                    sendDataProduct(values, listImage);
                     navigate('Preview');
                   }}
                   onPressButton2={() => {
