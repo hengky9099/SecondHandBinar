@@ -9,10 +9,10 @@ import {
   LengkapiDetailProduk,
   Login,
   Notification,
-  // NotificationBuyer,
   Register,
   Profile,
   Search,
+  InfoPenawar,
 } from '../screens';
 import {COLORS} from '../helpers/colors';
 
@@ -33,8 +33,8 @@ const MainStack = () => {
         options={{headerShown: false}}
       />
       <Stack.Screen
-        name="LengkapiDetailProduk"
-        component={LengkapiDetailProduk}
+        name="MainApp"
+        component={MainApp}
         options={{headerShown: false}}
       />
       <Stack.Screen
@@ -43,8 +43,8 @@ const MainStack = () => {
         options={{headerShown: false}}
       />
       <Stack.Screen
-        name="MainApp"
-        component={MainApp}
+        name="InfoPenawar"
+        component={InfoPenawar}
         options={{headerShown: false}}
       />
       <Stack.Screen
@@ -80,14 +80,6 @@ const MainApp = () => (
       name="Notification"
       component={Notification}
     />
-    {/* <Tab.Screen
-      options={{
-        tabBarLabel: 'Notification',
-        tabBarIcon: ({color, size}) => iconBar('bell', color, size),
-      }}
-      name="Notification"
-      component={NotificationBuyer}
-    /> */}
     <Tab.Screen
       options={{
         tabBarLabel: 'Jual',
@@ -96,9 +88,10 @@ const MainApp = () => (
       name="Jual"
       component={LengkapiDetailProduk}
     />
+
     <Tab.Screen
       options={{
-        tabBarLabel: 'DaftarJual',
+        tabBarLabel: 'Daftar Jual',
         tabBarIcon: ({color, size}) => iconBar('list', color, size),
       }}
       name="DaftarJual"

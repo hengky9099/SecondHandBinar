@@ -1,14 +1,34 @@
 import {View, StyleSheet, Alert, BackHandler} from 'react-native';
-import React, {useEffect} from 'react';
+import React, {useEffect, useState} from 'react';
 import {COLORS} from '../../helpers/colors';
 import {moderateScale} from 'react-native-size-matters';
 import {navigate} from '../../helpers/navigate';
 import {ButtonCamera, MenuAkun, Poppins, StatusBarCore} from '../../component';
-import {useDispatch} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 import {setLogin} from '../Login/redux/action';
+import axios from 'axios';
+import {baseUrl} from '@env';
 
 const Akun = () => {
   const dispatch = useDispatch();
+  const [image, setImage] = useState('');
+  const {dataLogin} = useSelector(state => state.login);
+
+  useEffect(() => {
+    getImage();
+  });
+
+  const getImage = async () => {
+    try {
+      const res = await axios.get(`${baseUrl}/auth/user`, {
+        headers: {access_token: `${dataLogin.access_token}`},
+      });
+      console.log(res.data);
+      setImage(res.data.image_url);
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   //exit
   const exit = () => {
@@ -61,9 +81,7 @@ const Akun = () => {
       <View style={styles.headerAkun}>
         <Poppins style={styles.textHeaderAkun}>Akun Saya</Poppins>
       </View>
-      <View style={styles.toCenter}>
-        <ButtonCamera type="notChange" />
-      </View>
+      <ButtonCamera url={image} />
       <View style={styles.listFiturAkun}>
         <MenuAkun nameIcon="edit-3" menuName="Ubah Akun" onPress={ubahAkun} />
         <MenuAkun
@@ -102,9 +120,7 @@ const styles = StyleSheet.create({
     padding: moderateScale(5),
     margin: moderateScale(10),
   },
-  toCenter: {
-    alignSelf: 'center',
-  },
+
   containerCamera: {
     backgroundColor: COLORS.primaryPurple,
     borderRadius: moderateScale(15),

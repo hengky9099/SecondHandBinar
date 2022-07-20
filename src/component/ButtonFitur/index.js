@@ -1,20 +1,25 @@
 import {StyleSheet, TouchableOpacity, View} from 'react-native';
-import React from 'react';
+
+import React, {useState} from 'react';\
 import {moderateScale} from 'react-native-size-matters';
 import {COLORS} from '../../helpers/colors';
 import Feather from 'react-native-vector-icons/Feather';
 import {Poppins} from '../FontComponents';
 
 const ButtonFitur = ({nameFitur, nameIcon, onPressButton, disabled}) => {
+  const [selected, setSelected] = useState([]);
+
   return (
-    <TouchableOpacity
-      activeOpacity={disabled ? 1 : 0.7}
-      onPress={!disabled && onPressButton}>
-      <View style={styles.toButton}>
-        <Poppins type="Medium" style={styles.nameFitur}>
-          <Feather name={nameIcon} size={18} /> {nameFitur}
-        </Poppins>
-      </View>
+    <TouchableOpacity onPress={() => setSelected(onPressButton)}>
+      {setSelected ? (
+        <View style={[styles.toButton, selected && styles.toButtonSelect]}>
+          <Poppins
+            type="Medium"
+            style={[styles.nameFitur, selected && styles.nameFiturSelect]}>
+            <Feather name={nameIcon} size={20} /> {nameFitur}
+          </Poppins>
+        </View>
+      ) : null}
     </TouchableOpacity>
   );
 };
