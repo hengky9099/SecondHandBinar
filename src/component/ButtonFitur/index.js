@@ -1,5 +1,6 @@
 import {StyleSheet, TouchableOpacity, View} from 'react-native';
-import React, {useState} from 'react';
+
+import React, {useState} from 'react';\
 import {moderateScale} from 'react-native-size-matters';
 import {COLORS} from '../../helpers/colors';
 import Feather from 'react-native-vector-icons/Feather';

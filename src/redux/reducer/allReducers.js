@@ -4,6 +4,7 @@ import {HomeReducer} from '../../screens/Home/redux/reducer';
 import LoginReducer from '../../screens/Login/redux/reducer';
 import RegisterReducer from '../../screens/Register/redux/reducer';
 import {GlobalReducer} from '../globalReducer';
+import {SearchReducer} from '../../screens/Search/redux/reducer';
 
 export const allReducers = combineReducers({
   register: RegisterReducer,
@@ -11,4 +12,5 @@ export const allReducers = combineReducers({
   dataProduct: ProductReducer,
   global: GlobalReducer,
   home: HomeReducer,
+  search: SearchReducer,
 });

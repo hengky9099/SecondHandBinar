@@ -6,6 +6,8 @@ import DaftarJual from './DaftarJual';
 import Notification from './Notification';
 import Profile from './Profile';
 import LengkapiDetailProduk from './LengkapiDetailProduk';
+import NotificationBuyer from './Notification/NotificationBuyer';
+import Search from './Search';
 import InfoPenawar from './InfoPenawar';
 
 export {
@@ -17,5 +19,6 @@ export {
   Notification,
   Profile,
   LengkapiDetailProduk,
+  Search,
   InfoPenawar,
 };

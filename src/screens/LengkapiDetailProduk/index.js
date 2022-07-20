@@ -9,9 +9,8 @@ import {moderateScale} from 'react-native-size-matters';
 // import {launchImageLibrary} from 'react-native-image-picker';
 import {useDispatch, useSelector} from 'react-redux';
 import {navigate} from '../../helpers/navigate';
-import {getCategory, setDataProduct} from './redux/action';
+import {setDataProduct} from './redux/action';
 import Toast from 'react-native-toast-message';
-import {useEffect} from 'react';
 import {setLoading} from '../../redux/globalAction';
 import LoadingBar from '../../component/LoadingBar';
 import ImagePicker from 'react-native-image-crop-picker';
@@ -23,14 +22,10 @@ const Index = ({navigation}) => {
   const [image, setImage] = useState({});
   const [listImage, setListImage] = useState([]);
   const {dataLogin, dataUser} = useSelector(state => state.login);
-  const {dataCategory} = useSelector(state => state.dataProduct);
+  const {dataCategory} = useSelector(state => state.home);
   const {loading} = useSelector(state => state.global);
   const [items, setItems] = useState(dataCategory);
   const kategori = [];
-
-  useEffect(() => {
-    dispatch(getCategory);
-  }, [dispatch]);
 
   const getProductCategories = () => {
     dataCategory.filter(function (item) {
