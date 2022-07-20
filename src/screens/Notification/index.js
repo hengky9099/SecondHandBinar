@@ -64,6 +64,25 @@ const Notification = () => {
     }
   }, [dataLogin, dispatch]);
 
+  const statusRead = useCallback(
+    async id => {
+      try {
+        dispatch(setLoading(true));
+        const response = await axios.patch(
+          `${baseUrl}/notification/${id}`,
+          dataLogin,
+          {
+            headers: {access_token: `${dataLogin.access_token}`},
+          },
+        );
+        console.log('Data Read: ', response.data);
+      } catch (error) {
+        console.log('message: ', error);
+      }
+    },
+    [dataLogin, dispatch],
+  );
+
   const onRefresh = () => {
     setRefresh(true);
     getDataNotification(dataLogin);
@@ -72,26 +91,16 @@ const Notification = () => {
 
   const renderDataNotification = ({item}) => (
     <ItemNotificationCard
-      // onPress={setRead(item.id)}
+      onPress={() => statusRead(item.id)}
       date={thisDate(item.transaction_date)}
       urlImage={item.image_url}
       productName={item.product_name}
       productPrice={currencyToIDR(item.base_price)}
       tawaran={currencyToIDR(item.bid_price)}
       status={item.status}
+      read={item.read}
     />
   );
-
-  // const setRead = id => {
-  //   for (let i in notifikasi) {
-  //     if (notifikasi[i].id === id) {
-  //       notifikasi[i].read = true;
-  //       break;
-  //     }
-  //   }
-  //   setnotifikasi(notifikasi);
-  //   getDataNotification(id.read);
-  // };
 
   return (
     <View style={styles.container}>
@@ -105,10 +114,10 @@ const Notification = () => {
                 <RefreshControl onRefresh={onRefresh} refreshing={refresh} />
               }
               data={notifikasi}
-              renderItem={renderDataNotification}
               keyExtractor={(_item, index) => index}
               numColumns={1}
               key={1}
+              renderItem={renderDataNotification}
               showsVerticalScrollIndicator={false}
               ListFooterComponent={<View style={styles.footerComponent} />}
             />

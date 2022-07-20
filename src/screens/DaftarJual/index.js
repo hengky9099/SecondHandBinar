@@ -28,8 +28,8 @@ const DaftarJual = ({}) => {
   const dispatch = useDispatch();
   const navigation = useNavigation();
   const [buttonFiturName, setButtonFiturName] = useState('Product');
-  const [orderan, setOrderan] = useState([]);
-  const [product, setProduct] = useState([]);
+  const [orderan, setOrderan] = useState({});
+  const [product, setProduct] = useState({});
   const [refresh, setRefresh] = useState(false);
   const {dataLogin, dataUser} = useSelector(state => state.login);
   const {statusToastPostProduct} = useSelector(state => state.dataProduct);
