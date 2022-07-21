@@ -58,13 +58,6 @@ const Index = ({navigation}) => {
       body.append('base_price', values.hargaproduk);
       value.forEach(categori => body.append('category_ids', categori));
       body.append('location', dataUser.city);
-      // body.append('image', {
-      //   name: image.fileName,
-      //   type: image.type,
-      //   uri: image.uri,
-      // });
-
-      //multiple image but cant send to api => output {}
 
       listImage.forEach(element => {
         const imageName = element.path.substring(
@@ -94,36 +87,51 @@ const Index = ({navigation}) => {
 
       console.log(body);
 
-      const res = await fetch(
-        'https://market-final-project.herokuapp.com/seller/product',
-        {
-          method: 'POST',
-          headers: {
-            accept: 'body',
-            'Content-Type': 'multipart/form-data',
-            access_token: `${dataLogin.access_token}`,
+      if (
+        dataUser.phone_number === 'null' ||
+        dataUser.address === 'null' ||
+        dataUser.image === '' ||
+        dataUser.city === 'null'
+      ) {
+        dispatch(setLoading(false));
+        setListImage({});
+        Alert.alert('Pemberitahuan', 'Tolong Lengkapi Profile Anda.');
+        navigate('Profile');
+      } else {
+        const res = await fetch(
+          'https://market-final-project.herokuapp.com/seller/product',
+          {
+            method: 'POST',
+            headers: {
+              accept: 'body',
+              'Content-Type': 'multipart/form-data',
+              access_token: `${dataLogin.access_token}`,
+            },
+            body: body,
           },
-          body: body,
-        },
-      );
+        );
+        const jsonRes = await res.json();
 
-      const jsonRes = await res.json();
-
-      console.log(res, 'res fecting');
-
-      if (jsonRes.name && jsonRes.message) {
-        Alert.alert('Pemberitahuan', jsonRes.message);
-        // setImage({});
-        setListImage({});
-        dispatch(setStatusToastPostProduct('failed'));
-        navigate('DaftarJual');
-        dispatch(setLoading(false));
-      } else if (jsonRes.name === values.namaproduk) {
-        // setImage({});
-        setListImage({});
-        dispatch(setStatusToastPostProduct('success'));
-        navigate('DaftarJual');
-        dispatch(setLoading(false));
+        if (jsonRes.name && jsonRes.message) {
+          Alert.alert('Pemberitahuan', jsonRes.message);
+          // setImage({});
+          setListImage({});
+          dispatch(setStatusToastPostProduct('failed'));
+          navigate('DaftarJual');
+          dispatch(setLoading(false));
+        } else if (
+          jsonRes.name === values.namaproduk &&
+          dataUser.phone_number !== 'null' &&
+          dataUser.address !== 'null' &&
+          dataUser.image !== '' &&
+          dataUser.city !== 'null'
+        ) {
+          // setImage({});
+          dispatch(setLoading(false));
+          setListImage({});
+          dispatch(setStatusToastPostProduct('success'));
+          navigate('DaftarJual');
+        }
       }
     } catch (error) {
       console.log(error, 'error lengkapi');
