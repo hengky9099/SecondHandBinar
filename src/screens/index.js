@@ -8,6 +8,7 @@ import Profile from './Profile';
 import LengkapiDetailProduk from './LengkapiDetailProduk';
 import Search from './Search';
 import InfoPenawar from './InfoPenawar';
+import Preview from './Preview';
 
 export {
   Home,
@@ -20,4 +21,5 @@ export {
   LengkapiDetailProduk,
   Search,
   InfoPenawar,
+  Preview,
 };

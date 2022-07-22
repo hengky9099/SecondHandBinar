@@ -12,6 +12,7 @@ import {setLogin} from '../Login/redux/action';
 import {useCallback} from 'react';
 import styles from './styles';
 import {COLORS} from '../../helpers/colors';
+import {setCountNotifikasi} from './redux/action';
 
 const Notification = () => {
   const dispatch = useDispatch();
@@ -31,6 +32,11 @@ const Notification = () => {
         headers: {access_token: `${dataLogin.access_token}`},
       });
       setnotifikasi(res.data);
+      const data = res.data.filter(function (item) {
+        return item.read === false;
+      }).length;
+      dispatch(setCountNotifikasi(data));
+      console.log('ini dia :', data);
       console.log('Data Notification: ', res.data);
       if (res.status === 200) {
         dispatch(setLoading(false));
@@ -75,12 +81,13 @@ const Notification = () => {
             headers: {access_token: `${dataLogin.access_token}`},
           },
         );
+        getDataNotification();
         console.log('Data Read: ', response.data);
       } catch (error) {
         console.log('message: ', error);
       }
     },
-    [dataLogin, dispatch],
+    [dataLogin, dispatch, getDataNotification],
   );
 
   const onRefresh = () => {
@@ -113,6 +120,7 @@ const Notification = () => {
               refreshControl={
                 <RefreshControl onRefresh={onRefresh} refreshing={refresh} />
               }
+              inverted
               data={notifikasi}
               keyExtractor={(_item, index) => index}
               numColumns={1}

@@ -28,16 +28,18 @@ const DaftarJual = ({}) => {
   const dispatch = useDispatch();
   const navigation = useNavigation();
   const [buttonFiturName, setButtonFiturName] = useState('Product');
-  const [orderan, setOrderan] = useState({});
-  const [product, setProduct] = useState({});
+  const [orderan, setOrderan] = useState([]);
+  const [product, setProduct] = useState([]);
   const [refresh, setRefresh] = useState(false);
   const {dataLogin, dataUser} = useSelector(state => state.login);
   const {statusToastPostProduct} = useSelector(state => state.dataProduct);
+  const [dataterjual, setDataTerjual] = useState([]);
 
   useEffect(() => {
     getDataProductSeller();
     getDataOrderSeller();
-  }, [getDataOrderSeller, getDataProductSeller]);
+    getTerjual();
+  }, [getDataOrderSeller, getDataProductSeller, getTerjual]);
 
   const getDataOrderSeller = useCallback(async () => {
     //OrderSeller
@@ -63,7 +65,7 @@ const DaftarJual = ({}) => {
       const res = await axios.get(`${baseUrl}/seller/product`, {
         headers: {access_token: `${dataLogin.access_token}`},
       });
-      setProduct(res.data);
+      setProduct(['', ...res.data]);
       console.log('Data Product Seller: ', res.data);
     } catch (error) {
       console.log(error);
@@ -71,6 +73,27 @@ const DaftarJual = ({}) => {
       dispatch(setLoading(false));
     }
   }, [dataLogin, dispatch]);
+
+  const getTerjual = useCallback(
+    async id => {
+      try {
+        dispatch(setLoading(true));
+        const response = await axios.patch(
+          `${baseUrl}/seller/product/${id}`,
+          dataLogin,
+          {
+            headers: {access_token: `${dataLogin.access_token}`},
+          },
+        );
+        getDataProductSeller();
+        setDataTerjual(response.data);
+        console.log('Data Terjual: ', response.data);
+      } catch (error) {
+        console.log('message: ', error);
+      }
+    },
+    [dataLogin, dispatch, getDataProductSeller],
+  );
 
   const onRefresh = () => {
     setRefresh(true);
@@ -126,9 +149,11 @@ const DaftarJual = ({}) => {
           <View style={styles.btnContainer}>
             <ButtonFitur
               onPressButton={() => {
+                // setButtonFiturName('Terjual');
                 setButtonFiturName('DaftarJual');
               }}
               nameFitur={'Terjual'}
+              // clicked={buttonFiturName === 'Terjual' ? true : false}
               clicked={buttonFiturName === 'DaftarJual' ? true : false}
               nameIcon={'dollar-sign'}
             />
@@ -253,6 +278,36 @@ const DaftarJual = ({}) => {
     );
   };
 
+  const terjual = () => {
+    return (
+      <FlatList
+        refreshControl={
+          <RefreshControl onRefresh={onRefresh} refreshing={refresh} />
+        }
+        showsVerticalScrollIndicator={false}
+        contentContainerStyle={styles.contentDiminati}
+        key={1}
+        keyExtractor={(_item, index) => index}
+        data={dataterjual}
+        numColumns={1}
+        renderItem={({item, index}) => {
+          return (
+            <ItemNotificationCard
+              urlImage={item.image_url}
+              date={thisDate(item.transaction_date)}
+              productName={item.product_name}
+              productPrice={currencyToIDR(item.base_price)}
+              tawaran={currencyToIDR(item.price)}
+              onPress={() =>
+                navigation.navigate('InfoPenawar', {id_order: item.id})
+              }
+            />
+          );
+        }}
+      />
+    );
+  };
+
   const tampilkan = buttonName => {
     if (buttonName === 'Product') {
       return productsView();
@@ -262,6 +317,8 @@ const DaftarJual = ({}) => {
       return productView();
     } else if (buttonName === 'Diminatis') {
       return diminatiView();
+    } else if (buttonName === 'Terjual') {
+      return terjual();
     }
   };
 

@@ -19,10 +19,14 @@ import {COLORS} from '../../helpers/colors';
 import {getProduct, getProductperCategory} from './redux/action';
 import {useSelector, useDispatch} from 'react-redux';
 import LoadingBar from '../../component/LoadingBar';
-import {setRefreshing} from '../../redux/globalAction';
+import {setLoading, setRefreshing} from '../../redux/globalAction';
 import {navigate} from '../../helpers/navigate';
 import {currencyToIDR} from '../../helpers/change';
 import Feather from 'react-native-vector-icons/Feather';
+import {baseUrl} from '@env';
+import {setCountNotifikasi} from '../Notification/redux/action';
+import axios from 'axios';
+import {useCallback} from 'react';
 
 export default function Home({navigation}) {
   const dispatch = useDispatch();
@@ -42,17 +46,21 @@ export default function Home({navigation}) {
   const [endData, setEndData] = useState(5);
   const [idCategory, setIdCategory] = useState(0);
   const [clickedFiturName, setClickedFiturName] = useState('dataAllProduct');
+  const {dataLogin} = useSelector(state => state.login);
+  const [notifikasi, setnotifikasi] = useState([]);
 
   useEffect(() => {
+    getDataNotification();
     const getAllProduct = () => dispatch(getProduct(page));
     if (dataProducts === 'dataAllProduct') {
       getAllProduct();
     } else if (dataProducts === 'dataProductperCategory') {
       dispatch(getProductperCategory(idCategory, page));
     }
-  }, [dispatch, page, idCategory, dataProducts]);
+  }, [dispatch, page, idCategory, dataProducts, getDataNotification]);
 
   useEffect(() => {
+    getDataNotification();
     const renderListNumber = data => {
       let renderer = [];
       const lengthPageAllProduct = Math.ceil(
@@ -93,7 +101,28 @@ export default function Home({navigation}) {
     dataProductperCategory.length,
     lengthProducts,
     dataProducts,
+    getDataNotification,
   ]);
+
+  const getDataNotification = useCallback(async () => {
+    //OrderSeller
+    try {
+      dispatch(setLoading(true));
+      const res = await axios.get(`${baseUrl}/notification`, {
+        headers: {access_token: `${dataLogin.access_token}`},
+      });
+      setnotifikasi(res.data);
+      const data = res.data.filter(function (item) {
+        return item.read === false;
+      }).length;
+      dispatch(setCountNotifikasi(data));
+      console.log('ini dia :', data);
+      console.log('Data Notification: ', res.data);
+    } catch (error) {
+      console.log(error);
+      dispatch(setLoading(false));
+    }
+  }, [dataLogin, dispatch]);
 
   const onRefresh = () => {
     dispatch(setRefreshing(true));
@@ -304,7 +333,7 @@ export default function Home({navigation}) {
   const renderEmpty = () => {
     return <Poppins style={styles.empty}>Tidak ada data</Poppins>;
   };
-
+  console.log(notifikasi);
   return (
     <View style={styles.container}>
       {list(dataProducts) ? (
