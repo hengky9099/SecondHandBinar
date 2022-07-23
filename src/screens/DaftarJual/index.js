@@ -38,8 +38,8 @@ const DaftarJual = ({}) => {
   useEffect(() => {
     getDataProductSeller();
     getDataOrderSeller();
-    getTerjual();
-  }, [getDataOrderSeller, getDataProductSeller, getTerjual]);
+    // getTerjual();
+  }, [getDataOrderSeller, getDataProductSeller]);
 
   const getDataOrderSeller = useCallback(async () => {
     //OrderSeller
@@ -66,6 +66,10 @@ const DaftarJual = ({}) => {
         headers: {access_token: `${dataLogin.access_token}`},
       });
       setProduct(['', ...res.data]);
+      const getTerjual = res.data.filter(function (item) {
+        return item.status === 'sold';
+      });
+      setDataTerjual(getTerjual);
       console.log('Data Product Seller: ', res.data);
     } catch (error) {
       console.log(error);
@@ -74,26 +78,11 @@ const DaftarJual = ({}) => {
     }
   }, [dataLogin, dispatch]);
 
-  const getTerjual = useCallback(
-    async id => {
-      try {
-        dispatch(setLoading(true));
-        const response = await axios.patch(
-          `${baseUrl}/seller/product/${id}`,
-          dataLogin,
-          {
-            headers: {access_token: `${dataLogin.access_token}`},
-          },
-        );
-        getDataProductSeller();
-        setDataTerjual(response.data);
-        console.log('Data Terjual: ', response.data);
-      } catch (error) {
-        console.log('message: ', error);
-      }
-    },
-    [dataLogin, dispatch, getDataProductSeller],
-  );
+  // const getTerjual = () => {
+  //   return product.filter(item => item.status === 'sold');
+  // };
+
+  // console.log('dataterjual: ', getTerjual());
 
   const onRefresh = () => {
     setRefresh(true);
@@ -149,35 +138,11 @@ const DaftarJual = ({}) => {
           <View style={styles.btnContainer}>
             <ButtonFitur
               onPressButton={() => {
-                // setButtonFiturName('Terjual');
-                setButtonFiturName('DaftarJual');
+                setButtonFiturName('Terjual');
               }}
               nameFitur={'Terjual'}
-              // clicked={buttonFiturName === 'Terjual' ? true : false}
-              clicked={buttonFiturName === 'DaftarJual' ? true : false}
+              clicked={buttonFiturName === 'Terjual' ? true : false}
               nameIcon={'dollar-sign'}
-            />
-          </View>
-
-          <View style={styles.btnContainer}>
-            <ButtonFitur
-              onPressButton={() => {
-                setButtonFiturName('Products');
-              }}
-              nameFitur={'Products'}
-              clicked={buttonFiturName === 'Products' ? true : false}
-              nameIcon={'box'}
-            />
-          </View>
-
-          <View style={styles.btnContainer}>
-            <ButtonFitur
-              onPressButton={() => {
-                setButtonFiturName('Diminatis');
-              }}
-              nameFitur={'Diminatis'}
-              clicked={buttonFiturName === 'Diminatis' ? true : false}
-              nameIcon={'heart'}
             />
           </View>
         </ScrollView>
@@ -226,13 +191,13 @@ const DaftarJual = ({}) => {
     );
   };
 
-  const productView = () => {
+  const emptyTerjualView = () => {
     return (
-      <View style={styles.productView}>
-        <InputAdd
-          style={styles.addButton}
-          onPress={() => navigation.navigate('Jual')}
-        />
+      <View style={styles.wrapDiminati}>
+        <Image source={seller} style={styles.imageDiminati} />
+        <Poppins style={styles.textDiminati}>
+          Belum ada produkmu yang terjual nih, sabar ya rejeki nggak kemana kok
+        </Poppins>
       </View>
     );
   };
@@ -260,6 +225,7 @@ const DaftarJual = ({}) => {
         keyExtractor={(_item, index) => index}
         data={orderan}
         numColumns={1}
+        ListEmptyComponent={diminatiView}
         renderItem={({item, index}) => {
           return (
             <ItemNotificationCard
@@ -289,18 +255,16 @@ const DaftarJual = ({}) => {
         key={1}
         keyExtractor={(_item, index) => index}
         data={dataterjual}
+        ListEmptyComponent={emptyTerjualView}
         numColumns={1}
         renderItem={({item, index}) => {
           return (
             <ItemNotificationCard
               urlImage={item.image_url}
-              date={thisDate(item.transaction_date)}
-              productName={item.product_name}
+              date={thisDate(item.updatedAt)}
+              productName={item.name}
               productPrice={currencyToIDR(item.base_price)}
-              tawaran={currencyToIDR(item.price)}
-              onPress={() =>
-                navigation.navigate('InfoPenawar', {id_order: item.id})
-              }
+              status={item.status}
             />
           );
         }}
@@ -313,10 +277,6 @@ const DaftarJual = ({}) => {
       return productsView();
     } else if (buttonName === 'Diminati') {
       return diminatisView();
-    } else if (buttonName === 'Products') {
-      return productView();
-    } else if (buttonName === 'Diminatis') {
-      return diminatiView();
     } else if (buttonName === 'Terjual') {
       return terjual();
     }
@@ -339,7 +299,7 @@ const DaftarJual = ({}) => {
       return null;
     }
   };
-
+  console.log('Data terjual: ', dataterjual);
   return (
     <SafeAreaView style={[styles.container]}>
       {showToast(statusToastPostProduct)}
