@@ -1,10 +1,10 @@
-import {DATA_CATEGORY, DATA_PRODUCT} from './type';
+import {DATA_PRODUCT, STATUS_TOAST_POST_PRODUCT} from './type';
 
 const initialState = {
   dataProduct: {},
-  dataCategory: [],
   image: {},
   kategori: [],
+  statusToastPostProduct: '',
 };
 
 const ProductReducer = (state = initialState, action) => {
@@ -16,11 +16,13 @@ const ProductReducer = (state = initialState, action) => {
         image: action.image,
         kategori: action.kategori,
       };
-    case DATA_CATEGORY:
+
+    case STATUS_TOAST_POST_PRODUCT:
       return {
         ...state,
-        dataCategory: action.payload,
+        statusToastPostProduct: action.payload,
       };
+
     default:
       return state;
   }

@@ -1,20 +1,33 @@
-import {StyleSheet, TouchableOpacity, View, Image, Text} from 'react-native';
+import {StyleSheet, TouchableOpacity, View, Image} from 'react-native';
 import React from 'react';
 import {moderateScale} from 'react-native-size-matters';
 import {COLORS} from '../../helpers/colors';
 import {cameraPic} from '../../assets';
 
-const ButtonCamera = ({onPress, url}) => {
-  return (
-    <View style={styles.container}>
-      <TouchableOpacity style={styles.toCamera} onPress={onPress}>
-        <Image
-          source={url ? {uri: url} : cameraPic}
-          style={url ? styles.urlCamera : styles.imageCamera}
-        />
-      </TouchableOpacity>
-    </View>
-  );
+const ButtonCamera = ({onPress, url, disabled = false}) => {
+  if (disabled) {
+    return (
+      <View style={styles.container}>
+        <View style={styles.toCamera}>
+          <Image
+            source={url ? {uri: url} : cameraPic}
+            style={url ? styles.urlCamera : styles.imageCamera}
+          />
+        </View>
+      </View>
+    );
+  } else {
+    return (
+      <View style={styles.container}>
+        <TouchableOpacity style={styles.toCamera} onPress={onPress}>
+          <Image
+            source={url ? {uri: url} : cameraPic}
+            style={url ? styles.urlCamera : styles.imageCamera}
+          />
+        </TouchableOpacity>
+      </View>
+    );
+  }
 };
 
 export default ButtonCamera;

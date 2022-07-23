@@ -61,6 +61,7 @@ const styles = StyleSheet.create({
   text2: {
     fontSize: moderateScale(10),
     color: COLORS.neutral3,
+    textTransform: 'capitalize',
   },
   image: {
     width: moderateScale(48),

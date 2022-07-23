@@ -125,6 +125,9 @@ const BottomSheet = ({
       alignItems: 'center',
       marginBottom: moderateScale(16),
     },
+    marginInfoProduct: {
+      marginTop: moderateScale(30),
+    },
   });
 
   const componentView = typeView => {
@@ -198,7 +201,7 @@ const BottomSheet = ({
             </Poppins>
           </RadioButton.Group>
           {value !== false ? (
-            <Button onPressButton1={onPressButton} textButton1="Hallo" />
+            <Button onPressButton1={onPressButton} textButton1="Kirim" />
           ) : (
             <Button buttonColor={COLORS.gray} textButton1="Kirim" />
           )}
@@ -226,8 +229,11 @@ const BottomSheet = ({
             placeholderTextColor={COLORS.neutral3}
             inputName="Harga Tawar"
             styleInputName={styles.text}
+            keyboardType={'numeric'}
           />
-          <Button onPressButton1={onPressButton} textButton1="Kirim" />
+          <View style={styles.marginInfoProduct}>
+            <Button onPressButton1={onPressButton} textButton1="Kirim" />
+          </View>
         </View>
       );
     }

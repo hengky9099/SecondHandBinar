@@ -1,6 +1,6 @@
 import {ScrollView, StyleSheet, Text, View} from 'react-native';
 import React, {useState} from 'react';
-import {Button, Header, Input} from '../../component';
+import {Button, Header, Input, Poppins} from '../../component';
 import {Formik} from 'formik';
 import * as Yup from 'yup';
 import {moderateScale} from 'react-native-size-matters';
@@ -10,108 +10,104 @@ import {useDispatch, useSelector} from 'react-redux';
 import ButtonCamera from '../../component/ButtonCamera';
 import {kota} from '../../helpers/kota';
 import {launchImageLibrary} from 'react-native-image-picker';
-import axios from 'axios';
 import {baseUrl} from '@env';
+import axios from 'axios';
 import {setLoading} from '../../redux/globalAction';
+import {setDataUser} from '../Login/redux/action';
+import {navigate} from '../../helpers/navigate';
+import LoadingBar from '../../component/LoadingBar';
+import {setStatusToastPostProduct} from '../LengkapiDetailProduk/redux/action';
+import Toast from 'react-native-toast-message';
 
 const Profile = ({navigation}) => {
   const {dataLogin, dataUser} = useSelector(state => state.login);
+  const {loading} = useSelector(state => state.global);
   const dispatch = useDispatch();
 
   const [open, setOpen] = useState(false);
-  const [value, setValue] = useState(null);
+  const [value, setValue] = useState(dataUser?.city ? dataUser.city : null);
   const [items, setItems] = useState(kota);
   const [image, setImage] = useState('');
   const [user] = useState({
-    name: dataUser?.full_name,
-    kota: dataUser?.city,
-    alamat: dataUser.address === 'null' ? '' : dataUser.address,
-    handphone: dataUser.phone_number === 'null' ? '' : dataUser.phone_number,
+    full_name: dataUser?.full_name ? dataUser?.full_name : 'Nama',
+    city: dataUser?.city ? dataUser?.city : 'Kota',
+    address: dataUser?.address ? dataUser?.address : 'Alamat',
+    phone_number: dataUser?.phone_number ? dataUser?.phone_number : 'Nomer HP',
+    email: dataUser?.email ? dataUser?.email : 'Email',
+    image: dataUser?.image_url
+      ? dataUser?.image_url
+      : 'https://i.pinimg.com/736x/97/20/80/97208010f891c5a75c3298e00d853b02.jpg',
   });
 
-  // useEffect(() => {
-  //   getProfile();
-  // });
+  const putProfile = async values => {
+    dispatch(setLoading(true));
 
-  // const getProfile = async () => {
-  //   try {
-  //     const res = await axios.get(`${baseUrl}/auth/user`, {
-  //       headers: {access_token: `${dataLogin.access_token}`},
-  //     });
-  //     console.log(res.data);
-  //     setUser({
-  //       name: res.data.full_name,
-  //       kota: res.data.city,
-  //       alamat: (res.data.address = 'null' ? '' : res.data.address),
-  //       handphone: (res.data.phone_number = 'null'
-  //         ? ''
-  //         : res.data.phone_number),
-  //     });
-  //   } catch (error) {
-  //     console.log(error);
-  //   }
-  // };
-
-  const postProfile = async () => {
     try {
-      dispatch(setLoading(true));
+      const body = new FormData();
+      body.append('full_name', values.full_name);
+      body.append('email', values.email);
+      body.append('phone_number', values.phone_number);
+      body.append('address', values.address);
+      body.append('city', value);
+      image.uri
+        ? body.append('image', {
+            uri: image.uri,
+            name: image.fileName,
+            type: image.type,
+          })
+        : null;
 
-      const formData = new FormData();
-      formData.append('full_name', user.name);
-      formData.append('email', dataLogin.email);
-      formData.append('phone_number', user.handphone);
-      formData.append('address', user.alamat);
-      formData.append('city', user.kota);
-      formData.append('image_url', {
-        uri: image,
-        name: image,
-        type: 'image/jpeg',
-      });
-      const res = await axios.put(`${baseUrl}/auth/user`, formData, {
+      const res = await fetch(`${baseUrl}/auth/user`, {
+        method: 'PUT',
         headers: {
-          access_token: `${dataLogin.access_token}`,
           'Content-Type': 'multipart/form-data',
+          access_token: `${dataLogin.access_token}`,
         },
+        body: body,
       });
-      console.log(res);
+
+      const resUserData = await axios.get(res.url, {
+        headers: {access_token: `${dataLogin.access_token}`},
+      });
+
+      dispatch(setDataUser(resUserData.data));
       dispatch(setLoading(false));
-      // axios({
-      //   url: `${baseUrl}/auth/user`,
-      //   method: 'PUT',
-      //   data: formData,
-      //   headers: {
-      //     Accept: 'application/json',
-      //     'Content-Type': 'multipart/form-data',
-      //   },
-      // });
+      dispatch(setStatusToastPostProduct('success'));
+
+      navigate('Akun');
     } catch (error) {
       console.log(error);
+      Toast.show({
+        type: 'errorToast',
+        text1: 'Akun gagal untuk diperbaharui',
+      });
       dispatch(setLoading(false));
     }
   };
 
   const changeProfilePhoto = async () => {
-    await launchImageLibrary({mediaType: 'photo'}).then(imageUrl =>
-      setImage(imageUrl.assets[0].uri),
+    await launchImageLibrary({mediaType: 'photo'}).then(images =>
+      setImage(images.assets[0]),
     );
   };
 
   // For validation
   const validationProfile = Yup.object().shape({
-    name: Yup.string().required('Nama tidak boleh kosong'),
-    kota: Yup.string().required('Kota tidak boleh kosong'),
-    alamat: Yup.string().required('Alamat tidak boleh kosong'),
-    handphone: Yup.string().required('No. Handphone tidak boleh kosong'),
+    full_name: Yup.string().required('Nama tidak boleh kosong'),
+    address: Yup.string().required('Alamat tidak boleh kosong'),
+    email: Yup.string().required('Email tidak boleh kosong'),
+    phone_number: Yup.string().required('No. Handphone tidak boleh kosong'),
   });
   return (
     <Formik
       validationSchema={validationProfile}
       initialValues={user}
       enableReinitialize={true}
-      // validationSchema={validationProfile}
-      // initialValues={{name: '', kota: '', alamat: '', handphone: ''}}
-      onSubmit={postProfile}>
-      {({handleChange, handleBlur, values, errors, touched, handleSubmit}) => {
+      onSubmit={(values, {resetForm}) => {
+        putProfile(values);
+        resetForm();
+      }}>
+      {({handleChange, handleSubmit, handleBlur, values, errors, touched}) => {
         return (
           <ScrollView flex={1} style={styles.container}>
             <Header
@@ -120,69 +116,97 @@ const Profile = ({navigation}) => {
                 navigation.goBack();
               }}
             />
-            <View style={styles.imageContainer}>
+            <View style={styles.contentContainer}>
               <ButtonCamera
-                url={dataUser.image_url}
                 onPress={changeProfilePhoto}
+                url={image.uri ? image.uri : user.image}
+              />
+
+              <Input
+                inputName="Nama"
+                required={true}
+                placeholder="Nama Lengkap"
+                onChangeText={handleChange('full_name')}
+                onBlur={handleBlur('full_name')}
+                value={values.full_name}
               />
             </View>
-            <Input
-              inputName="Nama*"
-              placeholder="Nama Lengkap"
-              onChangeText={handleChange('name')}
-              onBlur={handleBlur('name')}
-              value={values.name}
-            />
-
-            {touched.name && errors.name && (
-              <Text style={styles.errorValidation}>{errors.name}</Text>
+            {touched.full_name && errors.full_name && (
+              <Text style={styles.errorValidation}>{errors.full_name}</Text>
             )}
 
             <View style={styles.contentContainer}>
-              <Text style={styles.kota}>Kota*</Text>
-              <DropDownPicker
-                style={styles.dropdownPicker}
-                open={open}
-                value={value}
-                items={items}
-                setOpen={setOpen}
-                setValue={setValue}
-                setItems={setItems}
+              <Input
+                required={true}
+                inputName="Email"
+                placeholder="Contoh: abcd@mail.com"
+                onChangeText={handleChange('email')}
+                onBlur={handleBlur('email')}
+                value={values.email}
               />
             </View>
+            {touched.email && errors.email && (
+              <Text style={styles.errorValidation}>{errors.email}</Text>
+            )}
+
+            <View style={styles.contentContainer}>
+              <View style={styles.toRow}>
+                <Poppins style={styles.kota}>Kota</Poppins>
+                <Poppins style={styles.asterik}>*</Poppins>
+              </View>
+              <View style={styles.cityContainer}>
+                <DropDownPicker
+                  style={styles.dropdownPicker}
+                  placeholder="Pilih Kota Anda"
+                  open={open}
+                  value={value}
+                  items={items}
+                  setOpen={setOpen}
+                  setValue={setValue}
+                  setItems={setItems}
+                  listMode="SCROLLVIEW"
+                />
+              </View>
+            </View>
+
             <View style={styles.contentContainer}>
               <Input
-                inputName="Alamat*"
+                inputName="Alamat"
+                required={true}
                 placeholder="Contoh: Jalan Hiu 33"
                 multiline={true}
                 numberOfLines={4}
                 styleInput={styles.alamatContainer}
-                onChangeText={handleChange('alamat')}
-                onBlur={handleBlur('alamat')}
-                value={values.alamat}
+                onChangeText={handleChange('address')}
+                onBlur={handleBlur('address')}
+                value={values.address}
               />
             </View>
-
-            {touched.alamat && errors.alamat && (
-              <Text style={styles.errorValidation}>{errors.alamat}</Text>
+            {touched.address && errors.address && (
+              <Text style={styles.errorValidation}>{errors.address}</Text>
             )}
+
             <View style={styles.contentContainer}>
               <Input
                 keyboardType={'numeric'}
-                inputName="No Handphone*"
+                inputName="No Handphone"
+                required={true}
                 placeholder="Contoh: 08123456789"
-                onChangeText={handleChange('handphone')}
-                onBlur={handleBlur('handphone')}
-                value={values.handphone}
+                onChangeText={handleChange('phone_number')}
+                onBlur={handleBlur('phone_number')}
+                value={values.phone_number}
               />
             </View>
-
-            {touched.handphone && errors.handphone && (
-              <Text style={styles.errorValidation}>{errors.handphone}</Text>
+            {touched.phone_number && errors.phone_number && (
+              <Text style={styles.errorValidation}>{errors.phone_number}</Text>
             )}
 
             <View style={styles.btnSimpan}>
-              <Button textButton1={'Simpan'} onPressButton1={handleSubmit} />
+              {loading ? (
+                <LoadingBar loading={loading} />
+              ) : (
+                <Button textButton1={'Simpan'} onPressButton1={handleSubmit} />
+              )}
             </View>
           </ScrollView>
         );
@@ -196,6 +220,7 @@ export default Profile;
 const styles = StyleSheet.create({
   container: {
     backgroundColor: COLORS.white,
+    padding: moderateScale(8),
   },
   alamatContainer: {height: moderateScale(100), textAlignVertical: 'top'},
   errorValidation: {
@@ -203,13 +228,13 @@ const styles = StyleSheet.create({
     color: 'red',
     marginBottom: moderateScale(10),
   },
-  contentContainer: {},
+  contentContainer: {
+    marginTop: moderateScale(10),
+  },
   btnSimpan: {
-    marginTop: moderateScale(15),
+    marginVertical: moderateScale(20),
   },
   dropdownPicker: {
-    width: moderateScale(325),
-    marginLeft: moderateScale(15),
     backgroundColor: COLORS.white,
     borderColor: COLORS.neutral2,
     borderRadius: moderateScale(10),
@@ -220,5 +245,14 @@ const styles = StyleSheet.create({
   },
   imageContainer: {
     alignItems: 'center',
+  },
+  asterik: {
+    color: COLORS.red,
+  },
+  toRow: {
+    flexDirection: 'row',
+  },
+  cityContainer: {
+    marginHorizontal: moderateScale(18),
   },
 });

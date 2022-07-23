@@ -14,6 +14,7 @@ import {COLORS} from '../../helpers/colors';
 import Button from '../Button';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import Header from '../Header';
+import {goBack} from '../../helpers/navigate';
 
 const {width, height} = Dimensions.get('window');
 
@@ -28,6 +29,7 @@ const PreviewCard = ({
   deskripsi,
   btnText,
   btnOnPress,
+  btnColor = COLORS.purple4,
 }) => {
   const [imgActive, setImgActive] = useState(0);
 
@@ -46,9 +48,8 @@ const PreviewCard = ({
     <SafeAreaView>
       <ScrollView showsVerticalScrollIndicator={false} style={styles.container}>
         <View style={styles.header}>
-          <Header backArrowBackground={true} />
+          <Header backArrowBackground={true} onPressBack={() => goBack()} />
         </View>
-
         <View style={styles.wrap}>
           <ScrollView
             onScroll={({nativeEvent}) => onChange(nativeEvent)}
@@ -56,24 +57,20 @@ const PreviewCard = ({
             pagingEnabled
             horizontal
             style={styles.wrap}>
-            {imgData.map((imgUrl, index) => (
-              <Image
-                key={imgUrl}
-                resizeMode="stretch"
-                style={styles.wrap}
-                source={{uri: imgUrl}}
-              />
-            ))}
+            {/* {imgData.map((imgUrl, index) => ( */}
+            <Image
+              key={imgData}
+              resizeMode="stretch"
+              style={styles.wrap}
+              source={{uri: imgData}}
+            />
+            {/* ))} */}
           </ScrollView>
         </View>
         <View style={styles.dotWrap}>
-          {imgData.map((imgUrl, index) => (
-            <Text
-              key={imgUrl}
-              style={imgActive === index ? styles.dotActive : styles.dot}>
-              ●
-            </Text>
-          ))}
+          {/* {imgData.map((imgUrl, index) => ( */}
+          <Text key={imgData}>●</Text>
+          {/* ))} */}
         </View>
         <View style={styles.topWrap}>
           <Poppins type="Medium" style={styles.text1}>
@@ -89,7 +86,11 @@ const PreviewCard = ({
         </View>
       </ScrollView>
       <View style={styles.btnBottom}>
-        <Button textButton1={btnText} onPressButton1={btnOnPress} />
+        <Button
+          buttonColor={btnColor}
+          textButton1={btnText}
+          onPressButton1={btnOnPress}
+        />
       </View>
     </SafeAreaView>
   );

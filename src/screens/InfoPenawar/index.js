@@ -1,5 +1,4 @@
 import {
-  Alert,
   Linking,
   RefreshControl,
   ScrollView,
@@ -7,9 +6,10 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import React, {useCallback, useEffect, useState} from 'react';
+import React, {useCallback, useEffect, useState, useRef} from 'react';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {
+  BottomSheet,
   Header,
   IdentityCard,
   ItemNotificationCard,
@@ -21,12 +21,18 @@ import axios from 'axios';
 import {baseUrl} from '@env';
 import {useSelector} from 'react-redux';
 import {currencyToIDR, thisDate} from '../../helpers/change';
+import {goBack} from '../../helpers/navigate';
+import Toast from 'react-native-toast-message';
 
 const InfoPenawar = ({route}) => {
   const id = route.params.id_order;
   const [data, setData] = useState([]);
   const {dataLogin} = useSelector(state => state.login);
   const [refresh, setRefresh] = useState(false);
+  const [value, setValue] = useState('');
+
+  const refRBAcceptedSheet = useRef();
+  const refRBStatusSheet = useRef();
 
   const onRefresh = () => {
     setRefresh(true);
@@ -50,21 +56,24 @@ const InfoPenawar = ({route}) => {
     }
   }, [dataLogin.access_token, id]);
 
-  const onPressAccepted = useCallback(async () => {
-    try {
-      const res = await axios.patch(
-        `${baseUrl}/seller/order/${id}`,
-        {status: ''},
-        {
-          headers: {access_token: `${dataLogin.access_token}`},
-        },
-      );
-      console.log(res);
-      getDataOrderbyStatus();
-    } catch (error) {
-      console.log(error);
-    }
-  }, [id, getDataOrderbyStatus, dataLogin.access_token]);
+  const onPressAccepted = useCallback(
+    async status => {
+      try {
+        const res = await axios.patch(
+          `${baseUrl}/seller/order/${id}`,
+          {status: status},
+          {
+            headers: {access_token: `${dataLogin.access_token}`},
+          },
+        );
+        console.log(res);
+        getDataOrderbyStatus();
+      } catch (error) {
+        console.log(error);
+      }
+    },
+    [id, getDataOrderbyStatus, dataLogin.access_token],
+  );
 
   const onPressDecline = async () => {
     try {
@@ -83,13 +92,12 @@ const InfoPenawar = ({route}) => {
   };
 
   const onPressBtnStatus = () => {
-    Alert.alert('Tes', 'tombol status nih');
+    refRBStatusSheet.current.open();
   };
 
   const convertPhoneNumber = num => {
     return num.toString().substring(0);
   };
-
 
   const onPressBtnHubungi = () => {
     Linking.openURL(
@@ -97,6 +105,24 @@ const InfoPenawar = ({route}) => {
         data.User.phone_number,
       )}`,
     );
+  };
+
+  const onPressButtonBottomSheet = () => {
+    if (value === 'accepted') {
+      refRBStatusSheet.current.close();
+      onPressAccepted('accepted');
+      Toast.show({
+        type: 'successToast',
+        text1: 'Status produk berhasil diperbaharui',
+      });
+    } else if (value === 'rejected') {
+      refRBStatusSheet.current.close();
+      onPressDecline();
+      Toast.show({
+        type: 'successToast',
+        text1: 'Status produk berhasil diperbaharui',
+      });
+    }
   };
 
   return (
@@ -108,7 +134,10 @@ const InfoPenawar = ({route}) => {
               <RefreshControl refreshing={refresh} onRefresh={onRefresh} />
             }>
             <View>
-              <Header headerName={'Info Penawar'} />
+              <Header
+                headerName={'Info Penawar'}
+                onPressBack={() => goBack()}
+              />
               <IdentityCard
                 urlImage={
                   data?.User?.image_url
@@ -135,7 +164,11 @@ const InfoPenawar = ({route}) => {
                     textButton2={
                       data.status === 'pending' ? 'Terima' : 'Hubungi'
                     }
-                    typeNotif={'Penawaran Produk'}
+                    typeNotif={
+                      data.status === 'accepted'
+                        ? 'Berhasil terjual'
+                        : 'Penawaran Produk'
+                    }
                     productName={data?.product_name}
                     productPrice={currencyToIDR(data?.base_price)}
                     date={thisDate(data?.transaction_date)}
@@ -150,7 +183,8 @@ const InfoPenawar = ({route}) => {
                     }}
                     onPressButton2={() => {
                       if (data.status === 'pending') {
-                        onPressAccepted(data?.id);
+                        refRBAcceptedSheet.current.open();
+                        onPressAccepted('');
                       } else {
                         onPressBtnHubungi(data?.id);
                       }
@@ -160,6 +194,28 @@ const InfoPenawar = ({route}) => {
               </View>
             </View>
           </ScrollView>
+          <BottomSheet
+            refBottomSheet={refRBStatusSheet}
+            firstText="Perbarui status penjualan produkmu"
+            type="perbaharuiStatus"
+            value={value}
+            onValueChange={newValue => setValue(newValue)}
+            onPressButton={onPressButtonBottomSheet}
+          />
+          <BottomSheet
+            refBottomSheet={refRBAcceptedSheet}
+            firstText="Yeay kamu berhasil mendapat harga yang sesuai"
+            secondText="Segera hubungi pembeli melalui whatsapp untuk transaksi selanjutnya"
+            type="productMatch"
+            productName={data?.product_name}
+            productPrice={currencyToIDR(data?.base_price)}
+            bargainPrice={currencyToIDR(data?.price)}
+            urlImageProduct={data?.Product?.image_url}
+            urlImageBuyer={data?.User?.image_url}
+            buyerCity={data?.User?.city}
+            buyerName={data?.User?.full_name}
+            onPressButton={onPressBtnHubungi}
+          />
         </SafeAreaView>
       ) : null}
     </>
