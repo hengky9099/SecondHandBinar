@@ -31,7 +31,11 @@ const Notification = () => {
       const res = await axios.get(`${baseUrl}/notification`, {
         headers: {access_token: `${dataLogin.access_token}`},
       });
-      setnotifikasi(res.data);
+      const latest = res.data.sort(function (a, b) {
+        return new Date(b.transaction_date) - new Date(a.transaction_date);
+      });
+
+      setnotifikasi(latest);
       const data = res.data.filter(function (item) {
         return item.read === false;
       }).length;
@@ -49,7 +53,7 @@ const Notification = () => {
       console.log(error);
       dispatch(setLoading(false));
 
-      if ((error.message = 'Request failed with status code 401')) {
+      if (error.message === 'Request failed with status code 401') {
         await AsyncStorage.setItem('@access_token', '');
         Alert.alert(
           'Pemberitahuan',
@@ -120,7 +124,6 @@ const Notification = () => {
               refreshControl={
                 <RefreshControl onRefresh={onRefresh} refreshing={refresh} />
               }
-              inverted
               data={notifikasi}
               keyExtractor={(_item, index) => index}
               numColumns={1}

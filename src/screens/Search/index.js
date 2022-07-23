@@ -47,9 +47,7 @@ const Search = ({route, navigation}) => {
             item?.base_price ? currencyToIDR(item?.base_price) : 'Rp. 0'
           }
           url={item?.image_url}
-          onPressCard={() =>
-            navigate('DetailProductScreen', {id_product: item.id})
-          }
+          onPressCard={() => navigate('BuyerOrder', {id: item.id})}
         />
       </View>
     );

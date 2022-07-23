@@ -5,7 +5,7 @@ import {moderateScale} from 'react-native-size-matters';
 import {navigate} from '../../helpers/navigate';
 import {ButtonCamera, MenuAkun, Poppins, StatusBarCore} from '../../component';
 import {useDispatch, useSelector} from 'react-redux';
-import {setLogin} from '../Login/redux/action';
+import {setDataUser, setLogin} from '../Login/redux/action';
 import Toast from 'react-native-toast-message';
 import {setStatusToastPostProduct} from '../LengkapiDetailProduk/redux/action';
 
@@ -62,6 +62,7 @@ const Akun = () => {
         text: 'YES',
         onPress: () => {
           dispatch(setLogin({}));
+          dispatch(setDataUser({}));
           navigate('Home');
         },
       },

@@ -126,7 +126,7 @@ export default function Home({navigation}) {
 
   const onRefresh = () => {
     dispatch(setRefreshing(true));
-    dispatch(getProduct());
+    dispatch(getProduct(page));
   };
 
   const fiturButton = ({item}) => {

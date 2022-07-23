@@ -85,52 +85,60 @@ const Index = ({navigation}) => {
       //     uri: imageData.path,
       //   });
       // });
-
-      if (
-        dataUser.phone_number === 'null' ||
-        dataUser.address === 'null' ||
-        dataUser.image === '' ||
-        dataUser.city === 'null'
-      ) {
-        dispatch(setLoading(false));
-        setListImage({});
-        Alert.alert('Pemberitahuan', 'Tolong Lengkapi Profile Anda.');
-        navigate('Profile');
-      } else {
-        const res = await fetch(
-          'https://market-final-project.herokuapp.com/seller/product',
-          {
-            method: 'POST',
-            headers: {
-              accept: 'body',
-              'Content-Type': 'multipart/form-data',
-              access_token: `${dataLogin.access_token}`,
-            },
-            body: body,
-          },
-        );
-        const jsonRes = await res.json();
-
-        if (jsonRes.name && jsonRes.message) {
-          Alert.alert('Pemberitahuan', jsonRes.message);
-          // setImage({});
-          setListImage({});
-          dispatch(setStatusToastPostProduct('failed'));
-          navigate('DaftarJual');
-          dispatch(setLoading(false));
-        } else if (
-          jsonRes.name === values.namaproduk &&
-          dataUser.phone_number !== 'null' &&
-          dataUser.address !== 'null' &&
-          dataUser.image !== '' &&
-          dataUser.city !== 'null'
+      if (dataLogin.access_token) {
+        if (
+          dataUser.phone_number === 'null' ||
+          dataUser.address === 'null' ||
+          dataUser.image === '' ||
+          dataUser.city === 'null'
         ) {
-          // setImage({});
           dispatch(setLoading(false));
           setListImage({});
-          dispatch(setStatusToastPostProduct('success'));
-          navigate('DaftarJual');
+          Alert.alert('Pemberitahuan', 'Tolong Lengkapi Profile Anda.');
+          navigate('Profile');
+        } else {
+          const res = await fetch(
+            'https://market-final-project.herokuapp.com/seller/product',
+            {
+              method: 'POST',
+              headers: {
+                accept: 'body',
+                'Content-Type': 'multipart/form-data',
+                access_token: `${dataLogin.access_token}`,
+              },
+              body: body,
+            },
+          );
+          const jsonRes = await res.json();
+
+          if (jsonRes.name && jsonRes.message) {
+            Alert.alert('Pemberitahuan', jsonRes.message);
+            // setImage({});
+            setListImage({});
+            dispatch(setStatusToastPostProduct('failed'));
+            navigate('DaftarJual');
+            dispatch(setLoading(false));
+          } else if (
+            jsonRes.name === values.namaproduk &&
+            dataUser.phone_number !== 'null' &&
+            dataUser.address !== 'null' &&
+            dataUser.image !== '' &&
+            dataUser.city !== 'null'
+          ) {
+            // setImage({});
+            dispatch(setLoading(false));
+            setListImage({});
+            dispatch(setStatusToastPostProduct('success'));
+            navigate('DaftarJual');
+          }
         }
+      } else {
+        Alert.alert(
+          'Pemberitahuan',
+          'Anda belum login, silahkan login terlebih dahulu',
+        );
+        navigate('Login');
+        dispatch(setLoading(false));
       }
     } catch (error) {
       console.log(error, 'error lengkapi');
@@ -149,9 +157,18 @@ const Index = ({navigation}) => {
   };
 
   const sendDataProduct = (values, dataImg) => {
-    getProductCategories();
-    dispatch(setDataProduct(values, dataImg, kategori));
-    navigate('Preview');
+    if (dataLogin.access_token) {
+      getProductCategories();
+      dispatch(setDataProduct(values, dataImg, kategori));
+      navigate('Preview');
+    } else {
+      Alert.alert(
+        'Pemberitahuan',
+        'Anda belum login, silahkan login terlebih dahulu',
+      );
+      navigate('Login');
+      dispatch(setLoading(false));
+    }
   };
 
   // const addProductImage = async () => {

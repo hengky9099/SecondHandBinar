@@ -25,7 +25,9 @@ export const getProduct = page => async dispatch => {
     dispatch(setLengthProducts(res.data.length));
 
     const resCategory = await axios.get(`${baseUrl}/seller/category`);
-    dispatch(setCategory(resCategory.data));
+    if (resCategory.data) {
+      dispatch(setCategory(resCategory.data));
+    }
 
     const resBanner = await axios.get(`${baseUrl}/seller/banner`);
     dispatch(setBanner(resBanner.data));

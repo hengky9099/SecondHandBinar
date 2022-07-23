@@ -9,6 +9,8 @@ import {useRef} from 'react';
 import {currencyToIDR} from '../../helpers/change';
 import Toast from 'react-native-toast-message';
 import {COLORS} from '../../helpers/colors';
+import {Alert} from 'react-native';
+import {navigate} from '../../helpers/navigate';
 
 const BuyerOrder = ({route}) => {
   const refRBSheet = useRef();
@@ -56,7 +58,21 @@ const BuyerOrder = ({route}) => {
     }
   }, [dataLogin, id]);
 
+  if (!dataLogin.access_token) {
+    Alert.alert(
+      'Pemberitahuan',
+      'Anda belum melakukan Login, mohon login terlebih dahulu!',
+    );
+    navigate('Login');
+  }
   const postOrder = useCallback(async () => {
+    if (!price) {
+      refRBSheet.current.close();
+      Toast.show({
+        type: 'pendingToast',
+        text1: 'Anda belum mengisi harga tawar!',
+      });
+    }
     const body = {
       product_id: id,
       bid_price: price,

@@ -55,7 +55,10 @@ const DaftarJual = ({}) => {
       const res = await axios.get(`${baseUrl}/seller/order`, {
         headers: {access_token: `${dataLogin.access_token}`},
       });
-      setOrderan(res.data);
+      const dateLatest = res.data.sort(function (a, b) {
+        return new Date(b.transaction_date) - new Date(a.transaction_date);
+      });
+      setOrderan(dateLatest);
       console.log('Data Order Seller: ', res.data);
     } catch (error) {
       console.log(error);
@@ -72,7 +75,10 @@ const DaftarJual = ({}) => {
       const res = await axios.get(`${baseUrl}/seller/product`, {
         headers: {access_token: `${dataLogin.access_token}`},
       });
-      setProduct(['', ...res.data]);
+      const latest = res.data.sort(function (a, b) {
+        return new Date(b.updatedAt) - new Date(a.updatedAt);
+      });
+      setProduct(['', ...latest]);
       const getTerjual = res.data.filter(function (item) {
         return item.status === 'sold';
       });
