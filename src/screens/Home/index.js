@@ -3,8 +3,8 @@ import {
   View,
   Image,
   FlatList,
-  ScrollView,
   TouchableOpacity,
+  RefreshControl,
 } from 'react-native';
 import React, {useEffect, useState} from 'react';
 import LinearGradient from 'react-native-linear-gradient';
@@ -15,29 +15,167 @@ import {
   ItemProductCard,
 } from '../../component';
 import {moderateScale} from 'react-native-size-matters';
-import {Box} from '../../assets/Images';
 import {COLORS} from '../../helpers/colors';
-import {getProduct} from './redux/action';
+import {getProduct, getProductperCategory} from './redux/action';
 import {useSelector, useDispatch} from 'react-redux';
+import LoadingBar from '../../component/LoadingBar';
+import {setLoading, setRefreshing} from '../../redux/globalAction';
+import {navigate} from '../../helpers/navigate';
+import {currencyToIDR} from '../../helpers/change';
+import Feather from 'react-native-vector-icons/Feather';
+import {baseUrl} from '@env';
+import {setCountNotifikasi} from '../Notification/redux/action';
+import axios from 'axios';
+import {useCallback} from 'react';
 
 export default function Home({navigation}) {
   const dispatch = useDispatch();
-  const {products, lengthProducts} = useSelector(state => state.home);
-  const [end, setEnd] = useState(16);
+  const {
+    products,
+    lengthProducts,
+    dataCategory,
+    dataProductperCategory,
+    banner,
+  } = useSelector(state => state.home);
+  const {loading, refreshing} = useSelector(state => state.global);
+  const [page, setPage] = useState(1);
   const [dataProducts, setDataProducts] = useState('dataAllProduct');
-
-  const produkHobi = products.filter(function (item) {
-    return item?.Categories[0]?.name === 'Hobi dan Koleksi';
-  });
-
-  const produkKendaraan = products.filter(function (item) {
-    return item?.Categories[0]?.name === 'Otomotif';
-  });
+  const [search, setSearch] = useState('');
+  const [listNumber, setListNumber] = useState([]);
+  const [startData] = useState(1);
+  const [endData, setEndData] = useState(5);
+  const [idCategory, setIdCategory] = useState(0);
+  const [clickedFiturName, setClickedFiturName] = useState('dataAllProduct');
+  const {dataLogin} = useSelector(state => state.login);
+  const [notifikasi, setnotifikasi] = useState([]);
 
   useEffect(() => {
-    const getAllProduct = () => dispatch(getProduct());
-    getAllProduct();
-  }, [dispatch]);
+    getDataNotification();
+    const getAllProduct = () => dispatch(getProduct(page));
+    if (dataProducts === 'dataAllProduct') {
+      getAllProduct();
+    } else if (dataProducts === 'dataProductperCategory') {
+      dispatch(getProductperCategory(idCategory, page));
+    }
+  }, [dispatch, page, idCategory, dataProducts, getDataNotification]);
+
+  useEffect(() => {
+    getDataNotification();
+    const renderListNumber = data => {
+      let renderer = [];
+      const lengthPageAllProduct = Math.ceil(
+        lengthProducts ? lengthProducts : 0 / 20,
+      );
+      const lengthPageProductperCategories = Math.ceil(
+        dataProductperCategory.length / 20,
+      );
+
+      if (data === 'dataAllProduct') {
+        if (lengthPageAllProduct > 15) {
+          setEndData(15);
+        } else {
+          setEndData(lengthPageAllProduct);
+        }
+      } else if (data === 'dataProductperCategory') {
+        if (lengthPageProductperCategories > 10) {
+          setEndData(10);
+        } else {
+          setEndData(lengthPageProductperCategories);
+        }
+      }
+
+      for (let index = startData; index <= endData; index++) {
+        renderer.push({
+          title: index,
+          isActive: index === 1 ? true : false,
+        });
+      }
+
+      setListNumber(renderer);
+    };
+    renderListNumber(dataProducts);
+  }, [
+    products,
+    startData,
+    endData,
+    dataProductperCategory.length,
+    lengthProducts,
+    dataProducts,
+    getDataNotification,
+  ]);
+
+  const getDataNotification = useCallback(async () => {
+    //OrderSeller
+    try {
+      dispatch(setLoading(true));
+      const res = await axios.get(`${baseUrl}/notification`, {
+        headers: {access_token: `${dataLogin.access_token}`},
+      });
+      setnotifikasi(res.data);
+      const data = res.data.filter(function (item) {
+        return item.read === false;
+      }).length;
+      dispatch(setCountNotifikasi(data));
+      console.log('ini dia :', data);
+      console.log('Data Notification: ', res.data);
+    } catch (error) {
+      console.log(error);
+      dispatch(setLoading(false));
+    }
+  }, [dataLogin, dispatch]);
+
+  const onRefresh = () => {
+    dispatch(setRefreshing(true));
+    dispatch(getProduct());
+  };
+
+  const fiturButton = ({item}) => {
+    return (
+      <ButtonFitur
+        nameIcon="search"
+        nameFitur={item.name}
+        onPressButton={() => {
+          setPage(1);
+          setIdCategory(item.id);
+          setDataProducts('dataProductperCategory');
+          setClickedFiturName(item.name);
+        }}
+        clicked={clickedFiturName === item.name ? true : false}
+      />
+    );
+  };
+
+  const headerFiturButton = () => {
+    return (
+      <ButtonFitur
+        nameIcon="search"
+        nameFitur="Semua"
+        onPressButton={() => {
+          setPage(1);
+          setDataProducts('dataAllProduct');
+          setClickedFiturName('dataAllProduct');
+        }}
+        clicked={clickedFiturName === 'dataAllProduct' ? true : false}
+      />
+    );
+  };
+
+  const bannerItem = ({item}) => {
+    const bannerName = item.name.replace(/[^a-zA-Z ]/g, ' ');
+
+    return (
+      <View style={styles.bannerContainer}>
+        <View style={styles.textBannerContainer}>
+          <Poppins style={styles.textBR}>{bannerName}</Poppins>
+        </View>
+        <Image
+          source={{uri: item.image_url}}
+          style={styles.imageBanner}
+          resizeMode="cover"
+        />
+      </View>
+    );
+  };
 
   const renderHeader = () => (
     <View>
@@ -45,163 +183,191 @@ export default function Home({navigation}) {
         colors={['#ffe9c9', '#ffe9c9', '#ffffff']}
         style={styles.topNav}>
         <View style={styles.topNavContainer}>
-          <SearchBar
-            style={styles.searchBar}
-            placeholder="Cari di Second chance"
-            inputStyle={styles.inputStyle}
+          <FlatList
+            style={styles.bannerContainer}
+            data={banner}
+            horizontal={true}
+            keyExtractor={(_item, index) => index}
+            renderItem={bannerItem}
+            showsHorizontalScrollIndicator={false}
           />
-          <View style={styles.topNavLeft}>
-            <Poppins style={styles.textBR}>Bulan Ramadhan</Poppins>
-            <Poppins style={styles.textBD}>Banyak diskon!</Poppins>
-            <Poppins style={styles.textDH}>Diskon Hingga</Poppins>
-            <Poppins style={styles.textPercent}>60%</Poppins>
-          </View>
-          <View style={styles.topNavRight}>
-            <Image
-              source={Box}
-              style={styles.topNavRight}
-              resizeMode={'cover'}
-            />
-          </View>
         </View>
       </LinearGradient>
       <View style={styles.categories}>
-        <Poppins style={styles.textTK}>Telusuri Kategori</Poppins>
-        <ScrollView
+        <Poppins type="Medium" style={styles.textTK}>
+          Telusuri Kategori
+        </Poppins>
+        <FlatList
+          ListHeaderComponent={headerFiturButton}
+          data={dataCategory}
           horizontal={true}
+          keyExtractor={(_item, index) => index}
+          renderItem={fiturButton}
           showsHorizontalScrollIndicator={false}
-          style={styles.fitur}>
-          <ButtonFitur
-            nameIcon={'search'}
-            nameFitur={'Semua'}
-            onPressButton={() => setDataProducts('dataAllProduct')}
-          />
-          <ButtonFitur
-            nameIcon={'search'}
-            nameFitur={'Hobi'}
-            onPressButton={() => setDataProducts('dataProductHobi')}
-          />
-          <ButtonFitur
-            nameIcon={'search'}
-            nameFitur={'Kendaraan'}
-            onPressButton={() => setDataProducts('dataProductKendaraan')}
-          />
-          <ButtonFitur nameIcon={'box'} nameFitur={'Product'} />
-          <ButtonFitur nameIcon={'heart'} nameFitur={'Diminati'} />
-          <ButtonFitur nameIcon={'dollar-sign'} nameFitur={'Terjual'} />
-        </ScrollView>
+        />
       </View>
     </View>
   );
 
   const renderItem = ({item}) => {
+    const categories = item.Categories;
+    const listCategories = [];
+    categories.forEach(data => {
+      return listCategories.push(data.name);
+    });
+
     return (
       <View style={styles.itemProduct}>
         <ItemProductCard
           productName={item?.name ? item.name : 'Nama Produk'}
           productType={
-            item?.Categories[0]?.name ? item?.Categories[0]?.name : 'Kategori'
+            item?.Categories[0]?.name ? listCategories.join(', ') : 'Kategori'
           }
-          productPrice={item?.base_price ? item?.base_price : 'Rp. 0'}
+          productPrice={
+            item?.base_price ? currencyToIDR(item?.base_price) : 'Rp. 0'
+          }
           url={item?.image_url}
-          onPressCard={() =>
-            navigation.navigate('DetailProductScreen', {id_product: item.id})
-          }
+          onPressCard={() => navigation.navigate('BuyerOrder', {id: item.id})}
         />
       </View>
     );
   };
 
-  const renderFooter = data => {
-    const tmp = end;
-    if (data === 'dataAllProduct') {
-      if (end < lengthProducts) {
-        return (
-          <View style={styles.footer}>
-            <TouchableOpacity
-              onPress={() => {
-                setEnd(tmp + 10);
-              }}
-              style={styles.loadMoreBtn}>
-              <Poppins style={styles.btnText}>Load More</Poppins>
-            </TouchableOpacity>
-          </View>
-        );
-      } else if (end > lengthProducts || end === lengthProducts) {
-        return (
-          <View style={styles.footer}>
-            <Poppins style={styles.text}>No More Data</Poppins>
-          </View>
-        );
-      }
-    } else if (data === 'dataProductHobi') {
-      if (end < produkHobi.length) {
-        return (
-          <View style={styles.footer}>
-            <TouchableOpacity
-              onPress={() => {
-                setEnd(tmp + 10);
-              }}
-              style={styles.loadMoreBtn}>
-              <Poppins style={styles.btnText}>Load More</Poppins>
-            </TouchableOpacity>
-          </View>
-        );
-      } else if (end > produkHobi.length || end === produkHobi.length) {
-        return (
-          <View style={styles.footer}>
-            <Poppins style={styles.text}>No More Data</Poppins>
-          </View>
-        );
-      }
-    } else if (data === 'dataProductKendaraan') {
-      if (end < produkKendaraan.length) {
-        return (
-          <View style={styles.footer}>
-            <TouchableOpacity
-              onPress={() => {
-                setEnd(tmp + 10);
-              }}
-              style={styles.loadMoreBtn}>
-              <Poppins style={styles.btnText}>Load More</Poppins>
-            </TouchableOpacity>
-          </View>
-        );
-      } else if (
-        end > produkKendaraan.length ||
-        end === produkKendaraan.length
-      ) {
-        return (
-          <View style={styles.footer}>
-            <Poppins style={styles.text}>No More Data</Poppins>
-          </View>
-        );
-      }
-    }
+  const pagination = ({item, index}) => {
+    return (
+      <TouchableOpacity
+        onPress={() => {
+          setPage(index + 1);
+        }}
+        key={item.title}
+        style={{
+          backgroundColor: index === page - 1 ? COLORS.purple3 : null,
+          marginRight: parseInt(item.title, 10) === listNumber.length ? 0 : 20,
+          padding: moderateScale(7),
+          marginBottom: moderateScale(5),
+          borderRadius: moderateScale(10),
+        }}>
+        <Poppins
+          style={{
+            fontSize: moderateScale(14),
+            color: index === page - 1 ? COLORS.purple1 : '#666',
+          }}>
+          {item.title}
+        </Poppins>
+      </TouchableOpacity>
+    );
+  };
+
+  const renderFooter = (data, {itemCategory}) => {
+    return (
+      <View flexDirection="row" flex={1} style={styles.containerListPage}>
+        <View
+          flexDirection="row"
+          justifyContent="center"
+          style={styles.containerNextPage}>
+          <TouchableOpacity onPress={() => setPage(1)} style={{marginRight: 5}}>
+            <Feather name="chevrons-left" color={COLORS.purple5} size={24} />
+          </TouchableOpacity>
+          <TouchableOpacity
+            onPress={() => {
+              if (page > 1 && data === 'dataProductperCategory') {
+                setPage(prevState => (prevState - 1 < 1 ? 1 : prevState - 1));
+                dispatch(getProductperCategory(itemCategory.id, page));
+              } else if (page > 1 && data === 'dataAllProduct') {
+                setPage(prevState => (prevState - 1 < 1 ? 1 : prevState - 1));
+                dispatch(getProduct(page));
+              }
+            }}>
+            <Feather name="chevron-left" color={COLORS.purple5} size={24} />
+          </TouchableOpacity>
+        </View>
+        <View flexDirection="row">
+          <FlatList
+            data={listNumber}
+            horizontal={true}
+            keyExtractor={(_item, index) => index}
+            renderItem={pagination}
+            showsHorizontalScrollIndicator={false}
+          />
+        </View>
+        <View
+          flexDirection="row"
+          justifyContent="center"
+          style={{
+            padding: moderateScale(7),
+          }}>
+          <TouchableOpacity
+            onPress={() => {
+              if (page < 5) {
+                setPage(prevState => prevState + 1);
+              }
+            }}>
+            <Feather name="chevron-right" color={COLORS.purple5} size={24} />
+          </TouchableOpacity>
+          <TouchableOpacity
+            onPress={() => {
+              if (endData === 10) {
+                setPage(10);
+              } else {
+                setPage(endData);
+              }
+            }}
+            style={{marginLeft: 2}}>
+            <Feather name="chevrons-right" color={COLORS.purple5} size={24} />
+          </TouchableOpacity>
+        </View>
+      </View>
+    );
   };
 
   const list = data => {
     if (data === 'dataAllProduct') {
-      return products.slice(0, end);
-    } else if (data === 'dataProductHobi') {
-      return produkHobi.slice(0, end);
-    } else if (data === 'dataProductKendaraan') {
-      return produkKendaraan.slice(0, end);
+      return products;
+    } else if (data === 'dataProductperCategory') {
+      return dataProductperCategory;
     }
   };
 
+  const renderEmpty = () => {
+    return <Poppins style={styles.empty}>Tidak ada data</Poppins>;
+  };
+  console.log(notifikasi);
   return (
     <View style={styles.container}>
-      <FlatList
-        ListHeaderComponent={renderHeader}
-        numColumns={2}
-        showsVerticalScrollIndicator={false}
-        data={list(dataProducts)}
-        horizontal={false}
-        keyExtractor={(_item, index) => index}
-        renderItem={renderItem}
-        ListFooterComponent={renderFooter(dataProducts)}
-      />
+      {list(dataProducts) ? (
+        <>
+          <View style={styles.searchContainer}>
+            <SearchBar
+              onChangeText={value => {
+                setSearch(value);
+              }}
+              value={search}
+              onSubmitEditing={() => {
+                setSearch('');
+                navigate('Search', {search: search});
+              }}
+              styleInput={styles.searchBar}
+            />
+          </View>
+          <FlatList
+            refreshControl={
+              <RefreshControl onRefresh={onRefresh} refreshing={refreshing} />
+            }
+            contentContainerStyle={{flexGrow: 1}}
+            ListHeaderComponent={renderHeader}
+            ListEmptyComponent={renderEmpty}
+            numColumns={2}
+            showsVerticalScrollIndicator={false}
+            data={list(dataProducts)}
+            horizontal={false}
+            keyExtractor={(_item, index) => index}
+            renderItem={renderItem}
+            ListFooterComponent={renderFooter(dataProducts, dataCategory)}
+          />
+        </>
+      ) : (
+        <LoadingBar loading={loading} />
+      )}
     </View>
   );
 }
@@ -212,38 +378,30 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
   },
   topNav: {
-    height: moderateScale(450),
-    width: moderateScale(600),
+    height: moderateScale(350),
   },
   topNavContainer: {
-    marginHorizontal: 20,
-    marginTop: 10,
+    marginHorizontal: moderateScale(20),
   },
-  topNavLeft: {
-    alignContent: 'space-around',
-    justifyContent: 'center',
-    marginTop: -40,
-    height: 200,
+  textBannerContainer: {
+    alignSelf: 'flex-start',
   },
-  topNavRight: {
-    flexDirection: 'column',
-    width: moderateScale(130),
-    height: moderateScale(123),
-    borderRadius: moderateScale(20),
-    marginTop: moderateScale(-50),
-    marginLeft: moderateScale(100),
+  imageBanner: {
+    height: moderateScale(135),
+    width: moderateScale(300),
+    borderRadius: moderateScale(10),
   },
-  ter: {
-    margin: moderateScale(15),
+  footer: {
+    marginHorizontal: moderateScale(50),
     alignSelf: 'center',
+    marginBottom: moderateScale(15),
   },
   loadMoreBtn: {
     padding: moderateScale(13),
     backgroundColor: COLORS.purple5,
     borderRadius: moderateScale(5),
-    marginHorizontal: moderateScale(50),
-    alignItems: 'center',
-    marginVertical: moderateScale(20),
+    flexDirection: 'row',
+    margin: moderateScale(5),
   },
   btnText: {
     color: COLORS.white,
@@ -256,55 +414,20 @@ const styles = StyleSheet.create({
     fontSize: moderateScale(18),
   },
   categories: {
-    borderRadius: 20,
-    marginHorizontal: 16,
-    marginTop: -200,
-  },
-  middleNav: {
-    flexDirection: 'column',
-    height: 160,
-    marginHorizontal: 20,
-    marginTop: -70,
-    alignItems: 'center',
-  },
-  middleCardNav: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    marginVertical: 20,
-    marginHorizontal: 20,
-  },
-  cardWrapper: {
-    marginTop: 10,
-    flex: 1,
-    flexWrap: 'wrap',
-    justifyContent: 'space-between',
-    marginHorizontal: 16,
+    marginTop: moderateScale(-200),
+    padding: moderateScale(10),
   },
   textBR: {
-    fontFamily: 'Poppins-Bold',
-    fontSize: moderateScale(22),
-    marginHorizontal: moderateScale(2),
-    marginTop: moderateScale(100),
+    fontSize: moderateScale(17),
     color: COLORS.black,
-  },
-  textBD: {
-    fontFamily: 'Poppins-Bold',
-    fontSize: moderateScale(22),
-    marginHorizontal: moderateScale(2),
-    color: COLORS.black,
-  },
-  textDH: {
-    marginHorizontal: moderateScale(2),
-    fontSize: moderateScale(12),
-    color: COLORS.black,
-    marginTop: moderateScale(10),
+    textTransform: 'capitalize',
   },
   textTK: {
-    fontFamily: 'Poppins-Bold',
-    fontSize: moderateScale(16),
+    fontSize: moderateScale(14),
     marginHorizontal: moderateScale(2),
     marginTop: moderateScale(40),
-    color: COLORS.black,
+    color: COLORS.neutral5,
+    marginBottom: moderateScale(10),
   },
   textPercent: {
     fontSize: moderateScale(20),
@@ -315,9 +438,6 @@ const styles = StyleSheet.create({
     marginTop: moderateScale(19),
     marginHorizontal: moderateScale(5),
   },
-  inputStyle: {
-    size: 12,
-  },
   itemProduct: {
     margin: moderateScale(15),
     marginTop: moderateScale(15),
@@ -325,5 +445,27 @@ const styles = StyleSheet.create({
   list: {
     marginTop: moderateScale(15),
     alignSelf: 'center',
+  },
+  bannerContainer: {
+    marginHorizontal: moderateScale(10),
+  },
+  searchBar: {
+    width: moderateScale(320),
+  },
+  searchContainer: {
+    paddingHorizontal: moderateScale(20),
+    paddingVertical: moderateScale(10),
+    backgroundColor: '#ffe9c9',
+  },
+  empty: {
+    alignSelf: 'center',
+    margin: moderateScale(10),
+  },
+  containerNextPage: {
+    padding: moderateScale(7),
+  },
+  containerListPage: {
+    justifyContent: 'center',
+    marginHorizontal: moderateScale(60),
   },
 });

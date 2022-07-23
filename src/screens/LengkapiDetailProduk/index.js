@@ -9,9 +9,8 @@ import {moderateScale} from 'react-native-size-matters';
 // import {launchImageLibrary} from 'react-native-image-picker';
 import {useDispatch, useSelector} from 'react-redux';
 import {navigate} from '../../helpers/navigate';
-import {getCategory, setDataProduct} from './redux/action';
+import {setDataProduct, setStatusToastPostProduct} from './redux/action';
 import Toast from 'react-native-toast-message';
-import {useEffect} from 'react';
 import {setLoading} from '../../redux/globalAction';
 import LoadingBar from '../../component/LoadingBar';
 import ImagePicker from 'react-native-image-crop-picker';
@@ -20,17 +19,13 @@ const Index = ({navigation}) => {
   const dispatch = useDispatch();
   const [open, setOpen] = useState(false);
   const [value, setValue] = useState([]);
-  const [image, setImage] = useState({});
+  // const [image, setImage] = useState({});
   const [listImage, setListImage] = useState([]);
   const {dataLogin, dataUser} = useSelector(state => state.login);
-  const {dataCategory} = useSelector(state => state.dataProduct);
+  const {dataCategory} = useSelector(state => state.home);
   const {loading} = useSelector(state => state.global);
   const [items, setItems] = useState(dataCategory);
   const kategori = [];
-
-  useEffect(() => {
-    dispatch(getCategory);
-  }, [dispatch]);
 
   const getProductCategories = () => {
     dataCategory.filter(function (item) {
@@ -63,13 +58,6 @@ const Index = ({navigation}) => {
       body.append('base_price', values.hargaproduk);
       value.forEach(categori => body.append('category_ids', categori));
       body.append('location', dataUser.city);
-      // body.append('image', {
-      //   name: image.fileName,
-      //   type: image.type,
-      //   uri: image.uri,
-      // });
-
-      //multiple image but cant send to api => output {}
 
       listImage.forEach(element => {
         const imageName = element.path.substring(
@@ -84,6 +72,7 @@ const Index = ({navigation}) => {
         body.append('image', imageFile);
       });
 
+      console.log('BODY : ', body);
       //multiple image but cant send to api => output {}
       // listImage.forEach(imageData => {
       //   const imageName = imageData.path.substring(
@@ -97,38 +86,51 @@ const Index = ({navigation}) => {
       //   });
       // });
 
-      console.log(body);
-
-      const res = await fetch(
-        'https://market-final-project.herokuapp.com/seller/product',
-        {
-          method: 'POST',
-          headers: {
-            accept: 'body',
-            'Content-Type': 'multipart/form-data',
-            access_token: `${dataLogin.access_token}`,
+      if (
+        dataUser.phone_number === 'null' ||
+        dataUser.address === 'null' ||
+        dataUser.image === '' ||
+        dataUser.city === 'null'
+      ) {
+        dispatch(setLoading(false));
+        setListImage({});
+        Alert.alert('Pemberitahuan', 'Tolong Lengkapi Profile Anda.');
+        navigate('Profile');
+      } else {
+        const res = await fetch(
+          'https://market-final-project.herokuapp.com/seller/product',
+          {
+            method: 'POST',
+            headers: {
+              accept: 'body',
+              'Content-Type': 'multipart/form-data',
+              access_token: `${dataLogin.access_token}`,
+            },
+            body: body,
           },
-          body: body,
-        },
-      );
+        );
+        const jsonRes = await res.json();
 
-      const jsonRes = await res.json();
-
-      console.log(res, 'res fecting');
-
-      if (jsonRes.name && jsonRes.message) {
-        Alert.alert('Pemberitahuan', jsonRes.message);
-        setImage({});
-        navigate('DaftarJual', {
-          createProduct: 'failed',
-        });
-        dispatch(setLoading(false));
-      } else if (jsonRes.name === values.namaproduk) {
-        setImage({});
-        navigate('DaftarJual', {
-          createProduct: 'success',
-        });
-        dispatch(setLoading(false));
+        if (jsonRes.name && jsonRes.message) {
+          Alert.alert('Pemberitahuan', jsonRes.message);
+          // setImage({});
+          setListImage({});
+          dispatch(setStatusToastPostProduct('failed'));
+          navigate('DaftarJual');
+          dispatch(setLoading(false));
+        } else if (
+          jsonRes.name === values.namaproduk &&
+          dataUser.phone_number !== 'null' &&
+          dataUser.address !== 'null' &&
+          dataUser.image !== '' &&
+          dataUser.city !== 'null'
+        ) {
+          // setImage({});
+          dispatch(setLoading(false));
+          setListImage({});
+          dispatch(setStatusToastPostProduct('success'));
+          navigate('DaftarJual');
+        }
       }
     } catch (error) {
       console.log(error, 'error lengkapi');
@@ -302,8 +304,11 @@ const Index = ({navigation}) => {
                 <Poppins style={styles.asterik}>*</Poppins>
               </View>
               <View style={styles.toRow}>
-                {image.uri ? (
-                  <Image source={{uri: image.uri}} style={styles.image} />
+                {listImage[0]?.path ? (
+                  <Image
+                    source={{uri: listImage[0]?.path}}
+                    style={styles.image}
+                  />
                 ) : (
                   <InputAdd style={styles.addInput} onPress={addProductImage} />
                 )}
@@ -316,8 +321,8 @@ const Index = ({navigation}) => {
               ) : (
                 <Button
                   onPressButton1={() => {
-                    sendDataProduct(values, image);
-                    navigate('Preview');
+                    // sendDataProduct(values, image);
+                    sendDataProduct(values, listImage);
                   }}
                   onPressButton2={() => {
                     handleSubmit();

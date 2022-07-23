@@ -1,33 +1,17 @@
-import {SET_NOTIFICATION, DETAIL_NOTIFICATION} from './variety';
-
 const initialState = {
-  dataNotification: [],
-  detailNotification: {},
-  refreshing: false,
+  dataNotif: 0,
 };
 
 const NotificationReducer = (state = initialState, action) => {
   switch (action.type) {
-    case SET_NOTIFICATION:
+    case 'SET_COUNT_NOTIFICATION':
       return {
         ...state,
-        dataNotification: action.payload,
-      };
-
-    case DETAIL_NOTIFICATION:
-      return {
-        ...state,
-        detailNotification: action.detail,
-      };
-
-    case 'SET_REFRESHING':
-      return {
-        ...state,
-        refreshing: action.payload,
+        dataNotif: action.payload,
       };
 
     default:
-      return {...state};
+      return state;
   }
 };
 export default NotificationReducer;

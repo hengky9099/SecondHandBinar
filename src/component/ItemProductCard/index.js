@@ -18,7 +18,9 @@ const ItemProductCard = ({
       <Poppins numberOfLines={1} style={styles.textProductName}>
         {productName}
       </Poppins>
-      <Poppins style={styles.textProductType}>{productType}</Poppins>
+      <Poppins numberOfLines={1} style={styles.textProductType}>
+        {productType}
+      </Poppins>
       <Poppins style={styles.textProductPrice}>{productPrice}</Poppins>
     </TouchableOpacity>
   );

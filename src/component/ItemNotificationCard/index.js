@@ -9,13 +9,13 @@ import {Jam} from '../../assets/Images';
 
 const ItemNotificationCard = ({
   urlImage,
-  onPress,
+  onPress = () => {},
   typeNotif,
   productName,
   productPrice,
   tawaran,
   date,
-  seen = false,
+  read,
   status = 'pending',
   button = 'declined',
   textButton1,
@@ -106,14 +106,14 @@ const ItemNotificationCard = ({
             <View style={styles.toRow}>
               {status === 'create' ? (
                 <Poppins style={styles.text1}>Berhasil diterbitkan</Poppins>
-              ) : status === 'accepted' ? (
+              ) : status === 'accepted' || status === 'sold' ? (
                 <Poppins style={styles.text1}>Berhasil terjual</Poppins>
               ) : (
                 <Poppins style={styles.text1}>Penawaran Produk</Poppins>
               )}
               <View style={styles.dateContainer}>
                 <Poppins style={styles.text1}>{date}</Poppins>
-                {seen ? null : <Dot color={COLORS.purple4} />}
+                {read === false ? <Dot color={COLORS.purple4} /> : null}
               </View>
             </View>
             <View>

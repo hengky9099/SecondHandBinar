@@ -6,8 +6,10 @@ import DaftarJual from './DaftarJual';
 import Notification from './Notification';
 import Profile from './Profile';
 import LengkapiDetailProduk from './LengkapiDetailProduk';
+import Search from './Search';
 import InfoPenawar from './InfoPenawar';
 import BuyerOrder from './BuyerOrder';
+import Preview from './Preview';
 
 export {
   Home,
@@ -18,6 +20,8 @@ export {
   Notification,
   Profile,
   LengkapiDetailProduk,
+  Search,
   InfoPenawar,
   BuyerOrder,
+  Preview,
 };
