@@ -12,6 +12,7 @@ import {
   Register,
   Profile,
   InfoPenawar,
+  BuyerOrder,
 } from '../screens';
 import {COLORS} from '../helpers/colors';
 
@@ -20,7 +21,7 @@ const Tab = createBottomTabNavigator();
 
 const MainStack = () => {
   return (
-    <Stack.Navigator initialRouteName="Login">
+    <Stack.Navigator initialRouteName="MainApp">
       <Stack.Screen
         name="Register"
         component={Register}
@@ -44,6 +45,11 @@ const MainStack = () => {
       <Stack.Screen
         name="InfoPenawar"
         component={InfoPenawar}
+        options={{headerShown: false}}
+      />
+      <Stack.Screen
+        name="BuyerOrder"
+        component={BuyerOrder}
         options={{headerShown: false}}
       />
     </Stack.Navigator>

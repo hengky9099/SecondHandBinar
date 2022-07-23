@@ -7,6 +7,7 @@ import Notification from './Notification';
 import Profile from './Profile';
 import LengkapiDetailProduk from './LengkapiDetailProduk';
 import InfoPenawar from './InfoPenawar';
+import BuyerOrder from './BuyerOrder';
 
 export {
   Home,
@@ -18,4 +19,5 @@ export {
   Profile,
   LengkapiDetailProduk,
   InfoPenawar,
+  BuyerOrder,
 };

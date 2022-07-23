@@ -106,6 +106,8 @@ const ItemNotificationCard = ({
             <View style={styles.toRow}>
               {status === 'create' ? (
                 <Poppins style={styles.text1}>Berhasil diterbitkan</Poppins>
+              ) : status === 'accepted' ? (
+                <Poppins style={styles.text1}>Berhasil terjual</Poppins>
               ) : (
                 <Poppins style={styles.text1}>Penawaran Produk</Poppins>
               )}
@@ -129,7 +131,7 @@ const ItemNotificationCard = ({
           </View>
         </View>
       </TouchableOpacity>
-      {button !== 'declined' ? (
+      {button === '' || button === 'pending' ? (
         <View style={styles.buttonContainer}>
           <Button
             numButton={2}
