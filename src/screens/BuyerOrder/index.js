@@ -17,8 +17,6 @@ const BuyerOrder = ({route}) => {
   const {id} = route.params;
 
   const {dataLogin} = useSelector(state => state.login);
-  const [dataOrder, setDataOrder] = useState([]);
-  const [dataPostOrder, setDataPostOrder] = useState([]);
   const [dataProduct, setDataProduct] = useState([]);
   const [price, setPrice] = useState();
   const [filter, setFilter] = useState([]);
@@ -50,9 +48,9 @@ const BuyerOrder = ({route}) => {
           access_token: `${dataLogin.access_token}`,
         },
       });
-      setDataOrder(res.data);
-      const filter = res.data.filter(item => item.product_id === id);
-      setFilter(filter);
+
+      const filters = res.data.filter(item => item.product_id === id);
+      setFilter(filters);
     } catch (error) {
       console.log(error);
     }
@@ -85,7 +83,6 @@ const BuyerOrder = ({route}) => {
         },
       });
       if (res.status <= 201) {
-        setDataPostOrder(res.data);
         refRBSheet.current.close();
         Toast.show({
           type: 'successToast',

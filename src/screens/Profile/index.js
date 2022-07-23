@@ -36,7 +36,7 @@ const Profile = ({navigation}) => {
     email: dataUser?.email ? dataUser?.email : 'Email',
     image: dataUser?.image_url
       ? dataUser?.image_url
-      : 'https://avatars.githubusercontent.com/u/62233239?v=4',
+      : 'https://i.pinimg.com/736x/97/20/80/97208010f891c5a75c3298e00d853b02.jpg',
   });
 
   const putProfile = async values => {
