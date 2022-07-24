@@ -11,7 +11,7 @@ const allMiddlewares = applyMiddleware(logger, thunk);
 const persistConfig = {
   key: 'root',
   storage: AsyncStorage,
-  blacklist: ['global'],
+  whitelist: ['login', 'dataProduct'],
 };
 
 const persistedReducer = persistReducer(persistConfig, allReducers);

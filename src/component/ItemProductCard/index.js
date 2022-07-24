@@ -3,6 +3,7 @@ import React from 'react';
 import {moderateScale} from 'react-native-size-matters';
 import {Poppins} from '../FontComponents';
 import {COLORS} from '../../helpers/colors';
+import {Jam} from '../../assets/Images';
 
 const ItemProductCard = ({
   onPressCard,
@@ -13,11 +14,13 @@ const ItemProductCard = ({
 }) => {
   return (
     <TouchableOpacity style={styles.card} onPress={onPressCard}>
-      <Image source={{uri: url}} style={styles.image} />
+      <Image source={url ? {uri: url} : Jam} style={styles.image} />
       <Poppins numberOfLines={1} style={styles.textProductName}>
         {productName}
       </Poppins>
-      <Poppins style={styles.textProductType}>{productType}</Poppins>
+      <Poppins numberOfLines={1} style={styles.textProductType}>
+        {productType}
+      </Poppins>
       <Poppins style={styles.textProductPrice}>{productPrice}</Poppins>
     </TouchableOpacity>
   );
@@ -56,7 +59,6 @@ const styles = StyleSheet.create({
     height: moderateScale(206),
     borderColor: COLORS.neutral1,
     borderWidth: 1,
-    margin: moderateScale(9),
     borderRadius: moderateScale(4),
   },
 });

@@ -1,0 +1,1 @@
+export const GET_DATA_SEARCH = 'GET_DATA_SEARCH';
