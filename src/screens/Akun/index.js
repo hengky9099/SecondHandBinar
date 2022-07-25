@@ -87,7 +87,7 @@ const Akun = () => {
           menuName="Pengaturan Akun"
           onPress={pengaturanAkun}
         />
-        <MenuAkun nameIcon="log-out" menuName="Keluar" onPress={logout} />
+        <MenuAkun nameIcon="log-out" menuName="Log Out" onPress={logout} />
       </View>
       <View style={styles.textVersionContainer}>
         <Poppins style={styles.textVersion} type="Bold">
